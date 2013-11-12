@@ -1,6 +1,6 @@
 {
     "name": "zfcampus/zf-oauth2",
-    "description": "OAuth2 server module",
+    "description": "ZF2 module for implementing an OAuth2 server",
     "license": "BSD-3-Clause",
     "keywords": [
         "api",
@@ -9,12 +9,11 @@
         "zf2"
     ],
     "repositories": [
-        { "type": "composer", "url": "https://packages.zendframework.com/" },
-        { "type": "composer", "url": "http://packages-zfcampus.rhcloud.com/" }
+        { "type": "composer", "url": "https://packages.zendframework.com/" }
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.9",
+        "php": ">=5.4.9",
         "bshaffer/oauth2-server-php": "dev-develop",
         "zendframework/zendframework": "dev-develop",
         "zfcampus/zf-api-problem": "dev-master"

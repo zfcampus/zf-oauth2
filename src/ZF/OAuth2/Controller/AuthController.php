@@ -16,6 +16,9 @@ use ZF\ApiProblem\ApiProblemResponse;
 
 class AuthController extends AbstractActionController
 {
+    /**
+     * @var OAuth2Server
+     */
     protected $server;
 
     /**
@@ -33,13 +36,13 @@ class AuthController extends AbstractActionController
      */
     public function tokenAction()
     {
-        $response = $this->server->handleTokenRequest(OAuth2Request::createFromGlobals()); 
+        $response = $this->server->handleTokenRequest(OAuth2Request::createFromGlobals());
         if ($response->isClientError()) {
             $parameters = $response->getParameters();
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -61,7 +64,7 @@ class AuthController extends AbstractActionController
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -88,10 +91,10 @@ class AuthController extends AbstractActionController
         // validate the authorize request
         if (!$this->server->validateAuthorizeRequest($request, $response)) {
             $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null; 
+            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -110,8 +113,13 @@ class AuthController extends AbstractActionController
         $this->server->handleAuthorizeRequest($request, $response, $is_authorized);
 
         if ($is_authorized) {
-            // this is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
-            $code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=')+5, 40);
+            // this is only here so that you get to see your code in the cURL
+            // request. Otherwise, we'd redirect back to the client
+            $code = substr(
+                $response->getHttpHeader('Location'),
+                strpos($response->getHttpHeader('Location'), 'code=') + 5,
+                40
+            );
             return array('code' => $code);
         }
 
@@ -119,25 +127,29 @@ class AuthController extends AbstractActionController
         $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
         return new ApiProblemResponse(
             new ApiProblem(
-                $response->getStatusCode(), 
+                $response->getStatusCode(),
                 $parameters['error_description'],
                 $errorUri,
                 $parameters['error']
             )
         );
     }
+
     /**
-     * Convert the OAuth2 response to Zend\Http\Response
+     * Convert the OAuth2 response to a \Zend\Http\Response
      *
      * @param $response OAuth2Response
-     * @return Zend\Http\Response
+     * @return \Zend\Http\Response
      */
     private function setHttpResponse(OAuth2Response $response)
     {
         $httpResponse = $this->getResponse();
         $httpResponse->setStatusCode($response->getStatusCode());
-        $httpResponse->getHeaders()->addHeaders($response->getHttpHeaders());
-        $httpResponse->getHeaders()->addHeaders(array('Content-type' => 'application/json'));
+
+        $headers = $httpResponse->getHeaders();
+        $headers->addHeaders($response->getHttpHeaders());
+        $headers->addHeaderLine('Content-type', 'application/json');
+
         $httpResponse->setContent($response->getResponseBody());
         return $httpResponse;
     }

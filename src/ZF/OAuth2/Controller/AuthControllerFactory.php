@@ -15,10 +15,10 @@ use OAuth2\GrantType\AuthorizationCode;
 
 class AuthControllerFactory implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $s) 
+    public function createService(ServiceLocatorInterface $controllers)
     {
-        $sm     = $s->getServiceLocator()->get('ServiceManager');
-        $config = $sm->get('Configuration');
+        $services = $controllers->getServiceLocator()->get('ServiceManager');
+        $config   = $services->get('Configuration');
 
         if (!isset($config['oauth2']['db']) || empty($config['oauth2']['db'])) {
             throw new Exception\RuntimeException(
@@ -27,21 +27,20 @@ class AuthControllerFactory implements FactoryInterface
         }
 
         $storage = new OAuth2Storage(array(
-            'dsn' => $config['oauth2']['db']['dsn'], 
-            'username' => $config['oauth2']['db']['username'], 
-            'password' => $config['oauth2']['db']['password']
+            'dsn'      => $config['oauth2']['db']['dsn'],
+            'username' => $config['oauth2']['db']['username'],
+            'password' => $config['oauth2']['db']['password'],
         ));
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage);
-        
+
         // Add the "Client Credentials" grant type (it is the simplest of the grant types)
         $server->addGrantType(new ClientCredentials($storage));
-        
+
         // Add the "Authorization Code" grant type (this is where the oauth magic happens)
         $server->addGrantType(new AuthorizationCode($storage));
 
         return new AuthController($server);
     }
-
 }
