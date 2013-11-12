@@ -1,9 +1,10 @@
 <?php
 /**
- * @license   http://opensource.org/licenses/BSD-2-Clause BSD-2-Clause
+ * @copyright Copyright (c) 2013 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 
-namespace ZFTest\ZF\OAuth2\Controller;
+namespace ZFTest\OAuth2\Controller;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
@@ -16,7 +17,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $configFile = realpath(__DIR__ . '/../TestAsset/autoload/oauth2.local.php'); 
         if (!file_exists($configFile)) {
             $this->markTestSkipped(
-                "To execute the test you need to create and edit the file TestAsset/autoload/oauth2.local.php"
+                "To execute the test you need to create and edit the file test/ZFTest/OAuth2/TestAsset/autoload/oauth2.local.php"
             );
         }
 
