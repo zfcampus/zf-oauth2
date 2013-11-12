@@ -1,0 +1,32 @@
+{
+    "name": "zfcampus/zf-oauth2",
+    "description": "OAuth2 server module",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "api",
+        "oauth2",
+        "framework",
+        "zf2"
+    ],
+    "repositories": [
+        { "type": "composer", "url": "https://packages.zendframework.com/" },
+        { "type": "composer", "url": "http://packages-zfcampus.rhcloud.com/" }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.9",
+        "bshaffer/oauth2-server-php": "dev-develop",
+        "zendframework/zendframework": "dev-develop",
+        "zfcampus/zf-api-problem": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/PHPUnit": "3.7.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "ZF\\OAuth2\\": "src/",
+            "ZFTest\\": "test/",
+            "Test\\": "vendor/"
+        }
+    }
+}

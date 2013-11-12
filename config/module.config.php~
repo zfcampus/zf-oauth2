@@ -1,0 +1,16 @@
+<?php
+return array(
+    'service_manager' => array(
+        'factories' => array(
+            'authentication' => 'ZF\MvcAuth\AuthenticationServiceFactory'
+        ),
+    ),
+    'controllers' => array(
+        'invokables' => array(
+            'OAuth2\Auth' => 'OAuth2\AuthController',
+        ),
+    ),
+    'oauth2' => array(
+        'pdo-mysql' => '',
+    ), 
+);
