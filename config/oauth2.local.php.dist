@@ -4,7 +4,7 @@ return array(
         'db' => array(
             'dsn'      => 'insert here the DSN for DB connection', // for example "mysql:dbname=oauth2_db;host=localhost"
             'username' => 'insert here the DB username',
-            'password' => 'insert here the DB password'
-        )
-    )
+            'password' => 'insert here the DB password',
+        ),
+    ),
 );

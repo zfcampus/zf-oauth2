@@ -24,7 +24,7 @@ return array(
                             'route' => '/authorize',
                             'defaults' => array(
                                 'action' => 'authorize',
-                            )
+                            ),
                         ),
                     ),
                     'resource' => array(
@@ -33,12 +33,12 @@ return array(
                             'route' => '/resource',
                             'defaults' => array(
                                 'action' => 'resource',
-                            )
-                        )
-                    )
-                )
-			)
-		)
+                            ),
+                        ),
+                    ),
+                ),
+			),
+		),
     ),
     'view_manager' => array(
         'template_path_stack' => array(
