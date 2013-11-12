@@ -139,7 +139,7 @@ use the Authorization Code grant type.  This grant requires an approval step to
 authorize the web application. This step is implemented using a simple form that
 requests the user approve access to the resource (account).  This module
 provides a simple form to authorize a specific client. This form can be accessed
-by a browser using the following URL: 
+by a browser using the following URL:
 
 ```bash
 http://<URL of your ZF2 app>/oauth/authorize?response_type=code&client_id=testclient&state=xyz
@@ -179,13 +179,13 @@ How to protect your API using OAuth2
 You can protect your API using the following code (for instance, at the top of a
 controller):
 
-```php 
+```php
 if (!$this->server->verifyResourceRequest(OAuth2Request::createFromGlobals())) {
     // Not authorized return 401 error
     $this->getResponse()->setStatusCode(401);
     return;
 }
-``` 
+```
 
 where `$this->server` is an instance of `OAuth2\Server` (see the
 [AuthController.php](https://github.com/zfcampus/zf-oauth2/blob/master/src/ZF/OAuth2/Controller/AuthController.php)).

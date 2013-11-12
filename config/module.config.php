@@ -5,7 +5,7 @@ return array(
             'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Controller\AuthControllerFactory',
         ),
     ),
-	'router' => array(
+    'router' => array(
         'routes' => array(
             'oauth' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
@@ -37,12 +37,12 @@ return array(
                         ),
                     ),
                 ),
-			),
-		),
+            ),
+        ),
     ),
     'view_manager' => array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
-    ), 
+    ),
 );

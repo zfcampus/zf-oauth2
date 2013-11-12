@@ -36,13 +36,13 @@ class AuthController extends AbstractActionController
      */
     public function tokenAction()
     {
-        $response = $this->server->handleTokenRequest(OAuth2Request::createFromGlobals()); 
+        $response = $this->server->handleTokenRequest(OAuth2Request::createFromGlobals());
         if ($response->isClientError()) {
             $parameters = $response->getParameters();
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -64,7 +64,7 @@ class AuthController extends AbstractActionController
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -91,10 +91,10 @@ class AuthController extends AbstractActionController
         // validate the authorize request
         if (!$this->server->validateAuthorizeRequest($request, $response)) {
             $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null; 
+            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
             return new ApiProblemResponse(
                 new ApiProblem(
-                    $response->getStatusCode(), 
+                    $response->getStatusCode(),
                     $parameters['error_description'],
                     $errorUri,
                     $parameters['error']
@@ -113,7 +113,7 @@ class AuthController extends AbstractActionController
         $this->server->handleAuthorizeRequest($request, $response, $is_authorized);
 
         if ($is_authorized) {
-            // this is only here so that you get to see your code in the cURL 
+            // this is only here so that you get to see your code in the cURL
             // request. Otherwise, we'd redirect back to the client
             $code = substr(
                 $response->getHttpHeader('Location'),
@@ -127,7 +127,7 @@ class AuthController extends AbstractActionController
         $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
         return new ApiProblemResponse(
             new ApiProblem(
-                $response->getStatusCode(), 
+                $response->getStatusCode(),
                 $parameters['error_description'],
                 $errorUri,
                 $parameters['error']

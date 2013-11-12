@@ -14,7 +14,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
-        $configFile = realpath(__DIR__ . '/../TestAsset/autoload/oauth2.local.php'); 
+        $configFile = realpath(__DIR__ . '/../TestAsset/autoload/oauth2.local.php');
         if (!file_exists($configFile)) {
             $this->markTestSkipped(
                 "To execute the test you need to create and edit the file test/ZFTest/OAuth2/TestAsset/autoload/oauth2.local.php"
@@ -47,7 +47,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
                 'DELETE FROM oauth_clients WHERE client_id="testclient"'
             );
             $stmt->execute();
-        }    
+        }
     }
 
     public function testToken()
@@ -56,7 +56,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_SERVER['PHP_AUTH_USER'] = 'testclient';
         $_SERVER['PHP_AUTH_PW'] = 'testpass';
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        
+
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
@@ -86,11 +86,11 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     public function testAuthorizeErrorParam()
     {
         $this->dispatch('/oauth/authorize');
-        
+
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
         $this->assertResponseStatusCode(400);
-        
+
         $headers = $this->getResponse()->getHeaders();
         $this->assertEquals('application/api-problem+json', $headers->get('content-type')->getFieldValue());
 
@@ -122,7 +122,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_SERVER['PHP_AUTH_USER'] = 'testclient';
         $_SERVER['PHP_AUTH_PW'] = 'testpass';
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        
+
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
@@ -138,7 +138,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_SERVER['PHP_AUTH_USER'] = 'testclient';
         $_SERVER['PHP_AUTH_PW'] = 'testpass';
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        
+
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
@@ -147,8 +147,8 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertTrue(!empty($response['access_token']));
 
-        $token = $response['access_token']; 
-        
+        $token = $response['access_token'];
+
         // test resource through token by POST
         $_POST['access_token'] = $token;
         unset($_POST['grant_type']);
@@ -162,7 +162,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertTrue($response['success']);
-        $this->assertEquals('You accessed my APIs!', $response['message']); 
+        $this->assertEquals('You accessed my APIs!', $response['message']);
 
         // test resource through token by Bearer header
         $_SERVER['HTTP_AUTHORIZATION'] = "Bearer $token";
@@ -176,6 +176,6 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertTrue($response['success']);
-        $this->assertEquals('You accessed my APIs!', $response['message']); 
+        $this->assertEquals('You accessed my APIs!', $response['message']);
     }
 }
