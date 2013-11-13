@@ -20,4 +20,10 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
+    'oauth2' => array(
+        'db' => array(
+            'dsn'      => 'sqlite:' . __DIR__ . '/dbtest.sqlite' 
+        ),
+    ),
+
 );
