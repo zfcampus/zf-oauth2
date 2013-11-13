@@ -18,18 +18,18 @@ class Pdo extends OAuth2Pdo
         $this->bcrypt = new Bcrypt();
     }
 
-	/* OAuth2_Storage_ClientCredentialsInterface */
+    /* OAuth2_Storage_ClientCredentialsInterface */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         $stmt = $this->db->prepare(sprintf('SELECT * from %s where client_id = :client_id', $this->config['client_table']));
         $stmt->execute(compact('client_id'));
         $result = $stmt->fetch();
-        
+
         // bcrypt verify
         return $this->bcrypt->verify($client_secret, $result['client_secret']);
     }
 
-	public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null)
     {
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
@@ -43,13 +43,13 @@ class Pdo extends OAuth2Pdo
         return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types'));
     }
 
-	// check password using bcrypt
+    // check password using bcrypt
     protected function checkPassword($user, $password)
     {
         return $this->bcrypt($user['password'], $password);
     }
 
-	public function setUser($username, $password, $firstName = null, $lastName = null)
+    public function setUser($username, $password, $firstName = null, $lastName = null)
     {
         // do not store in plaintext, use bcrypt
         $password = $this->bcrypt->create($password);

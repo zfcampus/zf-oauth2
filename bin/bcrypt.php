@@ -19,9 +19,9 @@ if (file_exists($autoload)) {
     ));
 }
 
-if (!class_exists('Zend\Loader\AutoloaderFactory')) {                                                                                
-    throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');    
-} 
+if (!class_exists('Zend\Loader\AutoloaderFactory')) {
+    throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
+}
 
 if ($argc < 2) {
     printf("Usage: php bcrypt.php <password> [cost]\n");
@@ -34,4 +34,3 @@ if (isset($argv[2])) {
     $bcrypt->setCost($argv[2]);
 }
 printf ("%s\n", $bcrypt->create($argv[1]));
-
