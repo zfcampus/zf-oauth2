@@ -38,7 +38,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
         $this->assertResponseStatusCode(200);
-
+        
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertTrue(!empty($response['access_token']));
         $this->assertTrue(!empty($response['expires_in']));
