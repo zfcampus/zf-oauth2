@@ -22,8 +22,7 @@ return array(
     ),
     'oauth2' => array(
         'db' => array(
-            'dsn'      => 'sqlite:' . __DIR__ . '/dbtest.sqlite'
+            'dsn'      => 'sqlite:' . __DIR__ . '/dbtest.sqlite',
         ),
     ),
-
 );
