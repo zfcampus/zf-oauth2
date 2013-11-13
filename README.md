@@ -19,9 +19,9 @@ php composer.phar install
 Configuration
 -------------
 
-This module uses a MySQL database to manage the OAuth2 information (users,
-client, token, etc).  In order to use this module you need to create a MySQL
-database using the file `data/db_oauth2.sql`.
+This module uses any PDO-suported database to manage the OAuth2 information
+(users, client, token, etc).  The database structure is stored in
+`data/db_oauth2.sql`.
 
 ```sql
 CREATE TABLE oauth_clients (
@@ -76,17 +76,59 @@ CREATE TABLE oauth_jwt (
 );
 ```
 
-After that you need to configure the database access, copy the file
-`config/oauth2.local.php.dist` in your `/config/autoload/oauth2.local.php` of
-your ZF2 application and edit with your DB credentials (DNS, username,
+For security reasons, we encrypt the fields `client_secret` (table
+`oauth_clients`) and `password` (table `oauth_users`) using the
+[bcrypt](http://en.wikipedia.org/wiki/Bcrypt) algorithm (via the class
+[Zend\Crypt\Password\Bcrypt](http://framework.zend.com/manual/2.2/en/modules/zend.crypt.password.html#bcrypt)).
+
+In order to configure the zf-oauth2 module for database access, you need to copy
+the file `config/oauth2.local.php.dist` to `config/autoload/oauth2.local.php` in
+your ZF2 application, and edit it to provide your DB credentials (DNS, username,
 password).
 
+We also include a SQLite database in `data/dbtest.sqlite` that you can use in a
+test environment.  In this database, you will find a test client account with
+the `client_id` "testclient" and the `client_secret` "testpass".  If you want to
+use this database, you can configure your `config/autoload/oauth2.local.php`
+file as follow:
+
+```
+return array(
+    'oauth2' => array(
+        'db' => array(
+            'dsn' => 'sqlite:<path to zf-oauth2 module>/data/dbtest.sqlite'
+        )
+    )
+);
+```
 
 How to test OAuth2
 ------------------
 
-To test the OAuth2 module you have to add a client_id and a client_secret into
-the MySQL database.  You can use the following SQL statement:
+To test the OAuth2 module, you have to add a `client_id` and a `client_secret`
+into the oauth2 database. If you are using the SQLite test database, you don't
+need to add a `client_id`; just use the default "testclient"/"testpass" account.
+
+Because we encrypt the password using the `bcrypt` algorithm, you need to
+encrypt the password using the [Zend\Crypt\Password\Bcrypt](http://framework.zend.com/manual/2.2/en/modules/zend.crypt.password.html#bcrypt)
+class from Zend Framework 2. We provided a simple script in `/bin/bcrypt.php` to
+generate the hash value of a user's password. You can use this tool from the
+command line, with the following syntax:
+
+```bash
+php bin/bcrypt.php testpass
+```
+
+where "testpass" is the user's password that you want to encrypt. The output of
+the previous command will be the hash value of the user's password, a string of
+60 bytes like the following:
+
+```
+$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2
+```
+
+After the generation of the hash value of the password (`client_secret`), you can
+add a new `client_id` in the database using the following SQL statement:
 
 ```sql
 INSERT INTO oauth_clients (
@@ -95,13 +137,14 @@ INSERT INTO oauth_clients (
     redirect_uri)
 VALUES (
     "testclient",
-    "testpass",
+    "$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2",
     "http://fake/"
 );
 ```
 
-To test the OAuth2 module, you can use an HTTP client like [HTTPie](https://github.com/jkbr/httpie)
-or [CURL](http://curl.haxx.se/).  The examples below use HTTPie.
+To test the OAuth2 module, you can use an HTTP client like
+[HTTPie](https://github.com/jkbr/httpie) or [CURL](http://curl.haxx.se/).  The
+examples below use HTTPie and the test account "testclient"/"testpass".
 
 REQUEST TOKEN (client\_credentials)
 -----------------------------------

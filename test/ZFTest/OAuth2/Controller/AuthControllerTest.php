@@ -14,25 +14,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
-        $configFile = realpath(__DIR__ . '/../TestAsset/autoload/oauth2.local.php');
-        if (!file_exists($configFile)) {
-            $this->markTestSkipped(
-                "To execute the test you need to create and edit the file test/ZFTest/OAuth2/TestAsset/autoload/oauth2.local.php"
-            );
-        }
-
-        // Insert or update the test values for the client_id
-        $config   = include $configFile;
-        $paramDb  = $config['oauth2']['db'];
-        $this->db = new \PDO($paramDb['dsn'], $paramDb['username'], $paramDb['password']);
-        $stmt     = $this->db->prepare(
-            'REPLACE INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES ("testclient", "testpass", "http://fake")'
-        );
-        if ($stmt->execute() === false) {
-            $this->markTestSkipped(
-                "I cannot use the OAuth2 database, please check the table structures with the data/db_oauth2.sql file"
-            );
-        }
+        @copy(__DIR__ . '/../TestAsset/autoload/db_oauth2.sqlite', __DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
 
         $this->setApplicationConfig(
             include __DIR__ . '/../TestAsset/application.config.php'
@@ -42,12 +24,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function tearDown()
     {
-        if ($this->db) {
-            $stmt = $this->db->prepare(
-                'DELETE FROM oauth_clients WHERE client_id="testclient"'
-            );
-            $stmt->execute();
-        }
+        @unlink(__DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
     }
 
     public function testToken()

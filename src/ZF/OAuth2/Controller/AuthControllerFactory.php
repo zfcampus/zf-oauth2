@@ -8,7 +8,7 @@ namespace ZF\OAuth2\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use OAuth2\Storage\Pdo as OAuth2Storage;
+use ZF\OAuth2\Adapter\Pdo as OAuth2Storage;
 use OAuth2\Server as OAuth2Server;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\AuthorizationCode;
@@ -26,10 +26,13 @@ class AuthControllerFactory implements FactoryInterface
             );
         }
 
+        $username = isset($config['oauth2']['db']['username']) ? $config['oauth2']['db']['username'] : null;
+        $password = isset($config['oauth2']['db']['password']) ? $config['oauth2']['db']['password'] : null;
+
         $storage = new OAuth2Storage(array(
             'dsn'      => $config['oauth2']['db']['dsn'],
-            'username' => $config['oauth2']['db']['username'],
-            'password' => $config['oauth2']['db']['password'],
+            'username' => $username,
+            'password' => $password,
         ));
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
