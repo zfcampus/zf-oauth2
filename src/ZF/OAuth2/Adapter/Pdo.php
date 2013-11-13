@@ -1,4 +1,8 @@
 <?php
+/**
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @copyright Copyright (c) 2013 Zend Technologies USA Inc. (http://www.zend.com)
+ */
 
 namespace ZF\OAuth2\Adapter;
 
@@ -6,19 +10,33 @@ use OAuth2\Storage\Pdo as OAuth2Pdo;
 use Zend\Crypt\Password\Bcrypt;
 
 /**
- * Extension class of OAuth2\Storage\PDO with Bcrypt client_secret/password encryption
+ * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password 
+ * encryption
  */
 class Pdo extends OAuth2Pdo
 {
+    /**
+     * @var Bcrypt
+     */
     protected $bcrypt;
 
+    /**
+     * @param string $connection 
+     * @param array $config 
+     */
     public function __construct($connection, $config = array())
     {
         parent::__construct($connection, $config);
         $this->bcrypt = new Bcrypt();
     }
 
-    /* OAuth2_Storage_ClientCredentialsInterface */
+    /**
+     * Check client credentials
+     * 
+     * @param string $client_id 
+     * @param string $client_secret 
+     * @return bool
+     */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         $stmt = $this->db->prepare(sprintf('SELECT * from %s where client_id = :client_id', $this->config['client_table']));
@@ -29,6 +47,15 @@ class Pdo extends OAuth2Pdo
         return $this->bcrypt->verify($client_secret, $result['client_secret']);
     }
 
+    /**
+     * Set client details
+     * 
+     * @param string $client_id 
+     * @param string $client_secret 
+     * @param string $redirect_uri 
+     * @param string $grant_types 
+     * @return bool
+     */
     public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null)
     {
         // if it exists, update it.
@@ -43,12 +70,27 @@ class Pdo extends OAuth2Pdo
         return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types'));
     }
 
-    // check password using bcrypt
+    /**
+     * Check password using bcrypt
+     * 
+     * @param string $user 
+     * @param string $password 
+     * @return bool
+     */
     protected function checkPassword($user, $password)
     {
-        return $this->bcrypt($user['password'], $password);
+        return $this->bcrypt->verify($user['password'], $password);
     }
 
+    /**
+     * Set the user
+     * 
+     * @param string $username 
+     * @param string $password 
+     * @param string $firstName 
+     * @param string $lastName 
+     * @return bool
+     */
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
         // do not store in plaintext, use bcrypt
@@ -56,11 +98,17 @@ class Pdo extends OAuth2Pdo
 
         // if it exists, update it.
         if ($this->getUser($username)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET password=:password, first_name=:firstName, last_name=:lastName where username=:username', $this->config['user_table']));
+            $stmt = $this->db->prepare(sprintf(
+                'UPDATE %s SET password=:password, first_name=:firstName, last_name=:lastName where username=:username',
+                $this->config['user_table']
+            ));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (username, password, first_name, last_name) VALUES (:username, :password, :firstName, :lastName)', $this->config['user_table']));
+            $stmt = $this->db->prepare(sprintf(
+                'INSERT INTO %s (username, password, first_name, last_name) VALUES (:username, :password, :firstName, :lastName)',
+                $this->config['user_table']
+            ));
         }
+
         return $stmt->execute(compact('username', 'password', 'firstName', 'lastName'));
     }
-
 }
