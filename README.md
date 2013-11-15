@@ -11,7 +11,7 @@ Installation
 
 You can install using:
 
-```
+```bash
 curl -s https://getcomposer.org/installer | php
 php composer.phar install
 ```
@@ -92,7 +92,7 @@ the `client_id` "testclient" and the `client_secret` "testpass".  If you want to
 use this database, you can configure your `config/autoload/oauth2.local.php`
 file as follow:
 
-```
+```php
 return array(
     'oauth2' => array(
         'db' => array(
@@ -194,16 +194,29 @@ an Authorization code. This code must be used to request an OAuth2 token; the
 following HTTPie command provides an example of how to do that:
 
 ```bash
-http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE&redirect_uri=/oauth/receive
+http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE&redirect_uri=/oauth/receivecode
 ```
 
 In client-side scenarios (i.e mobile) where you cannot store the Client Credetials in a secure way, you cannot use the previous workflow. In this case we can use an *implicit grant*. This is similar to the authorization code, but rather than an Authorization Code being returned from the authorization request, a token is retured to the client.
+
+To enable the OAuth2 to accept implicit grant type you need to change the configuration of `allow_implicit` to `true` in the `config/autoload/oauth2.local.php` file:
+
+
+```php
+return array(
+    'oauth2' => array(
+        // ...
+        'allow_implicit' => true,
+        // ...
+    )
+);
+```
 
 To request a token from the client-side you need to request the authorization to the OAuth2 server:
 
 ```bash
 http://<URL of your ZF2 app>/oauth/authorize?response_type=token&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
-redirect_uri=/oauth/receive
+redirect_uri=/oauth/receivecode
 ```
 
 This request will render the authorization FORM as the previous example. If you authorize the access the request will be redirected to the `/oauth/receivecode` controller (the one that is provided as example) with the access_token specified in the URI fragment. For instance, this will be an example of redirect:

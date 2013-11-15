@@ -51,7 +51,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_GET['response_type'] = 'code';
         $_GET['client_id'] = 'testclient';
         $_GET['state'] = 'xyz';
-
+        
         $this->dispatch('/oauth/authorize');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
@@ -84,6 +84,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_GET['state'] = 'xyz';
         $_GET['redirect_uri'] = '/oauth/receivecode';
         $_POST['authorized'] = 'yes';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $this->dispatch('/oauth/authorize');
         $this->assertTrue($this->getResponse()->isRedirect());
@@ -100,7 +101,6 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_POST['redirect_uri'] = '/oauth/receivecode';
         $_SERVER['PHP_AUTH_USER'] = 'testclient';
         $_SERVER['PHP_AUTH_PW'] = 'testpass';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
@@ -113,18 +113,28 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testImplicitClientAuth()
     {
+        $config = $this->getApplication()->getConfig();
+        $allowImplicit = isset($config['oauth2']['allow_implicit']) ? $config['oauth2']['allow_implicit'] : false;
+
+        if (!$allowImplicit) {
+            $this->markTestSkipped('The allow implicit client mode is disabled');
+        }
+
         $_GET['response_type'] = 'token';
         $_GET['client_id'] = 'testclient';
         $_GET['state'] = 'xyz';
         $_GET['redirect_uri'] = '/oauth/receivecode';
         $_POST['authorized'] = 'yes';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $this->dispatch('/oauth/authorize');
+        $this->assertTrue($this->getResponse()->isRedirect());
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
 
         $token    = '';
         $location = $this->getResponse()->getHeaders()->get('Location')->getUri();
+
         if (preg_match('#access_token=([0-9a-f]+)#', $location, $matches)) {
             $token = $matches[1];
         }

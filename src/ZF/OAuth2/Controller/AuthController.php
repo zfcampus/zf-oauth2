@@ -102,9 +102,9 @@ class AuthController extends AbstractActionController
             );
         }
 
-        $authorized = $this->params()->fromPost('authorized');
+        $authorized = $request->request('authorized', false);
         if (empty($authorized)) {
-            $clientId = $this->params()->fromQuery('client_id', false);
+            $clientId = $request->query('client_id', false);
             return array('clientId' => $clientId);
         }
 
@@ -129,6 +129,9 @@ class AuthController extends AbstractActionController
         );
     }
 
+    /**
+     * Receive code action prints the code/token access
+     */
     public function receiveCodeAction()
     {
         $code = $this->params()->fromQuery('code', false);

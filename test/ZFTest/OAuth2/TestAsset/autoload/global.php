@@ -24,5 +24,7 @@ return array(
         'db' => array(
             'dsn'      => 'sqlite:' . __DIR__ . '/dbtest.sqlite',
         ),
+        'allow_implicit' => true,
+        'enforce_state'  => true
     ),
 );
