@@ -28,7 +28,7 @@ CREATE TABLE oauth_clients (
     client_id VARCHAR(80) NOT NULL,
     client_secret VARCHAR(80) NOT NULL,
     redirect_uri VARCHAR(2000) NOT NULL,
-    grant_tpyes VARCHAR(80),
+    grant_types VARCHAR(80),
     CONSTRAINT client_id_pk PRIMARY KEY (client_id)
 );
 CREATE TABLE oauth_access_tokens (
@@ -209,7 +209,7 @@ To access the test resource, you can use the following HTTPie command:
 ```bash
 http -f POST http://<URL of your ZF2 app>/oauth/resource access_token=000ab5afab4cbbbda803fb9e50e7943f5e766748
 # or
-http http://<<URL of your ZF2 app>/oauth/resource "Authorization:Bearer 000ab5afab4cbbbda803fb9e50e7943f5e766748"
+http http://<<URL of your ZF2 app>/oauth/resource "Authorization: Bearer 000ab5afab4cbbbda803fb9e50e7943f5e766748"
 ```
 
 As you can see, the OAuth2 module supports the data either via POST, using the
