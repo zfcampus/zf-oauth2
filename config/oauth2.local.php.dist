@@ -1,6 +1,6 @@
 <?php
 return array(
-    'oauth2' => array(
+    'zf-oauth2' => array(
         'db' => array(
             'dsn'      => 'insert here the DSN for DB connection', // for example "mysql:dbname=oauth2_db;host=localhost"
             'username' => 'insert here the DB username',

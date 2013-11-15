@@ -20,17 +20,17 @@ class AuthControllerFactory implements FactoryInterface
         $services = $controllers->getServiceLocator()->get('ServiceManager');
         $config   = $services->get('Configuration');
 
-        if (!isset($config['oauth2']['db']) || empty($config['oauth2']['db'])) {
+        if (!isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(
-                'The database configuration [\'oauth2\'][\'db\'] for OAuth2 is missing'
+                'The database configuration [\'zf-oauth2\'][\'db\'] for OAuth2 is missing'
             );
         }
 
-        $username = isset($config['oauth2']['db']['username']) ? $config['oauth2']['db']['username'] : null;
-        $password = isset($config['oauth2']['db']['password']) ? $config['oauth2']['db']['password'] : null;
+        $username = isset($config['zf-oauth2']['db']['username']) ? $config['zf-oauth2']['db']['username'] : null;
+        $password = isset($config['zf-oauth2']['db']['password']) ? $config['zf-oauth2']['db']['password'] : null;
 
         $storage = new OAuth2Storage(array(
-            'dsn'      => $config['oauth2']['db']['dsn'],
+            'dsn'      => $config['zf-oauth2']['db']['dsn'],
             'username' => $username,
             'password' => $password,
         ));
