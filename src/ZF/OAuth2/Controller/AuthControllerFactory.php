@@ -10,8 +10,11 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Adapter\Pdo as OAuth2Storage;
 use OAuth2\Server as OAuth2Server;
-use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\AuthorizationCode;
+use OAuth2\GrantType\ClientCredentials;
+use OAuth2\GrantType\RefreshToken;
+use OAuth2\GrantType\UserCredentials;
+
 
 class AuthControllerFactory implements FactoryInterface
 {
@@ -35,14 +38,23 @@ class AuthControllerFactory implements FactoryInterface
             'password' => $password,
         ));
 
+        $enforceState  = isset($config['zf-oauth2']['enforce_state'])  ? $config['zf-oauth2']['enforce_state']  : true;
+        $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;
+
         // Pass a storage object or array of storage objects to the OAuth2 server class
-        $server = new OAuth2Server($storage);
+        $server = new OAuth2Server($storage, array('enforce_state' => $enforceState, 'allow_implicit' => $allowImplicit));
 
         // Add the "Client Credentials" grant type (it is the simplest of the grant types)
         $server->addGrantType(new ClientCredentials($storage));
 
         // Add the "Authorization Code" grant type (this is where the oauth magic happens)
         $server->addGrantType(new AuthorizationCode($storage));
+
+        // Add the "User Credentials" grant type
+        $server->addGrantType(new UserCredentials($storage));
+
+        // Add the "Refresh Token" grant type
+        $server->addGrantType(new RefreshToken($storage));
 
         return new AuthController($server);
     }

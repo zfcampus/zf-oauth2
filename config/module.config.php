@@ -36,6 +36,15 @@ return array(
                             ),
                         ),
                     ),
+                    'code' => array(
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => array(
+                            'route' => '/receivecode',
+                            'defaults' => array(
+                                'action' => 'receiveCode',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),

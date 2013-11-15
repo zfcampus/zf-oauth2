@@ -1,0 +1,49 @@
+<?php
+if ($this->code) {
+    printf("<h2>The authentication code is %s</h2>", $this->code);
+    printf("<p>Use this code to request an access token.</p>");
+    printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
+    printf(
+        "<p>http --auth testclient:testpass -f POST http://%s/oauth grant_type=authorization_code code=%s redirect_uri=%s</p>",
+        $_SERVER['HTTP_HOST'],
+        $this->code,
+        '/oauth/receivecode'
+    );
+    printf("<p>or using <a href=\"http://curl.haxx.se/docs/manpage.html\">CURL</a>:</p>");
+    printf(
+        "<p>curl -u testclient:testpass http://%s/oauth -d 'grant_type=authorization_code&code=%s&redirect_uri=%s'</p>",
+        $_SERVER['HTTP_HOST'],
+        $this->code,
+        '/oauth/receivecode'
+    );
+ } else {
+    printf("<h2>The access token is <a onclick=\"showAccessToken();\" id=\"access_token\">(Click here to read the token from URL fragment)</a></h2>");
+?>
+<script type="text/javascript">
+    // function to parse fragment parameters
+    var parseQueryString = function( queryString ) {
+        var params = {}, queries, temp, i, l;
+
+        // Split into key/value pairs
+        queries = queryString.split("&");
+
+        // Convert the array of strings into an object
+        for ( i = 0, l = queries.length; i < l; i++ ) {
+            temp = queries[i].split('=');
+            params[temp[0]] = temp[1];
+        }
+
+        return params;
+    };
+
+    // get token params from URL fragment
+    var tokenParams = parseQueryString(window.location.hash.substr(1));
+
+    // show the token parsed from the fragment, and show the next step
+    var showAccessToken = function (e) {
+        document.getElementById('access_token').innerHTML = tokenParams.access_token;
+    }
+</script>
+<?php
+}
+?>

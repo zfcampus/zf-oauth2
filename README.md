@@ -11,7 +11,7 @@ Installation
 
 You can install using:
 
-```
+```bash
 curl -s https://getcomposer.org/installer | php
 php composer.phar install
 ```
@@ -92,13 +92,13 @@ the `client_id` "testclient" and the `client_secret` "testpass".  If you want to
 use this database, you can configure your `config/autoload/oauth2.local.php`
 file as follow:
 
-```
+```php
 return array(
-    'oauth2' => array(
+    'zf-oauth2' => array(
         'db' => array(
-            'dsn' => 'sqlite:<path to zf-oauth2 module>/data/dbtest.sqlite'
-        )
-    )
+            'dsn' => 'sqlite:<path to zf-oauth2 module>/data/dbtest.sqlite',
+        ),
+    ),
 );
 ```
 
@@ -138,7 +138,7 @@ INSERT INTO oauth_clients (
 VALUES (
     "testclient",
     "$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2",
-    "http://fake/"
+    "/oauth/receivecode"
 );
 ```
 
@@ -185,7 +185,7 @@ provides a simple form to authorize a specific client. This form can be accessed
 by a browser using the following URL:
 
 ```bash
-http://<URL of your ZF2 app>/oauth/authorize?response_type=code&client_id=testclient&state=xyz
+http://<URL of your ZF2 app>/oauth/authorize?response_type=code&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
 ```
 
 This page will render the form asking the user to authorize or deny the access
@@ -194,7 +194,70 @@ an Authorization code. This code must be used to request an OAuth2 token; the
 following HTTPie command provides an example of how to do that:
 
 ```bash
-http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE
+http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE&redirect_uri=/oauth/receivecode
+```
+
+In client-side scenarios (i.e mobile) where you cannot store the Client
+Credentials in a secure way, you cannot use the previous workflow. In this case
+we can use an *implicit grant*. This is similar to the authorization code, but
+rather than an authorization code being returned from the authorization request,
+a *token* is returned.
+
+To enable the module to accept the implicit grant type, you need to change the
+configuration of `allow_implicit` to `true` in the
+`config/autoload/oauth2.local.php` file:
+
+
+```php
+return array(
+    'zf-oauth2' => array(
+        // ...
+        'allow_implicit' => true,
+        // ...
+    ),
+);
+```
+
+To request a token from the client side, you need to request authorization via
+the OAuth2 server:
+
+```
+http://<URL of your ZF2 app>/oauth/authorize?response_type=token&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
+```
+
+This request will render the authorization form as in the previous example. If
+you authorize the access, the request will be redirected to `/oauth/receivecode`
+(as provided in the `redirect_uri` parameter in the above example), with the
+`access_token` specified in the URI fragment, per the following sample:
+
+```
+/oauth/receivecode#access_token=559d8f9b6bedd8d94c8e8d708f87475f4838c514&expires_in=3600&token_type=Bearer&state=xyz
+```
+
+To get the `access_token`, you can parse the URI. We used the URI fragment to
+pass the `access_token` because in this way the token is not transmitted to the
+server; it will available only to the client.
+
+In JavaScript, you can easily parse the URI with this snippet of code:
+
+```javascript
+// function to parse fragment parameters
+var parseQueryString = function( queryString ) {
+    var params = {}, queries, temp, i, l;
+
+    // Split into key/value pairs
+    queries = queryString.split("&");
+
+    // Convert the array of strings into an object
+    for ( i = 0, l = queries.length; i < l; i++ ) {
+        temp = queries[i].split('=');
+        params[temp[0]] = temp[1];
+    }
+    return params;
+};
+
+// get token params from URL fragment
+var tokenParams = parseQueryString(window.location.hash.substr(1));
 ```
 
 Access a test resource
