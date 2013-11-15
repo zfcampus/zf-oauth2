@@ -43,7 +43,7 @@ class AuthControllerFactory implements FactoryInterface
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, array('enforce_state' => $enforceState, 'allow_implicit' => $allowImplicit));
-        
+
         // Add the "Client Credentials" grant type (it is the simplest of the grant types)
         $server->addGrantType(new ClientCredentials($storage));
 

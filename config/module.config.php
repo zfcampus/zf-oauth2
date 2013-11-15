@@ -44,7 +44,7 @@ return array(
                                 'action' => 'receiveCode',
                             ),
                         ),
-                    ), 
+                    ),
                 ),
             ),
         ),
