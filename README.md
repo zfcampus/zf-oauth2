@@ -94,11 +94,11 @@ file as follow:
 
 ```php
 return array(
-    'oauth2' => array(
+    'zf-oauth2' => array(
         'db' => array(
-            'dsn' => 'sqlite:<path to zf-oauth2 module>/data/dbtest.sqlite'
-        )
-    )
+            'dsn' => 'sqlite:<path to zf-oauth2 module>/data/dbtest.sqlite',
+        ),
+    ),
 );
 ```
 
@@ -197,39 +197,50 @@ following HTTPie command provides an example of how to do that:
 http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE&redirect_uri=/oauth/receivecode
 ```
 
-In client-side scenarios (i.e mobile) where you cannot store the Client Credetials in a secure way, you cannot use the previous workflow. In this case we can use an *implicit grant*. This is similar to the authorization code, but rather than an Authorization Code being returned from the authorization request, a token is retured to the client.
+In client-side scenarios (i.e mobile) where you cannot store the Client
+Credentials in a secure way, you cannot use the previous workflow. In this case
+we can use an *implicit grant*. This is similar to the authorization code, but
+rather than an authorization code being returned from the authorization request,
+a *token* is returned.
 
-To enable the OAuth2 to accept implicit grant type you need to change the configuration of `allow_implicit` to `true` in the `config/autoload/oauth2.local.php` file:
+To enable the module to accept the implicit grant type, you need to change the
+configuration of `allow_implicit` to `true` in the
+`config/autoload/oauth2.local.php` file:
 
 
 ```php
 return array(
-    'oauth2' => array(
+    'zf-oauth2' => array(
         // ...
         'allow_implicit' => true,
         // ...
-    )
+    ),
 );
 ```
 
-To request a token from the client-side you need to request the authorization to the OAuth2 server:
+To request a token from the client side, you need to request authorization via
+the OAuth2 server:
 
-```bash
+```
 http://<URL of your ZF2 app>/oauth/authorize?response_type=token&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
-redirect_uri=/oauth/receivecode
 ```
 
-This request will render the authorization FORM as the previous example. If you authorize the access the request will be redirected to the `/oauth/receivecode` controller (the one that is provided as example) with the access_token specified in the URI fragment. For instance, this will be an example of redirect:
+This request will render the authorization form as in the previous example. If
+you authorize the access, the request will be redirected to `/oauth/receivecode`
+(as provided in the `redirect_uri` parameter in the above example), with the
+`access_token` specified in the URI fragment, per the following sample:
 
 ```
 /oauth/receivecode#access_token=559d8f9b6bedd8d94c8e8d708f87475f4838c514&expires_in=3600&token_type=Bearer&state=xyz
 ```
 
-To get the access_token, you can parse the URI. We used the URI fragment to pass the access_token because in this way the token is not transmitted to the server, it will available only by the client.
+To get the `access_token`, you can parse the URI. We used the URI fragment to
+pass the `access_token` because in this way the token is not transmitted to the
+server; it will available only to the client.
 
-For instance, in Javascript you can easily parse the URI with this snippet of code:
+In JavaScript, you can easily parse the URI with this snippet of code:
 
-```js
+```javascript
 // function to parse fragment parameters
 var parseQueryString = function( queryString ) {
     var params = {}, queries, temp, i, l;
