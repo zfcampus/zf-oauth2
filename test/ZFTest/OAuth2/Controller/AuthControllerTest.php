@@ -82,20 +82,22 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_GET['response_type'] = 'code';
         $_GET['client_id'] = 'testclient';
         $_GET['state'] = 'xyz';
+        $_GET['redirect_uri'] = '/oauth/receivecode';
         $_POST['authorized'] = 'yes';
 
         $this->dispatch('/oauth/authorize');
+        $this->assertTrue($this->getResponse()->isRedirect());
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
-        $this->assertResponseStatusCode(200);
-        $this->assertQueryContentRegex('h2', '#SUCCESS! Authorization Code: [0-9a-f]+#');
 
-        if (preg_match('#Code: ([0-9a-f]+)#', $this->getResponse()->getContent(), $matches)) {
+        $location = $this->getResponse()->getHeaders()->get('Location')->getUri();
+        if (preg_match('#code=([0-9a-f]+)#', $location, $matches)) {
             $code = $matches[1];
         }
         // test get token from authorized code
         $_POST['grant_type'] = 'authorization_code';
         $_POST['code'] = $code;
+        $_POST['redirect_uri'] = '/oauth/receivecode';
         $_SERVER['PHP_AUTH_USER'] = 'testclient';
         $_SERVER['PHP_AUTH_PW'] = 'testpass';
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -107,6 +109,26 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertTrue(!empty($response['access_token']));
+    }
+
+    public function testImplicitClientAuth()
+    {
+        $_GET['response_type'] = 'token';
+        $_GET['client_id'] = 'testclient';
+        $_GET['state'] = 'xyz';
+        $_GET['redirect_uri'] = '/oauth/receivecode';
+        $_POST['authorized'] = 'yes';
+
+        $this->dispatch('/oauth/authorize');
+        $this->assertControllerName('ZF\OAuth2\Controller\Auth');
+        $this->assertActionName('authorize');
+
+        $token    = '';
+        $location = $this->getResponse()->getHeaders()->get('Location')->getUri();
+        if (preg_match('#access_token=([0-9a-f]+)#', $location, $matches)) {
+            $token = $matches[1];
+        }
+        $this->assertTrue(!empty($token));
     }
 
     public function testResource()

@@ -185,7 +185,7 @@ provides a simple form to authorize a specific client. This form can be accessed
 by a browser using the following URL:
 
 ```bash
-http://<URL of your ZF2 app>/oauth/authorize?response_type=code&client_id=testclient&state=xyz
+http://<URL of your ZF2 app>/oauth/authorize?response_type=code&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
 ```
 
 This page will render the form asking the user to authorize or deny the access
@@ -194,7 +194,46 @@ an Authorization code. This code must be used to request an OAuth2 token; the
 following HTTPie command provides an example of how to do that:
 
 ```bash
-http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE
+http --auth testclient:testpass -f POST http://<URL of your ZF2 app>/oauth grant_type=authorization_code&code=YOUR_CODE&redirect_uri=/oauth/receive
+```
+
+In client-side scenarios (i.e mobile) where you cannot store the Client Credetials in a secure way, you cannot use the previous workflow. In this case we can use an *implicit grant*. This is similar to the authorization code, but rather than an Authorization Code being returned from the authorization request, a token is retured to the client.
+
+To request a token from the client-side you need to request the authorization to the OAuth2 server:
+
+```bash
+http://<URL of your ZF2 app>/oauth/authorize?response_type=token&client_id=testclient&redirect_uri=/oauth/receivecode&state=xyz
+redirect_uri=/oauth/receive
+```
+
+This request will render the authorization FORM as the previous example. If you authorize the access the request will be redirected to the `/oauth/receivecode` controller (the one that is provided as example) with the access_token specified in the URI fragment. For instance, this will be an example of redirect:
+
+```
+/oauth/receivecode#access_token=559d8f9b6bedd8d94c8e8d708f87475f4838c514&expires_in=3600&token_type=Bearer&state=xyz
+```
+
+To get the access_token, you can parse the URI. We used the URI fragment to pass the access_token because in this way the token is not transmitted to the server, it will available only by the client.
+
+For instance, in Javascript you can easily parse the URI with this snippet of code:
+
+```js
+// function to parse fragment parameters
+var parseQueryString = function( queryString ) {
+    var params = {}, queries, temp, i, l;
+
+    // Split into key/value pairs
+    queries = queryString.split("&");
+
+    // Convert the array of strings into an object
+    for ( i = 0, l = queries.length; i < l; i++ ) {
+        temp = queries[i].split('=');
+        params[temp[0]] = temp[1];
+    }
+    return params;
+};
+
+// get token params from URL fragment
+var tokenParams = parseQueryString(window.location.hash.substr(1));
 ```
 
 Access a test resource
