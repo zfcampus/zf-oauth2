@@ -38,8 +38,8 @@ class AuthControllerFactory implements FactoryInterface
             'password' => $password,
         ));
 
-        $enforceState  = isset($config['oauth2']['enforce_state']) ? $config['oauth2']['enforce_state'] : true;
-        $allowImplicit = isset($config['oauth2']['allow_implicit']) ? $config['oauth2']['allow_implicit'] : false;
+        $enforceState  = isset($config['zf-oauth2']['enforce_state'])  ? $config['zf-oauth2']['enforce_state']  : true;
+        $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, array('enforce_state' => $enforceState, 'allow_implicit' => $allowImplicit));
