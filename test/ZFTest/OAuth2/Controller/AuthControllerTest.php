@@ -114,7 +114,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     public function testImplicitClientAuth()
     {
         $config = $this->getApplication()->getConfig();
-        $allowImplicit = isset($config['oauth2']['allow_implicit']) ? $config['oauth2']['allow_implicit'] : false;
+        $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;
 
         if (!$allowImplicit) {
             $this->markTestSkipped('The allow implicit client mode is disabled');
