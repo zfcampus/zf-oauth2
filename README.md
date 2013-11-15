@@ -138,7 +138,7 @@ INSERT INTO oauth_clients (
 VALUES (
     "testclient",
     "$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2",
-    "http://fake/"
+    "/oauth/receivecode"
 );
 ```
 
