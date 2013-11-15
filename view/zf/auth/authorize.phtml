@@ -1,9 +1,5 @@
-<?php if (empty($this->code)): ?>
-  <form method="post">
+<form method="post">
     <label>Do You Authorize <?php echo $this->escapeHtml($this->clientId) ?>?</label><br />
     <input type="submit" name="authorized" value="yes">
     <input type="submit" name="authorized" value="no">
-  </form>
-<?php else: ?>
-  <h2>SUCCESS! Authorization Code: <?php echo $this->escapeHtml($this->code) ?></h2>
-<?php endif ?>
+</form>

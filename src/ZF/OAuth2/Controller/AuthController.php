@@ -102,25 +102,19 @@ class AuthController extends AbstractActionController
             );
         }
 
-        $authorized = $this->params()->fromPost('authorized');
+        $authorized = $request->request('authorized', false);
         if (empty($authorized)) {
-            $clientId = $this->params()->fromQuery('client_id', false);
+            $clientId = $request->query('client_id', false);
             return array('clientId' => $clientId);
         }
 
-        // print the authorization code if the user has authorized your client
         $is_authorized = ($authorized === 'yes');
         $this->server->handleAuthorizeRequest($request, $response, $is_authorized);
-
         if ($is_authorized) {
-            // this is only here so that you get to see your code in the cURL
-            // request. Otherwise, we'd redirect back to the client
-            $code = substr(
-                $response->getHttpHeader('Location'),
-                strpos($response->getHttpHeader('Location'), 'code=') + 5,
-                40
-            );
-            return array('code' => $code);
+            $redirect = $response->getHttpHeader('Location');
+            if (!empty($redirect)) {
+                return $this->redirect()->toUrl($redirect);
+            }
         }
 
         $parameters = $response->getParameters();
@@ -132,6 +126,17 @@ class AuthController extends AbstractActionController
                 $errorUri,
                 $parameters['error']
             )
+        );
+    }
+
+    /**
+     * Receive code action prints the code/token access
+     */
+    public function receiveCodeAction()
+    {
+        $code = $this->params()->fromQuery('code', false);
+        return array(
+            'code' => $code
         );
     }
 

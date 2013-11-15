@@ -6,5 +6,7 @@ return array(
             'username' => 'insert here the DB username',
             'password' => 'insert here the DB password',
         ),
+        'allow_implicit' => false, // default (set to true when you need to support browser-based or mobile apps)
+        'enforce_state'  => true   // default
     ),
 );
