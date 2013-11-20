@@ -2,7 +2,7 @@
 return array(
     'controllers' => array(
         'factories' => array(
-            'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Controller\AuthControllerFactory',
+            'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Factory\AuthControllerFactory',
         ),
     ),
     'router' => array(
@@ -49,9 +49,17 @@ return array(
             ),
         ),
     ),
+    'service_manager' => array(
+        'factories' => array(
+            'ZF\OAuth2\Adapter\PdoAdapter' => 'ZF\OAuth2\Factory\PdoAdapterFactory'
+        )
+    ),
     'view_manager' => array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+    ),
+    'zf-oauth2' => array(
+        'storage' => 'ZF\OAuth2\Adapter\PdoAdapter'
     ),
 );
