@@ -8,7 +8,7 @@ namespace ZF\OAuth2\Controller;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZF\OAuth2\Adapter\Pdo as OAuth2Storage;
+use ZF\OAuth2\Adapter\PdoAdapter as OAuth2Storage;
 use OAuth2\Server as OAuth2Server;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
