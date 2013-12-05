@@ -13,7 +13,7 @@ use Zend\Crypt\Password\Bcrypt;
  * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password 
  * encryption
  */
-class Pdo extends OAuth2Pdo
+class PdoAdapter extends OAuth2Pdo
 {
     /**
      * @var Bcrypt
@@ -56,7 +56,7 @@ class Pdo extends OAuth2Pdo
      * @param string $grant_types 
      * @return bool
      */
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $user_id = null)
     {
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
