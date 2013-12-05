@@ -10,7 +10,7 @@ use OAuth2\Storage\Pdo as OAuth2Pdo;
 use Zend\Crypt\Password\Bcrypt;
 
 /**
- * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password 
+ * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password
  * encryption
  */
 class PdoAdapter extends OAuth2Pdo
@@ -21,8 +21,8 @@ class PdoAdapter extends OAuth2Pdo
     protected $bcrypt;
 
     /**
-     * @param string $connection 
-     * @param array $config 
+     * @param string $connection
+     * @param array $config
      */
     public function __construct($connection, $config = array())
     {
@@ -32,9 +32,9 @@ class PdoAdapter extends OAuth2Pdo
 
     /**
      * Check client credentials
-     * 
-     * @param string $client_id 
-     * @param string $client_secret 
+     *
+     * @param string $client_id
+     * @param string $client_secret
      * @return bool
      */
     public function checkClientCredentials($client_id, $client_secret = null)
@@ -49,11 +49,11 @@ class PdoAdapter extends OAuth2Pdo
 
     /**
      * Set client details
-     * 
-     * @param string $client_id 
-     * @param string $client_secret 
-     * @param string $redirect_uri 
-     * @param string $grant_types 
+     *
+     * @param string $client_id
+     * @param string $client_secret
+     * @param string $redirect_uri
+     * @param string $grant_types
      * @return bool
      */
     public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $user_id = null)
@@ -72,9 +72,9 @@ class PdoAdapter extends OAuth2Pdo
 
     /**
      * Check password using bcrypt
-     * 
-     * @param string $user 
-     * @param string $password 
+     *
+     * @param string $user
+     * @param string $password
      * @return bool
      */
     protected function checkPassword($user, $password)
@@ -84,11 +84,11 @@ class PdoAdapter extends OAuth2Pdo
 
     /**
      * Set the user
-     * 
-     * @param string $username 
-     * @param string $password 
-     * @param string $firstName 
-     * @param string $lastName 
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $firstName
+     * @param string $lastName
      * @return bool
      */
     public function setUser($username, $password, $firstName = null, $lastName = null)
