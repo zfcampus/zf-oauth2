@@ -4,39 +4,37 @@
  * @copyright Copyright (c) 2013 Zend Technologies USA Inc. (http://www.zend.com)
  */
 
-namespace ZF\OAuth2\Controller;
+namespace ZF\OAuth2\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZF\OAuth2\Adapter\PdoAdapter as OAuth2Storage;
+use ZF\OAuth2\Controller\AuthController;
+use ZF\OAuth2\Controller\Exception;
 use OAuth2\Server as OAuth2Server;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
 
-
 class AuthControllerFactory implements FactoryInterface
 {
+    /**
+     * @param ServiceLocatorInterface $controllers
+     * @return AuthController
+     * @throws \ZF\OAuth2\Controller\Exception\RuntimeException
+     */
     public function createService(ServiceLocatorInterface $controllers)
     {
         $services = $controllers->getServiceLocator()->get('ServiceManager');
         $config   = $services->get('Configuration');
 
-        if (!isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
+        if (!isset($config['zf-oauth2']['storage']) || empty($config['zf-oauth2']['storage'])) {
             throw new Exception\RuntimeException(
-                'The database configuration [\'zf-oauth2\'][\'db\'] for OAuth2 is missing'
+                'The storage configuration [\'zf-oauth2\'][\'storage\'] for OAuth2 is missing'
             );
         }
 
-        $username = isset($config['zf-oauth2']['db']['username']) ? $config['zf-oauth2']['db']['username'] : null;
-        $password = isset($config['zf-oauth2']['db']['password']) ? $config['zf-oauth2']['db']['password'] : null;
-
-        $storage = new OAuth2Storage(array(
-            'dsn'      => $config['zf-oauth2']['db']['dsn'],
-            'username' => $username,
-            'password' => $password,
-        ));
+        $storage = $services->get($config['zf-oauth2']['storage']);
 
         $enforceState  = isset($config['zf-oauth2']['enforce_state'])  ? $config['zf-oauth2']['enforce_state']  : true;
         $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;

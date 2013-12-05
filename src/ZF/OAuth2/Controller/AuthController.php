@@ -10,7 +10,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use OAuth2\Server as OAuth2Server;
 use OAuth2\Request as OAuth2Request;
 use OAuth2\Response as OAuth2Response;
-use Zend\View\Model\ViewModel;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 
