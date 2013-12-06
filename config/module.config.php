@@ -60,6 +60,14 @@ return array(
         ),
     ),
     'zf-oauth2' => array(
-        'storage' => 'ZF\OAuth2\Adapter\PdoAdapter'
+        /* 
+         * Config can include:
+         * - 'storage' => 'name of storage service' - typically ZF\OAuth2\Adapter\PdoAdapter
+         * - 'db' => [ // database configuration for the above PdoAdapter
+         *       'dsn'      => 'PDO DSN',
+         *       'username' => 'username',
+         *       'password' => 'password'
+         *   ]
+         */
     ),
 );
