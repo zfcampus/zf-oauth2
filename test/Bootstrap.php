@@ -4,7 +4,7 @@
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 
-namespace ZFTest;
+namespace ZFTest\OAuth2;
 
 use Zend\Loader\AutoloaderFactory;
 use RuntimeException;
@@ -50,8 +50,7 @@ class Bootstrap
                     'autoregister_zf' => true,
                     'namespaces' => array(
                         'ZF\OAuth2' => __DIR__ . '/../src/ZF/OAuth2/',
-                        __NAMESPACE__ => __DIR__ . '/' . __NAMESPACE__,
-                        'Test' => __DIR__ . '/../vendor/Test/',
+                        __NAMESPACE__ => __DIR__ . '/ZFTest/OAuth2/',
                     ),
                 ),
             ));
