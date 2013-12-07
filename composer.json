@@ -28,8 +28,10 @@
     "autoload": {
         "psr-0": {
             "ZF\\OAuth2\\": "src/",
-            "ZFTest\\": "test/",
-            "Test\\": "vendor/"
-        }
+            "ZFTest\\OAuth2\\": "test/"
+        },
+        "classmap": [
+            "Module.php"
+        ]
     }
 }
