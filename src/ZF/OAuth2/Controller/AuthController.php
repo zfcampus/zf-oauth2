@@ -165,7 +165,7 @@ class AuthController extends AbstractActionController
      *
      * This ensures that JSON requests providing credentials for OAuth2
      * verification/validation can be processed.
-     * 
+     *
      * @return OAuth2Request
      */
     protected function getOAuth2Request()
