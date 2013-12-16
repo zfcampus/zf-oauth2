@@ -6,10 +6,11 @@
 
 namespace ZF\OAuth2\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use OAuth2\Server as OAuth2Server;
 use OAuth2\Request as OAuth2Request;
 use OAuth2\Response as OAuth2Response;
+use OAuth2\Server as OAuth2Server;
+use Zend\Http\Request as HttpRequest;
+use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 
@@ -35,7 +36,19 @@ class AuthController extends AbstractActionController
      */
     public function tokenAction()
     {
-        $response = $this->server->handleTokenRequest(OAuth2Request::createFromGlobals());
+        $request = $this->getRequest();
+        if (! $request instanceof HttpRequest) {
+            // not an HTTP request; nothing left to do
+            return;
+        }
+
+        if ($request->isOptions()) {
+            // OPTIONS request.
+            // This is most likely a CORS attempt; as such, pass the response on.
+            return $this->getResponse();
+        }
+
+        $response = $this->server->handleTokenRequest($this->getOAuth2Request());
         if ($response->isClientError()) {
             $parameters = $response->getParameters();
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
@@ -57,7 +70,7 @@ class AuthController extends AbstractActionController
     public function resourceAction()
     {
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
-        if (!$this->server->verifyResourceRequest(OAuth2Request::createFromGlobals())) {
+        if (!$this->server->verifyResourceRequest($this->getOAuth2Request())) {
             $response   = $this->server->getResponse();
             $parameters = $response->getParameters();
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
@@ -84,7 +97,7 @@ class AuthController extends AbstractActionController
      */
     public function authorizeAction()
     {
-        $request  = OAuth2Request::createFromGlobals();
+        $request  = $this->getOAuth2Request();
         $response = new OAuth2Response();
 
         // validate the authorize request
@@ -136,6 +149,47 @@ class AuthController extends AbstractActionController
         $code = $this->params()->fromQuery('code', false);
         return array(
             'code' => $code
+        );
+    }
+
+    /**
+     * Create an OAuth2 request based on the ZF2 request object
+     *
+     * Marshals:
+     *
+     * - query string
+     * - body parameters, via content negotiation
+     * - "server", specifically the request method and content type
+     * - raw content
+     * - headers
+     *
+     * This ensures that JSON requests providing credentials for OAuth2
+     * verification/validation can be processed.
+     * 
+     * @return OAuth2Request
+     */
+    protected function getOAuth2Request()
+    {
+        $zf2Request = $this->getRequest();
+        $headers    = $zf2Request->getHeaders();
+
+        $contentType = '';
+        if ($headers->has('Content-Type')) {
+            $contentType = $headers->get('Content-Type')->getFieldValue();
+        }
+
+        return new OAuth2Request(
+            $zf2Request->getQuery()->toArray(),
+            $this->bodyParams(),
+            [], // attributes
+            [], // cookies
+            [], // files
+            [
+                'REQUEST_METHOD' => $zf2Request->getMethod(),
+                'CONTENT_TYPE'   => $contentType,
+            ],
+            $zf2Request->getContent(),
+            $headers->toArray()
         );
     }
 
