@@ -29,10 +29,11 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testToken()
     {
-        $_POST['grant_type'] = 'client_credentials';
-        $_SERVER['PHP_AUTH_USER'] = 'testclient';
-        $_SERVER['PHP_AUTH_PW'] = 'testpass';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request = $this->getRequest();
+        $request->getPost()->set('grant_type', 'client_credentials');
+        $request->getServer()->set('PHP_AUTH_USER', 'testclient');
+        $request->getServer()->set('PHP_AUTH_PW', 'testpass');
+        $request->setMethod('POST');
 
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
@@ -96,11 +97,12 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
             $code = $matches[1];
         }
         // test get token from authorized code
-        $_POST['grant_type'] = 'authorization_code';
-        $_POST['code'] = $code;
-        $_POST['redirect_uri'] = '/oauth/receivecode';
-        $_SERVER['PHP_AUTH_USER'] = 'testclient';
-        $_SERVER['PHP_AUTH_PW'] = 'testpass';
+        $request = $this->getRequest();
+        $request->getPost()->set('grant_type', 'authorization_code');
+        $request->getPost()->set('code', $code);
+        $request->getPost()->set('redirect_uri', '/oauth/receivecode');
+        $request->getServer()->set('PHP_AUTH_USER', 'testclient');
+        $request->getServer()->set('PHP_AUTH_PW', 'testpass');
 
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
@@ -120,12 +122,13 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
             $this->markTestSkipped('The allow implicit client mode is disabled');
         }
 
-        $_GET['response_type'] = 'token';
-        $_GET['client_id'] = 'testclient';
-        $_GET['state'] = 'xyz';
-        $_GET['redirect_uri'] = '/oauth/receivecode';
-        $_POST['authorized'] = 'yes';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request = $this->getRequest();
+        $request->getQuery()->set('response_type', 'token');
+        $request->getQuery()->set('client_id', 'testclient');
+        $request->getQuery()->set('state', 'xyz');
+        $request->getQuery()->set('redirect_uri', '/oauth/receivecode');
+        $request->getPost()->set('authorized', 'yes');
+        $request->setMethod('POST');
 
         $this->dispatch('/oauth/authorize');
         $this->assertTrue($this->getResponse()->isRedirect());
@@ -143,10 +146,11 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testResource()
     {
-        $_POST['grant_type'] = 'client_credentials';
-        $_SERVER['PHP_AUTH_USER'] = 'testclient';
-        $_SERVER['PHP_AUTH_PW'] = 'testpass';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request = $this->getRequest();
+        $request->getPost()->set('grant_type', 'client_credentials');
+        $request->getServer()->set('PHP_AUTH_USER', 'testclient');
+        $request->getServer()->set('PHP_AUTH_PW', 'testpass');
+        $request->setMethod('POST');
 
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
@@ -159,10 +163,12 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $token = $response['access_token'];
 
         // test resource through token by POST
-        $_POST['access_token'] = $token;
-        unset($_POST['grant_type']);
-        unset($_SERVER['PHP_AUTH_USER']);
-        unset($_SERVER['PHP_AUTH_PW']);
+        $post = $request->getPost();
+        unset($post['grant_type']);
+        $post->set('access_token', $token);
+        $server = $request->getServer();
+        unset($server['PHP_AUTH_USER']);
+        unset($server['PHP_AUTH_PW']);
 
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
@@ -174,9 +180,9 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('You accessed my APIs!', $response['message']);
 
         // test resource through token by Bearer header
-        $_SERVER['HTTP_AUTHORIZATION'] = "Bearer $token";
-        unset($_POST['access_token']);
-        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $server->set('HTTP_AUTHORIZATION', "Bearer $token");
+        unset($post['access_token']);
+        $request->setMethod('GET');
 
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
