@@ -9,6 +9,7 @@ namespace ZF\OAuth2\Controller;
 use OAuth2\Request as OAuth2Request;
 use OAuth2\Response as OAuth2Response;
 use OAuth2\Server as OAuth2Server;
+use Zend\Http\PhpEnvironment\Request as PhpEnvironmentRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
@@ -48,7 +49,8 @@ class AuthController extends AbstractActionController
             return $this->getResponse();
         }
 
-        $response = $this->server->handleTokenRequest($this->getOAuth2Request());
+        $oauth2request = $this->getOAuth2Request();
+        $response = $this->server->handleTokenRequest($oauth2request);
         if ($response->isClientError()) {
             $parameters = $response->getParameters();
             $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
@@ -173,9 +175,28 @@ class AuthController extends AbstractActionController
         $zf2Request = $this->getRequest();
         $headers    = $zf2Request->getHeaders();
 
+        // Marshal content type, so we can seed it into the $_SERVER array
         $contentType = '';
         if ($headers->has('Content-Type')) {
             $contentType = $headers->get('Content-Type')->getFieldValue();
+        }
+
+        // Get $_SERVER superglobal
+        $server = [];
+        if ($zf2Request instanceof PhpEnvironmentRequest) {
+            $server = $zf2Request->getServer()->toArray();
+        } elseif (!empty($_SERVER)) {
+            $server = $_SERVER;
+        }
+        $server['REQUEST_METHOD'] = $zf2Request->getMethod();
+
+        // Seed headers with HTTP auth information
+        $headers = $headers->toArray();
+        if (isset($server['PHP_AUTH_USER'])) {
+            $headers['PHP_AUTH_USER'] = $server['PHP_AUTH_USER'];
+        }
+        if (isset($server['PHP_AUTH_PW'])) {
+            $headers['PHP_AUTH_PW'] = $server['PHP_AUTH_PW'];
         }
 
         return new OAuth2Request(
@@ -184,12 +205,9 @@ class AuthController extends AbstractActionController
             [], // attributes
             [], // cookies
             [], // files
-            [
-                'REQUEST_METHOD' => $zf2Request->getMethod(),
-                'CONTENT_TYPE'   => $contentType,
-            ],
+            $server,
             $zf2Request->getContent(),
-            $headers->toArray()
+            $headers
         );
     }
 
