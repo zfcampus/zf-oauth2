@@ -79,7 +79,7 @@ class PdoAdapter extends OAuth2Pdo
      */
     protected function checkPassword($user, $password)
     {
-        return $this->bcrypt->verify($user['password'], $password);
+        return $this->bcrypt->verify($password, $user['password']);
     }
 
     /**
