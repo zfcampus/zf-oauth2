@@ -15,6 +15,7 @@ use Zend\Crypt\Password\Bcrypt;
  */
 class PdoAdapter extends OAuth2Pdo
 {
+    const BCRYPT_DEFAULT_COST = '10';
     /**
      * @var Bcrypt
      */
@@ -28,6 +29,11 @@ class PdoAdapter extends OAuth2Pdo
     {
         parent::__construct($connection, $config);
         $this->bcrypt = new Bcrypt();
+        if (isset($config['bcrypt_cost'])) {
+            $this->bcrypt->setCost($config['bcrypt_cost']);
+        } else {
+            $this->bcrypt->setCost(self::BCRYPT_DEFAULT_COST);
+        }
     }
 
     /**
@@ -58,11 +64,11 @@ class PdoAdapter extends OAuth2Pdo
      */
     public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $user_id = null)
     {
+        if (!empty($client_secret)) {
+            $client_secret = $this->brcypt->create($client_secret);
+        }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
-            if (!empty($client_secret)) {
-                $client_secret = $this->brcypt->create($client_secret);
-            }
             $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types where client_id=:client_id', $this->config['client_table']));
         } else {
             $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types)', $this->config['client_table']));
