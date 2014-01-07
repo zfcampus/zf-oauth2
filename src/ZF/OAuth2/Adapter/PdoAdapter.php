@@ -65,7 +65,7 @@ class PdoAdapter extends OAuth2Pdo
     public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $user_id = null)
     {
         if (!empty($client_secret)) {
-            $client_secret = $this->brcypt->create($client_secret);
+            $client_secret = $this->bcrypt->create($client_secret);
         }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
