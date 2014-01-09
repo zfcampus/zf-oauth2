@@ -40,7 +40,8 @@ CREATE TABLE oauth_users (
 CREATE TABLE oauth_scopes (
     type VARCHAR(255) NOT NULL DEFAULT "supported",
     scope VARCHAR(2000),
-    client_id VARCHAR (80)
+    client_id VARCHAR (80),
+    is_default TINYINT(1) DEFAULT NULL
 );
 CREATE TABLE oauth_jwt (
     client_id VARCHAR(80) NOT NULL,
