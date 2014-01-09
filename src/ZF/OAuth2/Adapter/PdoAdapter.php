@@ -60,20 +60,29 @@ class PdoAdapter extends OAuth2Pdo
      * @param string $client_secret
      * @param string $redirect_uri
      * @param string $grant_types
+     * @param string $scope_or_user_id If 5 arguments, user_id; if 6, scope.
+     * @param string $user_id
      * @return bool
      */
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $user_id = null)
+    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope_or_user_id = null, $user_id = null)
     {
+        if (func_num_args() > 5) {
+            $scope = $scope_or_user_id;
+        } else {
+            $user_id = $scope_or_user_id;
+            $scope   = null;
+        }
+
         if (!empty($client_secret)) {
             $client_secret = $this->bcrypt->create($client_secret);
         }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types where client_id=:client_id', $this->config['client_table']));
+            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types, scope=:scope, user_id:=user_id where client_id=:client_id', $this->config['client_table']));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types)', $this->config['client_table']));
+            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)', $this->config['client_table']));
         }
-        return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types'));
+        return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
     }
 
     /**
