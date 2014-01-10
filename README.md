@@ -29,6 +29,8 @@ CREATE TABLE oauth_clients (
     client_secret VARCHAR(80) NOT NULL,
     redirect_uri VARCHAR(2000) NOT NULL,
     grant_types VARCHAR(80),
+    scope VARCHAR(2000),
+    user_id VARCHAR(255),
     CONSTRAINT client_id_pk PRIMARY KEY (client_id)
 );
 CREATE TABLE oauth_access_tokens (
