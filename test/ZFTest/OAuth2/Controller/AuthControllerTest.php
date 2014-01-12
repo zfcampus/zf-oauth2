@@ -70,12 +70,12 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(400);
 
         $headers = $this->getResponse()->getHeaders();
-        $this->assertEquals('application/api-problem+json', $headers->get('content-type')->getFieldValue());
+        $this->assertEquals('application/problem+json', $headers->get('content-type')->getFieldValue());
 
         $response = json_decode($this->getResponse()->getContent(), true);
         $this->assertEquals('invalid_client', $response['title']);
         $this->assertEquals('No client id supplied', $response['detail']);
-        $this->assertEquals('400', $response['httpStatus']);
+        $this->assertEquals('400', $response['status']);
     }
 
     public function testAuthorizeCode()
