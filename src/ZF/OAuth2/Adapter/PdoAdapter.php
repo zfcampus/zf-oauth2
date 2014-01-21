@@ -17,6 +17,18 @@ class PdoAdapter extends OAuth2Pdo
     use BcryptTrait;
 
     /**
+     * @param string $connection
+     * @param array $config
+     */
+    public function __construct($connection, $config = array())
+    {
+        parent::__construct($connection, $config);
+        if (isset($config['bcrypt_cost'])) {
+            $this->setBcryptCost($config['bcrypt_cost']);
+        }
+    }
+
+    /**
      * Check client credentials
      *
      * @param string $client_id
