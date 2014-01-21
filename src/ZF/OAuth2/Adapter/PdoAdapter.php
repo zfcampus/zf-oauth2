@@ -30,7 +30,7 @@ class PdoAdapter extends OAuth2Pdo
         $result = $stmt->fetch();
 
         // bcrypt verify
-        return $this->getBcrypt()->verify($client_secret, $result['client_secret']);
+        return $this->verifyHash($client_secret, $result['client_secret']);
     }
 
     /**
@@ -54,7 +54,7 @@ class PdoAdapter extends OAuth2Pdo
         }
 
         if (!empty($client_secret)) {
-            $client_secret = $this->getBcrypt()->create($client_secret);
+            $this->createBcryptHash($client_secret);
         }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
@@ -63,18 +63,6 @@ class PdoAdapter extends OAuth2Pdo
             $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)', $this->config['client_table']));
         }
         return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
-    }
-
-    /**
-     * Check password using bcrypt
-     *
-     * @param string $user
-     * @param string $password
-     * @return bool
-     */
-    protected function checkPassword($user, $password)
-    {
-        return $this->getBcrypt()->verify($password, $user['password']);
     }
 
     /**
@@ -89,7 +77,7 @@ class PdoAdapter extends OAuth2Pdo
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
         // do not store in plaintext, use bcrypt
-        $password = $this->getBcrypt()->create($password);
+        $this->createBcryptHash($password);
 
         // if it exists, update it.
         if ($this->getUser($username)) {

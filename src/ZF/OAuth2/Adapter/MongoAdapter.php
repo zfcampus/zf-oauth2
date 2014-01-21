@@ -46,7 +46,7 @@ class MongoAdapter extends OAuth2Mongo
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         if ($result = $this->collection('client_table')->findOne(['client_id' => $client_id])) {
-            return $this->getBcrypt()->verify($client_secret, $result['client_secret']);
+            return $this->verifyHash($client_secret, $result['client_secret']);
         }
 
         return false;
@@ -73,7 +73,7 @@ class MongoAdapter extends OAuth2Mongo
         }
 
         if (!empty($client_secret)) {
-            $client_secret = $$this->getBcrypt()->create($client_secret);
+            $this->createBcryptHash($client_secret);
         }
 
         if ($this->getClientDetails($client_id)) {
@@ -103,19 +103,6 @@ class MongoAdapter extends OAuth2Mongo
         return true;
     }
 
-
-    /**
-     * Check password using bcrypt
-     *
-     * @param string $user
-     * @param string $password
-     * @return bool
-     */
-    protected function checkPassword($user, $password)
-    {
-        return $this->getBcrypt()->verify($password, $user['password']);
-    }
-
     /**
      * Set the user
      *
@@ -127,7 +114,7 @@ class MongoAdapter extends OAuth2Mongo
      */
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
-        $password = $this->getBcrypt()->create($password);
+        $this->createBcryptHash($password);
 
         if ($this->getUser($username)) {
             $this->collection('user_table')->update(

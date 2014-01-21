@@ -48,5 +48,37 @@ trait BcryptTrait
         $this->bcryptCost = (int) $value;
         return $this;
     }
+
+    /**
+     * Check password using bcrypt
+     *
+     * @param string $user
+     * @param string $password
+     * @return bool
+     */
+    protected function checkPassword($user, $password)
+    {
+        return $this->verifyHash($password, $user['password']);
+    }
+
+    /**
+     * @param $string
+     */
+    protected function createBcryptHash(&$string)
+    {
+        $string = $this->getBcrypt()->create($string);
+    }
+
+    /**
+     * Check hash using bcrypt
+     *
+     * @param $hash
+     * @param $check
+     * @return bool
+     */
+    protected function verifyHash($check, $hash)
+    {
+        return $this->getBcrypt()->verify($check, $hash);
+    }
 }
  
