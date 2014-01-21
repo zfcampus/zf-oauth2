@@ -4,10 +4,11 @@
  * @copyright Copyright (c) 2013 Zend Technologies USA Inc. (http://www.zend.com)
  */
 
-namespace ZF\OAuth2\Controller\Exception;
+namespace ZF\OAuth2\Adapter\Exception;
 
-use ZF\OAuth2\ExceptionInterface as OAuth2Exception;
+use ZF\OAuth2\ExceptionInterface;
 
-interface ExceptionInterface extends OAuth2Exception
+class RuntimeException extends \RuntimeException implements
+    ExceptionInterface
 {
 }
