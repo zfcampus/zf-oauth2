@@ -6,8 +6,8 @@
 
 namespace ZF\OAuth2\Adapter;
 
+use MongoClient;
 use OAuth2\Storage\Mongo as OAuth2Mongo;
-
 
 /**
  * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password
@@ -25,7 +25,10 @@ class MongoAdapter extends OAuth2Mongo
     public function __construct($connection, $config = [])
     {
         // @codeCoverageIgnoreStart
-        if (!extension_loaded('mongo') || version_compare('1.4.1', \MongoClient::VERSION, '<')) {
+        if (!extension_loaded('mongo') 
+            || ! class_exists('MongoClient')
+            || version_compare(MongoClient::VERSION, '1.4.1', '<')
+        ) {
             throw new Exception\RuntimeException(
                 'The Mongo Driver v1.4.1 required for this adapter to work'
             );
