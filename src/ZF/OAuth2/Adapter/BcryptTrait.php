@@ -14,7 +14,7 @@ use Zend\Crypt\Password\Bcrypt;
  * @package ZF\OAuth2\Adapter
  * @author Chuck "MANCHUCK" Reeves <chuck@manchuck.com>
  */
-trait BcryptTrait 
+trait BcryptTrait
 {
     /**
      * @var int
@@ -81,4 +81,3 @@ trait BcryptTrait
         return $this->getBcrypt()->verify($check, $hash);
     }
 }
- 

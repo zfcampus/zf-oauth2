@@ -25,7 +25,7 @@ class MongoAdapter extends OAuth2Mongo
     public function __construct($connection, $config = [])
     {
         // @codeCoverageIgnoreStart
-        if (!extension_loaded('mongo') 
+        if (!extension_loaded('mongo')
             || ! class_exists('MongoClient')
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
         ) {

@@ -51,5 +51,3 @@ class MongoAdapterFactory implements FactoryInterface
         return new MongoAdapter($connection);
     }
 }
-
- 
