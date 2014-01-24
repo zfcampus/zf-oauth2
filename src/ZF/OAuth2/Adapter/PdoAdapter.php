@@ -7,7 +7,6 @@
 namespace ZF\OAuth2\Adapter;
 
 use OAuth2\Storage\Pdo as OAuth2Pdo;
-use Zend\Crypt\Password\Bcrypt;
 
 /**
  * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password
@@ -15,11 +14,7 @@ use Zend\Crypt\Password\Bcrypt;
  */
 class PdoAdapter extends OAuth2Pdo
 {
-    const BCRYPT_DEFAULT_COST = '10';
-    /**
-     * @var Bcrypt
-     */
-    protected $bcrypt;
+    use BcryptTrait;
 
     /**
      * @param string $connection
@@ -28,11 +23,8 @@ class PdoAdapter extends OAuth2Pdo
     public function __construct($connection, $config = array())
     {
         parent::__construct($connection, $config);
-        $this->bcrypt = new Bcrypt();
         if (isset($config['bcrypt_cost'])) {
-            $this->bcrypt->setCost($config['bcrypt_cost']);
-        } else {
-            $this->bcrypt->setCost(self::BCRYPT_DEFAULT_COST);
+            $this->setBcryptCost($config['bcrypt_cost']);
         }
     }
 
@@ -50,7 +42,7 @@ class PdoAdapter extends OAuth2Pdo
         $result = $stmt->fetch();
 
         // bcrypt verify
-        return $this->bcrypt->verify($client_secret, $result['client_secret']);
+        return $this->verifyHash($client_secret, $result['client_secret']);
     }
 
     /**
@@ -74,7 +66,7 @@ class PdoAdapter extends OAuth2Pdo
         }
 
         if (!empty($client_secret)) {
-            $client_secret = $this->bcrypt->create($client_secret);
+            $this->createBcryptHash($client_secret);
         }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
@@ -83,18 +75,6 @@ class PdoAdapter extends OAuth2Pdo
             $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)', $this->config['client_table']));
         }
         return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
-    }
-
-    /**
-     * Check password using bcrypt
-     *
-     * @param string $user
-     * @param string $password
-     * @return bool
-     */
-    protected function checkPassword($user, $password)
-    {
-        return $this->bcrypt->verify($password, $user['password']);
     }
 
     /**
@@ -109,7 +89,7 @@ class PdoAdapter extends OAuth2Pdo
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
         // do not store in plaintext, use bcrypt
-        $password = $this->bcrypt->create($password);
+        $this->createBcryptHash($password);
 
         // if it exists, update it.
         if ($this->getUser($username)) {

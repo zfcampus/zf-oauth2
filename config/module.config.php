@@ -51,7 +51,8 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'ZF\OAuth2\Adapter\PdoAdapter' => 'ZF\OAuth2\Factory\PdoAdapterFactory'
+            'ZF\OAuth2\Adapter\PdoAdapter' => 'ZF\OAuth2\Factory\PdoAdapterFactory',
+            'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory'
         )
     ),
     'view_manager' => array(
@@ -60,7 +61,7 @@ return array(
         ),
     ),
     'zf-oauth2' => array(
-        /* 
+        /*
          * Config can include:
          * - 'storage' => 'name of storage service' - typically ZF\OAuth2\Adapter\PdoAdapter
          * - 'db' => [ // database configuration for the above PdoAdapter
