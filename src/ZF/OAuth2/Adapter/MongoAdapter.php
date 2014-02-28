@@ -8,6 +8,7 @@ namespace ZF\OAuth2\Adapter;
 
 use MongoClient;
 use OAuth2\Storage\Mongo as OAuth2Mongo;
+use Zend\Crypt\Password\Bcrypt;
 
 /**
  * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password
@@ -15,14 +16,77 @@ use OAuth2\Storage\Mongo as OAuth2Mongo;
  */
 class MongoAdapter extends OAuth2Mongo
 {
-    use BcryptTrait;
+    /**
+     * @var int
+     */
+    protected $bcryptCost = 10;
+
+    /**
+     * @var Bcrypt
+     */
+    protected $bcrypt;
+
+    /**
+     * @return Bcrypt
+     */
+    public function getBcrypt()
+    {
+        if (null === $this->bcrypt) {
+            $this->bcrypt = new Bcrypt();
+            $this->bcrypt->setCost($this->bcryptCost);
+        }
+
+        return $this->bcrypt;
+    }
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function setBcryptCost($value)
+    {
+        $this->bcryptCost = (int) $value;
+        return $this;
+    }
+
+    /**
+     * Check password using bcrypt
+     *
+     * @param string $user
+     * @param string $password
+     * @return bool
+     */
+    protected function checkPassword($user, $password)
+    {
+        return $this->verifyHash($password, $user['password']);
+    }
+
+    /**
+     * @param $string
+     */
+    protected function createBcryptHash(&$string)
+    {
+        $string = $this->getBcrypt()->create($string);
+    }
+
+    /**
+     * Check hash using bcrypt
+     *
+     * @param $hash
+     * @param $check
+     * @return bool
+     */
+    protected function verifyHash($check, $hash)
+    {
+        return $this->getBcrypt()->verify($check, $hash);
+    }
 
     /**
      * @param $connection
      * @param array $config
      * @throws Exception\RuntimeException
      */
-    public function __construct($connection, $config = [])
+    public function __construct($connection, $config = array())
     {
         // @codeCoverageIgnoreStart
         if (!extension_loaded('mongo')
@@ -48,7 +112,7 @@ class MongoAdapter extends OAuth2Mongo
      */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
-        if ($result = $this->collection('client_table')->findOne(['client_id' => $client_id])) {
+        if ($result = $this->collection('client_table')->findOne(array('client_id' => $client_id))) {
             return $this->verifyHash($client_secret, $result['client_secret']);
         }
 
@@ -81,25 +145,25 @@ class MongoAdapter extends OAuth2Mongo
 
         if ($this->getClientDetails($client_id)) {
             $this->collection('client_table')->update(
-                ['client_id' => $client_id],
-                ['$set' => [
+                array('client_id' => $client_id),
+                array('$set' => array(
                     'client_secret' => $client_secret,
                     'redirect_uri'  => $redirect_uri,
                     'grant_types'   => $grant_types,
                     'scope'         => $scope,
                     'user_id'       => $user_id,
-                ]]
+                ))
             );
         } else {
             $this->collection('client_table')->insert(
-                [
+                array(
                     'client_id'     => $client_id,
                     'client_secret' => $client_secret,
                     'redirect_uri'  => $redirect_uri,
                     'grant_types'   => $grant_types,
                     'scope'         => $scope,
                     'user_id'       => $user_id,
-                ]
+                )
             );
         }
 
@@ -121,20 +185,20 @@ class MongoAdapter extends OAuth2Mongo
 
         if ($this->getUser($username)) {
             $this->collection('user_table')->update(
-                ['username' => $username],
-                ['$set' => [
+                array('username' => $username),
+                array('$set' => array(
                     'password'   => $password,
                     'first_name' => $firstName,
                     'last_name'  => $lastName
-                ]]
+                ))
             );
         } else {
-            $this->collection('user_table')->insert([
+            $this->collection('user_table')->insert(array(
                 'username'   => $username,
                 'password'   => $password,
                 'first_name' => $firstName,
                 'last_name'  => $lastName
-            ]);
+            ));
         }
 
         return true;

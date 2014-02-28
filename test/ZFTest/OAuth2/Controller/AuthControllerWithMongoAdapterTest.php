@@ -30,12 +30,12 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
 
         $client   = new \MongoClient("mongodb://127.0.0.1:27017");
         $this->db = $client->selectDB('zf_oauth2_test');
-        $this->db->oauth_clients->insert([
+        $this->db->oauth_clients->insert(array(
             'client_id'     => 'testclient',
             'client_secret' => '$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2',
             'redirect_uri'  => '/oauth/receivecode',
             'grant_types'   => null
-        ]);
+        ));
 
         $this->getApplicationServiceLocator()->setService('MongoDB', $this->db);
     }
@@ -89,14 +89,14 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
 
     public function testAuthorizeCode()
     {
-        $queryData = [
+        $queryData = array(
             'response_type' => 'code',
             'client_id'     => 'testclient',
             'state'         => 'xyz',
             'redirect_uri'  => '/oauth/receivecode'
-        ];
+        );
 
-        $this->dispatch('/oauth/authorize?' . http_build_query($queryData), 'POST', ['authorized' => 'yes']);
+        $this->dispatch('/oauth/authorize?' . http_build_query($queryData), 'POST', array('authorized' => 'yes'));
         $this->assertTrue($this->getResponse()->isRedirect());
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');

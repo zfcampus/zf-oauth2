@@ -182,7 +182,7 @@ class AuthController extends AbstractActionController
         }
 
         // Get $_SERVER superglobal
-        $server = [];
+        $server = array();
         if ($zf2Request instanceof PhpEnvironmentRequest) {
             $server = $zf2Request->getServer()->toArray();
         } elseif (!empty($_SERVER)) {
@@ -202,9 +202,9 @@ class AuthController extends AbstractActionController
         return new OAuth2Request(
             $zf2Request->getQuery()->toArray(),
             $this->bodyParams(),
-            [], // attributes
-            [], // cookies
-            [], // files
+            array(), // attributes
+            array(), // cookies
+            array(), // files
             $server,
             $zf2Request->getContent(),
             $headers

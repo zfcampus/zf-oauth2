@@ -67,7 +67,7 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
                 )
             )
         ));
-        $mock = $this->getMock('\MongoDB', [], [], '', false);
+        $mock = $this->getMock('\MongoDB', array(), array(), '', false);
         $this->services->setService('testdb', $mock);
 
         $adapter = $this->factory->createService($this->services);

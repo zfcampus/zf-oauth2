@@ -44,7 +44,7 @@ class MongoAdapterFactory implements FactoryInterface
             }
 
             $server     = isset($config['zf-oauth2']['mongo']['dsn']) ? $config['zf-oauth2']['mongo']['dsn'] : null;
-            $mongo      = new \MongoClient($server, ['connect' => false]);
+            $mongo      = new \MongoClient($server, array('connect' => false));
             $connection = $mongo->{$config['zf-oauth2']['mongo']['database']};
         }
 
