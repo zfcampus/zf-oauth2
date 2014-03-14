@@ -2,7 +2,7 @@
 return array(
     'controllers' => array(
         'factories' => array(
-            'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Factory\AuthControllerFactory',
+            'ZF\OAuth2\Controller\Auth'      => 'ZF\OAuth2\Factory\AuthControllerFactory',
         ),
     ),
     'router' => array(
@@ -52,7 +52,8 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'ZF\OAuth2\Adapter\PdoAdapter' => 'ZF\OAuth2\Factory\PdoAdapterFactory',
-            'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory'
+            'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory',
+            'ZF\OAuth2\Service\OAuth2Server' => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
         )
     ),
     'view_manager' => array(
