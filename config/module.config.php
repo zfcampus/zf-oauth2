@@ -2,7 +2,7 @@
 return array(
     'controllers' => array(
         'factories' => array(
-            'ZF\OAuth2\Controller\Auth'      => 'ZF\OAuth2\Factory\AuthControllerFactory',
+            'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Factory\AuthControllerFactory',
         ),
     ),
     'router' => array(
