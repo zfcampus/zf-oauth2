@@ -26,7 +26,7 @@ class MongoAdapterFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $services)
     {
-        $config  = $services->get('Configuration');
+        $config  = $services->get('Config');
 
         $dbLocatorName = isset($config['zf-oauth2']['mongo']['locator_name'])
             ? $config['zf-oauth2']['mongo']['locator_name']

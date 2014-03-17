@@ -20,7 +20,7 @@ class PdoAdapterFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $services)
     {
-        $config = $services->get('Configuration');
+        $config = $services->get('Config');
 
         if (!isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(

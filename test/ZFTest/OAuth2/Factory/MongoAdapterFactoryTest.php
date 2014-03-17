@@ -37,7 +37,7 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
      */
     public function testExceptionThrownWhenMissingMongoCredentials()
     {
-        $this->services->setService('Configuration', array());
+        $this->services->setService('Config', array());
         $adapter = $this->factory->createService($this->services);
 
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
@@ -45,7 +45,7 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreated()
     {
-        $this->services->setService('Configuration', array(
+        $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'mongo' => array(
                     'database' => 'test',
@@ -60,7 +60,7 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreatedWithMongoDbInServiceLocator()
     {
-        $this->services->setService('Configuration', array(
+        $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'mongo' => array(
                     'locator_name' => 'testdb'
