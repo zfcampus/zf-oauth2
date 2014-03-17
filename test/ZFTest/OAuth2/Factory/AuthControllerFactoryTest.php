@@ -28,16 +28,16 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
      */
     protected $services;
 
-    
+
 
     public function testControllerCreated()
     {
         $oauthServer = $this->getMockBuilder('OAuth2\Server')->disableOriginalConstructor()->getMock();
 
         $this->services->setService('ZF\OAuth2\Service\OAuth2Server', $oauthServer);
-       
+
         $controller = $this->factory->createService($this->controllers);
-        
+
         $this->assertInstanceOf('ZF\OAuth2\Controller\AuthController', $controller);
         $this->assertEquals(new \ZF\OAuth2\Controller\AuthController($oauthServer), $controller);
     }
