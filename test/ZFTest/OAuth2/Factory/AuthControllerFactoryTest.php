@@ -28,27 +28,18 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
      */
     protected $services;
 
-    /**
-     * @expectedException \ZF\OAuth2\Controller\Exception\RuntimeException
-     */
-    public function testExceptionThrownOnMissingStorageClass()
-    {
-        $this->services->setService('Configuration', array());
-        $this->factory->createService($this->controllers);
-    }
+    
 
     public function testControllerCreated()
     {
-        $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
+        $oauthServer = $this->getMockBuilder('OAuth2\Server')->disableOriginalConstructor()->getMock();
 
-        $this->services->setService('TestAdapter', $adapter);
-        $this->services->setService('Configuration', array(
-            'zf-oauth2' => array(
-                'storage' => 'TestAdapter'
-            )
-        ));
+        $this->services->setService('ZF\OAuth2\Service\OAuth2Server', $oauthServer);
+       
         $controller = $this->factory->createService($this->controllers);
+        
         $this->assertInstanceOf('ZF\OAuth2\Controller\AuthController', $controller);
+        $this->assertEquals(new \ZF\OAuth2\Controller\AuthController($oauthServer), $controller);
     }
 
     protected function setUp()
