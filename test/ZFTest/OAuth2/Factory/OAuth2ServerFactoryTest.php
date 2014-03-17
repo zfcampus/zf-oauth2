@@ -33,7 +33,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
      */
     public function testExceptionThrownOnMissingStorageClass()
     {
-        $this->services->setService('Configuration', array());
+        $this->services->setService('Config', array());
         $this->factory->createService($this->services);
     }
 
@@ -42,7 +42,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
 
         $this->services->setService('TestAdapter', $adapter);
-        $this->services->setService('Configuration', array(
+        $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'storage' => 'TestAdapter'
             )
@@ -64,7 +64,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
 
         $this->services->setService('TestAdapter', $adapter);
-        $this->services->setService('Configuration', array(
+        $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'storage'        => 'TestAdapter',
                 'enforce_state'  => false,
