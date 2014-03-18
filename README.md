@@ -1,6 +1,9 @@
 Zf-OAuth2
 =========
 
+[![Build Status](https://travis-ci.org/zfcampus/zf-oauth2.png)](https://travis-ci.org/zfcampus/zf-oauth2)
+[![Coverage Status](https://coveralls.io/repos/zfcampus/zf-oauth2/badge.png?branch=master)](https://coveralls.io/r/zfcampus/zf-oauth2)
+
 ZF2 module for [OAuth2](http://oauth.net/2/) authentication.
 
 This module uses the [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php)
