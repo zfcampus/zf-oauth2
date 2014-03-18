@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./Bootstrap.php">
+<phpunit bootstrap="./test/Bootstrap.php">
     <testsuites>
         <testsuite name="ZF\OAuth2 Tests">
-            <directory>./ZFTest</directory>
+            <directory>./test</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">../src</directory>
+            <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
 </phpunit>

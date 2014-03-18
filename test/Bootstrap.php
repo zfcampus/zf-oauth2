@@ -49,8 +49,8 @@ class Bootstrap
                 'Zend\Loader\StandardAutoloader' => array(
                     'autoregister_zf' => true,
                     'namespaces' => array(
-                        'ZF\OAuth2' => __DIR__ . '/../src/ZF/OAuth2/',
-                        __NAMESPACE__ => __DIR__ . '/ZFTest/OAuth2/',
+                        'ZF\OAuth2' => __DIR__ . '/../src/',
+                        __NAMESPACE__ => __DIR__,
                     ),
                 ),
             ));
