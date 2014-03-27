@@ -6,6 +6,9 @@
  */
 
 $autoload = realpath(__DIR__ . '/../vendor/autoload.php');
+if (! $autoload) {
+    $autoload = realpath(__DIR__ . '/../../../autoload.php');
+}
 $zf2Env   = "ZF2_PATH";
 
 if (file_exists($autoload)) {
