@@ -7,8 +7,10 @@
 
 $autoload = realpath(__DIR__ . '/../vendor/autoload.php');
 if (! $autoload) {
+    // Attempt to locate it relative to the application root
     $autoload = realpath(__DIR__ . '/../../../autoload.php');
 }
+
 $zf2Env   = "ZF2_PATH";
 
 if (file_exists($autoload)) {
