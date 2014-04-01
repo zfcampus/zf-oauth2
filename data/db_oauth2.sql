@@ -22,6 +22,7 @@ CREATE TABLE oauth_authorization_codes (
     redirect_uri VARCHAR(2000),
     expires TIMESTAMP NOT NULL,
     scope VARCHAR(2000),
+    id_token VARCHAR(2000),
     CONSTRAINT auth_code_pk PRIMARY KEY (authorization_code)
 );
 CREATE TABLE oauth_refresh_tokens (
