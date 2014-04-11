@@ -5,7 +5,7 @@ CREATE TABLE oauth_clients (
     grant_types VARCHAR(80),
     scope VARCHAR(2000),
     user_id VARCHAR(255),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT clients_client_id_pk PRIMARY KEY (client_id)
 );
 CREATE TABLE oauth_access_tokens (
     access_token VARCHAR(40) NOT NULL,
@@ -50,5 +50,5 @@ CREATE TABLE oauth_jwt (
     client_id VARCHAR(80) NOT NULL,
     subject VARCHAR(80),
     public_key VARCHAR(2000),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT jwt_client_id_pk PRIMARY KEY (client_id)
 );
