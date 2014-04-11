@@ -34,7 +34,7 @@ CREATE TABLE oauth_clients (
     grant_types VARCHAR(80),
     scope VARCHAR(2000),
     user_id VARCHAR(255),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT clients_client_id_pk PRIMARY KEY (client_id)
 );
 CREATE TABLE oauth_access_tokens (
     access_token VARCHAR(40) NOT NULL,
@@ -51,6 +51,7 @@ CREATE TABLE oauth_authorization_codes (
     redirect_uri VARCHAR(2000),
     expires TIMESTAMP NOT NULL,
     scope VARCHAR(2000),
+    id_token VARCHAR(2000),
     CONSTRAINT auth_code_pk PRIMARY KEY (authorization_code)
 );
 CREATE TABLE oauth_refresh_tokens (
@@ -78,7 +79,7 @@ CREATE TABLE oauth_jwt (
     client_id VARCHAR(80) NOT NULL,
     subject VARCHAR(80),
     public_key VARCHAR(2000),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT jwt_client_id_pk PRIMARY KEY (client_id)
 );
 ```
 
