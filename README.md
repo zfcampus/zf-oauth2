@@ -18,7 +18,11 @@ You can install using:
 curl -s https://getcomposer.org/installer | php
 php composer.phar install
 ```
-You can import the zf-oauth2 module into an existing application by adding zfcampus/zf-oauth2 to your composer.json include section. You should also add the following modules to your application's configuration:
+
+You can import the `zf-oauth2` module into an existing application by adding `zfcampus/zf-oauth2` to
+your `composer.json` "require" section. You should also add the following modules to your
+application's configuration:
+
 ```php
 'modules' => array (
     ...
