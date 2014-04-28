@@ -6,6 +6,7 @@
 
 namespace ZFTest\OAuth2\Factory;
 
+use ReflectionObject;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use ZF\OAuth2\Factory\MongoAdapterFactory;
@@ -63,14 +64,39 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'mongo' => array(
-                    'locator_name' => 'testdb'
-                )
-            )
+                    'locator_name' => 'testdb',
+                ),
+            ),
         ));
         $mock = $this->getMock('\MongoDB', array(), array(), '', false);
         $this->services->setService('testdb', $mock);
 
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\MongoAdapter', $adapter);
+    }
+
+    public function testCanPassAdapterConfigurationWhenCreatingInstance()
+    {
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'mongo' => array(
+                    'locator_name' => 'testdb',
+                ),
+                'storage_settings' => array(
+                    'user_table' => 'my_users',
+                ),
+            ),
+        ));
+        $mock = $this->getMock('\MongoDB', array(), array(), '', false);
+        $this->services->setService('testdb', $mock);
+
+        $adapter = $this->factory->createService($this->services);
+        $this->assertInstanceOf('ZF\OAuth2\Adapter\MongoAdapter', $adapter);
+
+        $r = new ReflectionObject($adapter);
+        $c = $r->getProperty('config');
+        $c->setAccessible(true);
+        $config = $c->getValue($adapter);
+        $this->assertEquals('my_users', $config['user_table']);
     }
 }
