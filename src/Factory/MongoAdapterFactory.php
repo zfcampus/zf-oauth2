@@ -35,8 +35,6 @@ class MongoAdapterFactory implements FactoryInterface
         if ($services->has($dbLocatorName)) {
             $connection = $services->get($dbLocatorName);
         } else {
-
-
             if (!isset($config['zf-oauth2']['mongo']) || empty($config['zf-oauth2']['mongo']['database'])) {
                 throw new Exception\RuntimeException(
                     'The database configuration [\'zf-oauth2\'][\'mongo\'] for OAuth2 is missing'
@@ -48,6 +46,11 @@ class MongoAdapterFactory implements FactoryInterface
             $connection = $mongo->{$config['zf-oauth2']['mongo']['database']};
         }
 
-        return new MongoAdapter($connection);
+        $oauth2ServerConfig = array();
+        if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
+            $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
+        }
+
+        return new MongoAdapter($connection, $oauth2ServerConfig);
     }
 }
