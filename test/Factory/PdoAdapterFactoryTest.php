@@ -6,6 +6,7 @@
 
 namespace ZFTest\OAuth2\Factory;
 
+use ReflectionObject;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use ZF\OAuth2\Factory\PdoAdapterFactory;
@@ -40,12 +41,36 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
                 'db' => array(
                     'username' => 'foo',
                     'password' => 'bar',
-                    'dsn'      => 'sqlite::memory:'
-                )
-            )
+                    'dsn'      => 'sqlite::memory:',
+                ),
+            ),
         ));
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
+    }
+
+    public function testAllowsPassingOauth2ServerConfigAndPassesOnToUnderlyingAdapter()
+    {
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'db' => array(
+                    'username' => 'foo',
+                    'password' => 'bar',
+                    'dsn'      => 'sqlite::memory:',
+                ),
+                'storage_settings' => array(
+                    'user_table' => 'my_users',
+                ),
+            ),
+        ));
+        $adapter = $this->factory->createService($this->services);
+        $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
+
+        $r = new ReflectionObject($adapter);
+        $c = $r->getProperty('config');
+        $c->setAccessible(true);
+        $config = $c->getValue($adapter);
+        $this->assertEquals('my_users', $config['user_table']);
     }
 
     protected function setUp()
