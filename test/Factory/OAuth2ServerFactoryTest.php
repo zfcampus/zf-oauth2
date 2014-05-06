@@ -6,7 +6,6 @@
 
 namespace ZFTest\OAuth2\Factory;
 
-use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use ZF\OAuth2\Factory\OAuth2ServerFactory;
