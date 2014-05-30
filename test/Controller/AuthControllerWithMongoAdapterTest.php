@@ -18,8 +18,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
     public function setUp()
     {
         if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('The Mongo extension is not available.'
-            );
+            $this->markTestSkipped('The Mongo extension is not available.');
         }
 
         $this->setApplicationConfig(
@@ -28,7 +27,11 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
 
         parent::setUp();
 
-        $client   = new \MongoClient("mongodb://127.0.0.1:27017");
+        try {
+            $client = new \MongoClient("mongodb://127.0.0.1:27017");
+        } catch (\MongoConnectionException $e) {
+            $this->markTestSkipped($e->getMessage());
+        }
         $this->db = $client->selectDB('zf_oauth2_test');
         $this->db->oauth_clients->insert(array(
             'client_id'     => 'testclient',
