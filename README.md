@@ -330,4 +330,4 @@ if (!$this->server->verifyResourceRequest(OAuth2Request::createFromGlobals())) {
 ```
 
 where `$this->server` is an instance of `OAuth2\Server` (see the
-[AuthController.php](https://github.com/zfcampus/zf-oauth2/blob/master/src/Controller/AuthController.php)).
+[AuthController.php](src/Controller/AuthController.php)).
