@@ -121,6 +121,23 @@ return array(
 );
 ```
 
+Mongo Configuration
+-------------------
+
+The Mongo OAuth2 adapter wraps the bshaffer adapter by adding the same password encryption
+as the rest of apigility.  The collections needed are the same as above in the PDO
+adapter.  To create an OAuth2 client, insert a document like the following into the
+oauth_clients collection:
+
+```javascript
+{
+    "client_id":     "testclient",
+    "client_secret": "$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2",
+    "redirect_uri":  "/oauth/receivecode",
+    "grant_types":   null
+}
+```
+
 How to test OAuth2
 ------------------
 
