@@ -43,7 +43,7 @@ class OAuth2ServerFactory implements FactoryInterface
             'allow_implicit'  => $allowImplicit,
             'access_lifetime' => $accessLifetime
         ));
- 
+
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, $options);
 
