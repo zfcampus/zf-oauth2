@@ -8,6 +8,11 @@ ZF2 module for [OAuth2](http://oauth.net/2/) authentication.
 This module uses the [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php)
 library by Brent Shaffer to provide OAuth2 support.
 
+Requirements
+------------
+  
+Please see the [composer.json](composer.json) file.
+
 Installation
 ------------
 
