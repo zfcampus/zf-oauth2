@@ -29,7 +29,7 @@ class MongoAdapterFactory implements FactoryInterface
         $config  = $services->get('Config');
         return new MongoAdapter($this->getConnection($services), $this->getOauth2ServerConfig($config));
     }
-    
+
     protected function getConnection($services)
     {
         $config  = $services->get('Config');
@@ -53,7 +53,7 @@ class MongoAdapterFactory implements FactoryInterface
 
         return $connection;
     }
-    
+
     /**
      * @return array
      */
@@ -63,7 +63,7 @@ class MongoAdapterFactory implements FactoryInterface
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
-        
+
         return $oauth2ServerConfig;
     }
 }
