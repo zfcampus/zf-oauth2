@@ -30,7 +30,7 @@ class PdoAdapterFactory implements FactoryInterface
 
         $username = isset($config['zf-oauth2']['db']['username']) ? $config['zf-oauth2']['db']['username'] : null;
         $password = isset($config['zf-oauth2']['db']['password']) ? $config['zf-oauth2']['db']['password'] : null;
-        $options = isset($config['zf-oauth2']['db']['options']) ? $config['zf-oauth2']['db']['options'] : array();
+        $options  = isset($config['zf-oauth2']['db']['options']) ? $config['zf-oauth2']['db']['options'] : array();
 
         $oauth2ServerConfig = array();
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
@@ -41,7 +41,7 @@ class PdoAdapterFactory implements FactoryInterface
             'dsn'      => $config['zf-oauth2']['db']['dsn'],
             'username' => $username,
             'password' => $password,
-            'options' => $options,
+            'options'  => $options,
         ), $oauth2ServerConfig);
     }
 }
