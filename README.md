@@ -2,12 +2,16 @@ Zf-OAuth2
 =========
 
 [![Build Status](https://travis-ci.org/zfcampus/zf-oauth2.png)](https://travis-ci.org/zfcampus/zf-oauth2)
-[![Coverage Status](https://coveralls.io/repos/zfcampus/zf-oauth2/badge.png?branch=master)](https://coveralls.io/r/zfcampus/zf-oauth2)
 
 ZF2 module for [OAuth2](http://oauth.net/2/) authentication.
 
 This module uses the [oauth2-server-php](https://github.com/bshaffer/oauth2-server-php)
 library by Brent Shaffer to provide OAuth2 support.
+
+Requirements
+------------
+  
+Please see the [composer.json](composer.json) file.
 
 Installation
 ------------
@@ -17,6 +21,19 @@ You can install using:
 ```bash
 curl -s https://getcomposer.org/installer | php
 php composer.phar install
+```
+
+You can import the `zf-oauth2` module into an existing application by adding `zfcampus/zf-oauth2` to
+your `composer.json` "require" section. You should also add the following modules to your
+application's configuration:
+
+```php
+'modules' => array (
+    ...
+    'ZF\ApiProblem',
+    'ZF\ContentNegotiation',
+    'ZF\OAuth2',
+),
 ```
 
 Configuration
@@ -34,7 +51,7 @@ CREATE TABLE oauth_clients (
     grant_types VARCHAR(80),
     scope VARCHAR(2000),
     user_id VARCHAR(255),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT clients_client_id_pk PRIMARY KEY (client_id)
 );
 CREATE TABLE oauth_access_tokens (
     access_token VARCHAR(40) NOT NULL,
@@ -51,6 +68,7 @@ CREATE TABLE oauth_authorization_codes (
     redirect_uri VARCHAR(2000),
     expires TIMESTAMP NOT NULL,
     scope VARCHAR(2000),
+    id_token VARCHAR(2000),
     CONSTRAINT auth_code_pk PRIMARY KEY (authorization_code)
 );
 CREATE TABLE oauth_refresh_tokens (
@@ -72,13 +90,13 @@ CREATE TABLE oauth_scopes (
     type VARCHAR(255) NOT NULL DEFAULT "supported",
     scope VARCHAR(2000),
     client_id VARCHAR (80),
-    is_default TINYINT(1) DEFAULT NULL
+    is_default SMALLINT DEFAULT NULL
 );
 CREATE TABLE oauth_jwt (
     client_id VARCHAR(80) NOT NULL,
     subject VARCHAR(80),
     public_key VARCHAR(2000),
-    CONSTRAINT client_id_pk PRIMARY KEY (client_id)
+    CONSTRAINT jwt_client_id_pk PRIMARY KEY (client_id)
 );
 ```
 
@@ -106,6 +124,23 @@ return array(
         ),
     ),
 );
+```
+
+Mongo Configuration
+-------------------
+
+The Mongo OAuth2 adapter wraps the bshaffer adapter by adding the same password encryption
+as the rest of apigility.  The collections needed are the same as above in the PDO
+adapter.  To create an OAuth2 client, insert a document like the following into the
+oauth_clients collection:
+
+```javascript
+{
+    "client_id":     "testclient",
+    "client_secret": "$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2",
+    "redirect_uri":  "/oauth/receivecode",
+    "grant_types":   null
+}
 ```
 
 How to test OAuth2
@@ -300,4 +335,4 @@ if (!$this->server->verifyResourceRequest(OAuth2Request::createFromGlobals())) {
 ```
 
 where `$this->server` is an instance of `OAuth2\Server` (see the
-[AuthController.php](https://github.com/zfcampus/zf-oauth2/blob/master/src/ZF/OAuth2/Controller/AuthController.php)).
+[AuthController.php](src/Controller/AuthController.php)).

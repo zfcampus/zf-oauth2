@@ -37,16 +37,22 @@ class OAuth2ServerFactory implements FactoryInterface
         $enforceState   = isset($config['zf-oauth2']['enforce_state'])   ? $config['zf-oauth2']['enforce_state']   : true;
         $allowImplicit  = isset($config['zf-oauth2']['allow_implicit'])  ? $config['zf-oauth2']['allow_implicit']  : false;
         $accessLifetime = isset($config['zf-oauth2']['access_lifetime']) ? $config['zf-oauth2']['access_lifetime'] : 3600;
-
-        // Pass a storage object or array of storage objects to the OAuth2 server class
-        $server = new OAuth2Server($storage, array(
+        $options        = isset($config['zf-oauth2']['options'])         ? $config['zf-oauth2']['options']         : array();
+        $options        = array_merge($options, array(
             'enforce_state'   => $enforceState,
             'allow_implicit'  => $allowImplicit,
             'access_lifetime' => $accessLifetime
         ));
 
+        // Pass a storage object or array of storage objects to the OAuth2 server class
+        $server = new OAuth2Server($storage, $options);
+
+        $clientOptions = array();
+        if (isset($options['allow_credentials_in_request_body'])) {
+            $clientOptions['allow_credentials_in_request_body'] = $options['allow_credentials_in_request_body'];
+        }
         // Add the "Client Credentials" grant type (it is the simplest of the grant types)
-        $server->addGrantType(new ClientCredentials($storage));
+        $server->addGrantType(new ClientCredentials($storage, $clientOptions));
 
         // Add the "Authorization Code" grant type (this is where the oauth magic happens)
         $server->addGrantType(new AuthorizationCode($storage));
@@ -54,8 +60,15 @@ class OAuth2ServerFactory implements FactoryInterface
         // Add the "User Credentials" grant type
         $server->addGrantType(new UserCredentials($storage));
 
+        $refreshOptions = array();
+        if (isset($options['always_issue_new_refresh_token'])) {
+            $refreshOptions['always_issue_new_refresh_token'] = $options['always_issue_new_refresh_token'];
+        }
+        if (isset($options['refresh_token_lifetime'])) {
+            $refreshOptions['refresh_token_lifetime'] = $options['refresh_token_lifetime'];
+        }
         // Add the "Refresh Token" grant type
-        $server->addGrantType(new RefreshToken($storage));
+        $server->addGrantType(new RefreshToken($storage, $refreshOptions));
 
         return $server;
     }

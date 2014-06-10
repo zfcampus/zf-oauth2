@@ -7,8 +7,6 @@ $finder = Symfony\CS\Finder\DefaultFinder::create()
         $path = $file->getPathname();
 
         switch (true) {
-            case (strrpos($path, '/bin/')):
-                return false;
             case (strrpos($path, '/test/Bootstrap.php')):
                 return false;
             case (strrpos($path, '/vendor/')):
@@ -29,7 +27,6 @@ return Symfony\CS\Config\Config::create()
         'indentation',
         'linefeed',
         'php_closing_tag',
-        'psr0',
         'short_tag',
         'trailing_spaces',
         'unused_use',

@@ -70,6 +70,9 @@ return array(
          *       'username' => 'username',
          *       'password' => 'password'
          *   ]
+         * - 'storage_settings' => [ // configuration to pass to the storage adapter
+         *       // see https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php#L57-L66
+         *   ]
          */
     ),
 );
