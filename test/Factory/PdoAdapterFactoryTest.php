@@ -73,6 +73,24 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
         $this->assertEquals('my_users', $config['user_table']);
     }
 
+    public function testAllowsPassingDbOptions()
+    {
+         $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'db' => array(
+                    'username' => 'foo',
+                    'password' => 'bar',
+                    'dsn'      => 'sqlite::memory:',
+                    'options'  => array(
+                        'foo' => 'bar'
+                    )
+                ),
+            ),
+        ));
+        $adapter = $this->factory->createService($this->services);
+        $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
+    }
+
     protected function setUp()
     {
         $this->factory  = new PdoAdapterFactory();
