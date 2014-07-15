@@ -6,6 +6,7 @@
 
 namespace ZF\OAuth2\Factory;
 
+use MongoClient;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Adapter\MongoAdapter;
@@ -21,36 +22,55 @@ class MongoAdapterFactory implements FactoryInterface
 {
     /**
      * @param ServiceLocatorInterface $services
-     * @throws \ZF\OAuth2\Controller\Exception\RuntimeException
-     * @return \ZF\OAuth2\Adapter\PdoAdapter
+     * @throws Exception\RuntimeException
+     * @return MongoAdapter
      */
     public function createService(ServiceLocatorInterface $services)
     {
         $config  = $services->get('Config');
+        return new MongoAdapter($this->getMongoDb($services), $this->getOauth2ServerConfig($config));
+    }
 
+    /**
+     * Get the mongo database
+     *
+     * @param ServiceLocatorInterface $services
+     * @return \MongoDB
+     */
+    protected function getMongoDb($services)
+    {
+        $config  = $services->get('Config');
         $dbLocatorName = isset($config['zf-oauth2']['mongo']['locator_name'])
             ? $config['zf-oauth2']['mongo']['locator_name']
             : 'MongoDB';
 
         if ($services->has($dbLocatorName)) {
-            $connection = $services->get($dbLocatorName);
-        } else {
-            if (!isset($config['zf-oauth2']['mongo']) || empty($config['zf-oauth2']['mongo']['database'])) {
-                throw new Exception\RuntimeException(
-                    'The database configuration [\'zf-oauth2\'][\'mongo\'] for OAuth2 is missing'
-                );
-            }
-
-            $server     = isset($config['zf-oauth2']['mongo']['dsn']) ? $config['zf-oauth2']['mongo']['dsn'] : null;
-            $mongo      = new \MongoClient($server, array('connect' => false));
-            $connection = $mongo->{$config['zf-oauth2']['mongo']['database']};
+            return $services->get($dbLocatorName);
         }
 
+        if (!isset($config['zf-oauth2']['mongo']) || empty($config['zf-oauth2']['mongo']['database'])) {
+            throw new Exception\RuntimeException(
+                'The database configuration [\'zf-oauth2\'][\'mongo\'] for OAuth2 is missing'
+            );
+        }
+
+        $server = isset($config['zf-oauth2']['mongo']['dsn']) ? $config['zf-oauth2']['mongo']['dsn'] : null;
+        $mongo  = new MongoClient($server, array('connect' => false));
+        return $mongo->{$config['zf-oauth2']['mongo']['database']};
+    }
+
+    /**
+     * Retrieve oauth2-server-php configuration
+     *
+     * @return array
+     */
+    protected function getOauth2ServerConfig($config)
+    {
         $oauth2ServerConfig = array();
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
 
-        return new MongoAdapter($connection, $oauth2ServerConfig);
+        return $oauth2ServerConfig;
     }
 }
