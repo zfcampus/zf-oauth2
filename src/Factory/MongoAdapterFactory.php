@@ -27,7 +27,12 @@ class MongoAdapterFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $services)
     {
         $config  = $services->get('Config');
+        return new MongoAdapter($this->getConnection($services), $this->getOauth2ServerConfig($config));
+    }
 
+    protected function getConnection($services)
+    {
+        $config  = $services->get('Config');
         $dbLocatorName = isset($config['zf-oauth2']['mongo']['locator_name'])
             ? $config['zf-oauth2']['mongo']['locator_name']
             : 'MongoDB';
@@ -46,11 +51,19 @@ class MongoAdapterFactory implements FactoryInterface
             $connection = $mongo->{$config['zf-oauth2']['mongo']['database']};
         }
 
+        return $connection;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getOauth2ServerConfig($config)
+    {
         $oauth2ServerConfig = array();
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
 
-        return new MongoAdapter($connection, $oauth2ServerConfig);
+        return $oauth2ServerConfig;
     }
 }
