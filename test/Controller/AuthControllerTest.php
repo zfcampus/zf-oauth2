@@ -16,9 +16,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     {
         @copy(__DIR__ . '/../TestAsset/autoload/db_oauth2.sqlite', __DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
 
-        $this->setApplicationConfig(
-            include __DIR__ . '/../TestAsset/application.config.php'
-        );
+        $this->setApplicationConfig(include __DIR__ . '/../TestAsset/application.config.php');
         parent::setUp();
     }
 

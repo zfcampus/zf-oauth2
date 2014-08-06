@@ -21,9 +21,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
             $this->markTestSkipped('The Mongo extension is not available.');
         }
 
-        $this->setApplicationConfig(
-            include __DIR__ . '/../TestAsset/mongo.application.config.php'
-        );
+        $this->setApplicationConfig(include __DIR__ . '/../TestAsset/mongo.application.config.php');
 
         parent::setUp();
 
