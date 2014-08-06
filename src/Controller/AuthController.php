@@ -199,6 +199,13 @@ class AuthController extends AbstractActionController
             $headers['PHP_AUTH_PW'] = $server['PHP_AUTH_PW'];
         }
 
+        // Ensure the bodyParams are passed as an array
+        if (!is_array($this->bodyParams())) {
+            $bodyParams = array();
+        } else {
+            $bodyParams = $this->bodyParams();
+        }
+
         return new OAuth2Request(
             $zf2Request->getQuery()->toArray(),
             $this->bodyParams(),
