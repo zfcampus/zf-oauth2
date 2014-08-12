@@ -14,6 +14,7 @@ use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
+use ZF\ContentNegotiation\ViewModel;
 
 class AuthController extends AbstractActionController
 {
@@ -119,7 +120,9 @@ class AuthController extends AbstractActionController
         $authorized = $request->request('authorized', false);
         if (empty($authorized)) {
             $clientId = $request->query('client_id', false);
-            return array('clientId' => $clientId);
+            $view = new ViewModel(array('clientId' => $clientId));
+            $view->setTemplate('zf/auth/authorize');
+            return $view;
         }
 
         $is_authorized = ($authorized === 'yes');
@@ -149,9 +152,11 @@ class AuthController extends AbstractActionController
     public function receiveCodeAction()
     {
         $code = $this->params()->fromQuery('code', false);
-        return array(
+        $view = new ViewModel(array(
             'code' => $code
-        );
+        ));
+        $view->setTemplate('zf/auth/receive-code');
+        return $view;
     }
 
     /**

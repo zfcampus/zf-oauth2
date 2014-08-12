@@ -75,4 +75,16 @@ return array(
          *   ]
          */
     ),
+    'zf-content-negotiation' => array(
+        'ZF\OAuth2\Controller\Auth' => array(
+            'ZF\ContentNegotiation\JsonModel' => array(
+                'application/json',
+                'application/*+json',
+            ),
+            'Zend\View\Model\ViewModel' => array(
+                'text/html',
+                'application/xhtml+xml',
+            ),
+        ),
+    ),
 );
