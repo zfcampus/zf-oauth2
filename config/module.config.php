@@ -57,6 +57,10 @@ return array(
         )
     ),
     'view_manager' => array(
+        'template_map' => array(
+            'oauth/authorize'    => __DIR__ . '/../view/zf/auth/authorize.phtml',
+            'oauth/receive-code' => __DIR__ . '/../view/zf/auth/receive-code.phtml',
+        ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),

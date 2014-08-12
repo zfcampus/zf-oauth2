@@ -121,7 +121,7 @@ class AuthController extends AbstractActionController
         if (empty($authorized)) {
             $clientId = $request->query('client_id', false);
             $view = new ViewModel(array('clientId' => $clientId));
-            $view->setTemplate('zf/auth/authorize');
+            $view->setTemplate('oauth/authorize');
             return $view;
         }
 
@@ -155,7 +155,7 @@ class AuthController extends AbstractActionController
         $view = new ViewModel(array(
             'code' => $code
         ));
-        $view->setTemplate('zf/auth/receive-code');
+        $view->setTemplate('oauth/receive-code');
         return $view;
     }
 
