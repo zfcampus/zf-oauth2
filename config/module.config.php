@@ -57,6 +57,10 @@ return array(
         )
     ),
     'view_manager' => array(
+        'template_map' => array(
+            'oauth/authorize'    => __DIR__ . '/../view/zf/auth/authorize.phtml',
+            'oauth/receive-code' => __DIR__ . '/../view/zf/auth/receive-code.phtml',
+        ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
@@ -74,5 +78,17 @@ return array(
          *       // see https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php#L57-L66
          *   ]
          */
+    ),
+    'zf-content-negotiation' => array(
+        'ZF\OAuth2\Controller\Auth' => array(
+            'ZF\ContentNegotiation\JsonModel' => array(
+                'application/json',
+                'application/*+json',
+            ),
+            'Zend\View\Model\ViewModel' => array(
+                'text/html',
+                'application/xhtml+xml',
+            ),
+        ),
     ),
 );
