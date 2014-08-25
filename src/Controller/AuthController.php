@@ -53,14 +53,17 @@ class AuthController extends AbstractActionController
         $oauth2request = $this->getOAuth2Request();
         $response = $this->server->handleTokenRequest($oauth2request);
         if ($response->isClientError()) {
-            $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
+            $parameters       = $response->getParameters();
+            $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
+            $error            = isset($parameters['error'])             ? $parameters['error']             : null;
+            $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
+
             return new ApiProblemResponse(
                 new ApiProblem(
                     $response->getStatusCode(),
-                    $parameters['error_description'],
+                    $errorDescription,
                     $errorUri,
-                    $parameters['error']
+                    $error
                 )
             );
         }

@@ -30,7 +30,12 @@
     "require-dev": {
         "fabpot/php-cs-fixer": "*@dev",
         "phpunit/PHPUnit": "3.7.*",
+        "zendframework/zend-config": "~2.3",
+        "zendframework/zend-form": "~2.3",
         "zendframework/zend-loader": "~2.3",
+        "zendframework/zend-log": "~2.3",
+        "zendframework/zend-modulemanager": "~2.3",
+        "zendframework/zend-serializer": "~2.3",
         "zendframework/zend-test": "~2.3"
     },
     "autoload": {
