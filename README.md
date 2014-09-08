@@ -100,6 +100,10 @@ CREATE TABLE oauth_jwt (
 );
 ```
 
+> ### PostgreSQL
+>
+> We also have a PostgreSQL-specific DDL in `data/db_oauth2_postgresql.sql`.
+
 For security reasons, we encrypt the fields `client_secret` (table
 `oauth_clients`) and `password` (table `oauth_users`) using the
 [bcrypt](http://en.wikipedia.org/wiki/Bcrypt) algorithm (via the class
