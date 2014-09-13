@@ -8,49 +8,50 @@ namespace ZF\OAuth2\Adapter;
 
 use MongoClient;
 use OAuth2\Storage\Mongo as OAuth2Mongo;
-use Zend\Crypt\Password\Bcrypt;
+use Zend\Crypt\Password\PasswordInterface;
+use Zend\Crypt\Password\PasswordAwareInterface;
 
 /**
  * Extension of OAuth2\Storage\PDO that provides Bcrypt client_secret/password
  * encryption
  */
-class MongoAdapter extends OAuth2Mongo
+class MongoAdapter extends OAuth2Mongo implements PasswordAwareInterface
 {
     /**
-     * @var int
+     * Password instance
+     *
+     * @var PasswordInterface
      */
-    protected $bcryptCost = 10;
+    private $password = null;
 
     /**
-     * @var Bcrypt
+     * Set password
+     *
+     * @param  PasswordInterface $password
+     *
+     * @return MongoAdapter
      */
-    protected $bcrypt;
-
-    /**
-     * @return Bcrypt
-     */
-    public function getBcrypt()
+    public function setPassword(PasswordInterface $password)
     {
-        if (null === $this->bcrypt) {
-            $this->bcrypt = new Bcrypt();
-            $this->bcrypt->setCost($this->bcryptCost);
-        }
+        $this->password = $password;
 
-        return $this->bcrypt;
-    }
-
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function setBcryptCost($value)
-    {
-        $this->bcryptCost = (int) $value;
         return $this;
     }
 
     /**
-     * Check password using bcrypt
+     * Retrieve password
+     *
+     * @param void
+     *
+     * @return null|PasswordInterface
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Check password
      *
      * @param string $user
      * @param string $password
@@ -58,27 +59,7 @@ class MongoAdapter extends OAuth2Mongo
      */
     protected function checkPassword($user, $password)
     {
-        return $this->verifyHash($password, $user['password']);
-    }
-
-    /**
-     * @param $string
-     */
-    protected function createBcryptHash(&$string)
-    {
-        $string = $this->getBcrypt()->create($string);
-    }
-
-    /**
-     * Check hash using bcrypt
-     *
-     * @param $hash
-     * @param $check
-     * @return bool
-     */
-    protected function verifyHash($check, $hash)
-    {
-        return $this->getBcrypt()->verify($check, $hash);
+        return $this->getPassword()->verify($password, $user['password']);
     }
 
     /**
@@ -113,7 +94,7 @@ class MongoAdapter extends OAuth2Mongo
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         if ($result = $this->collection('client_table')->findOne(array('client_id' => $client_id))) {
-            return $this->verifyHash($client_secret, $result['client_secret']);
+            return $this->getPassword()->verify($client_secret, $result['client_secret']);
         }
 
         return false;
@@ -140,7 +121,7 @@ class MongoAdapter extends OAuth2Mongo
         }
 
         if (!empty($client_secret)) {
-            $this->createBcryptHash($client_secret);
+            $this->getPassword()->create($client_secret);
         }
 
         if ($this->getClientDetails($client_id)) {
@@ -181,7 +162,7 @@ class MongoAdapter extends OAuth2Mongo
      */
     public function setUser($username, $password, $firstName = null, $lastName = null)
     {
-        $this->createBcryptHash($password);
+        $this->getPassword()->create($password);
 
         if ($this->getUser($username)) {
             $this->collection('user_table')->update(
