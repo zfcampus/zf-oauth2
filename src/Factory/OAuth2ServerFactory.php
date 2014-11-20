@@ -80,6 +80,7 @@ class OAuth2ServerFactory implements FactoryInterface
             // Add the "Client Credentials" grant type (it is the simplest of the grant types)
             $server->addGrantType(new ClientCredentials($server->getStorage('client_credentials'), $clientOptions));
         }
+
         if (isset($availableGrantTypes['authorization_code']) && $availableGrantTypes['authorization_code'] === true) {
             // Add the "Authorization Code" grant type (this is where the oauth magic happens)
             $server->addGrantType(new AuthorizationCode($server->getStorage('authorization_code')));
