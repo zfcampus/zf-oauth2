@@ -43,7 +43,13 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->services->setService('TestAdapter', $adapter);
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
-                'storage' => 'TestAdapter'
+                'storage' => 'TestAdapter',
+                'available_grant_types' => array(
+                    'client_credentials',
+                    'authorization_code',
+                    'password',
+                    'refresh_token',
+                ),
             )
         ));
 
@@ -69,12 +75,42 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'enforce_state'  => false,
                 'allow_implicit' => true,
                 'access_lifetime' => 12000,
+                'available_grant_types' => array(
+                    'client_credentials',
+                    'authorization_code',
+                    'password',
+                    'refresh_token',
+                ),
             )
         ));
 
         $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => false, 'allow_implicit' => true, 'access_lifetime' => 12000));
         $expectedService->addGrantType(new ClientCredentials($adapter));
         $expectedService->addGrantType(new AuthorizationCode($adapter));
+        $expectedService->addGrantType(new UserCredentials($adapter));
+        $expectedService->addGrantType(new RefreshToken($adapter));
+
+        $service = $this->factory->createService($this->services);
+        $this->assertInstanceOf('OAuth2\Server', $service);
+        $this->assertEquals($expectedService, $service);
+    }
+    
+    public function testServiceCreatedWithSelectedGrandTypes()
+    {
+        $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
+
+        $this->services->setService('TestAdapter', $adapter);
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'storage' => 'TestAdapter',
+                'available_grant_types' => array(
+                    'password',
+                    'refresh_token',
+                ),
+            )
+        ));
+
+        $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => true, 'allow_implicit' => false, 'access_lifetime' => 3600));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
 
