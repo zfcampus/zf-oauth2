@@ -44,13 +44,13 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'storage' => 'TestAdapter',
-                'available_grant_types' => array(
-                    'client_credentials',
-                    'authorization_code',
-                    'password',
-                    'refresh_token',
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
                 ),
-            )
+            ),
         ));
 
         $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => true, 'allow_implicit' => false, 'access_lifetime' => 3600));
@@ -75,13 +75,13 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'enforce_state'  => false,
                 'allow_implicit' => true,
                 'access_lifetime' => 12000,
-                'available_grant_types' => array(
-                    'client_credentials',
-                    'authorization_code',
-                    'password',
-                    'refresh_token',
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
                 ),
-            )
+            ),
         ));
 
         $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => false, 'allow_implicit' => true, 'access_lifetime' => 12000));
@@ -103,9 +103,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'storage' => 'TestAdapter',
-                'available_grant_types' => array(
-                    'password',
-                    'refresh_token',
+                'grant_types' => array(
+                    'client_credentials' => false,
+                    'password'           => true,
+                    'refresh_token'      => true,
                 ),
             )
         ));

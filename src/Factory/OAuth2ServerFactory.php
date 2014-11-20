@@ -47,9 +47,9 @@ class OAuth2ServerFactory implements FactoryInterface
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, $options);
 
-        $availableGrantTypes = $config['zf-oauth2']['available_grant_types'];
+        $availableGrantTypes = $config['zf-oauth2']['grant_types'];
         
-        if (in_array('client_credentials', $availableGrantTypes)) {
+        if (isset($availableGrantTypes['client_credentials']) && $availableGrantTypes['client_credentials'] === true) {
             $clientOptions = array();
             if (isset($options['allow_credentials_in_request_body'])) {
                 $clientOptions['allow_credentials_in_request_body'] = $options['allow_credentials_in_request_body'];
@@ -59,17 +59,17 @@ class OAuth2ServerFactory implements FactoryInterface
             $server->addGrantType(new ClientCredentials($storage, $clientOptions));
         }
 
-        if (in_array('authorization_code', $availableGrantTypes)) {
+        if (isset($availableGrantTypes['authorization_code']) && $availableGrantTypes['authorization_code'] === true) {
             // Add the "Authorization Code" grant type (this is where the oauth magic happens)
             $server->addGrantType(new AuthorizationCode($storage));
         }
         
-        if (in_array('password', $availableGrantTypes)) {
+        if (isset($availableGrantTypes['password']) && $availableGrantTypes['password'] === true) {
             // Add the "User Credentials" grant type
             $server->addGrantType(new UserCredentials($storage));
         }
         
-        if (in_array('refresh_token', $availableGrantTypes)) {
+        if (isset($availableGrantTypes['refresh_token']) && $availableGrantTypes['refresh_token'] === true) {
             $refreshOptions = array();
             if (isset($options['always_issue_new_refresh_token'])) {
                 $refreshOptions['always_issue_new_refresh_token'] = $options['always_issue_new_refresh_token'];
