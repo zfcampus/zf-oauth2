@@ -32,8 +32,24 @@ class OAuth2ServerFactory implements FactoryInterface
             );
         }
 
-        $storage = $services->get($config['zf-oauth2']['storage']);
-
+        $storagesServices = array();
+        
+        if (is_string($config['zf-oauth2']['storage'])) {
+            $storagesServices[] = $config['zf-oauth2']['storage'];
+        } else if (is_array($config['zf-oauth2']['storage'])) {
+            $storagesServices = $config['zf-oauth2']['storage'];
+        } else {
+             throw new Exception\RuntimeException(
+                'The storage configuration [\'zf-oauth2\'][\'storage\'] for OAuth2 should be string or array'
+            );
+        }
+        
+        $storage = array();
+        
+        foreach ($storagesServices as $storageKey => $storagesService) {
+            $storage[$storageKey] = $services->get($storagesService);
+        }
+        
         $enforceState   = isset($config['zf-oauth2']['enforce_state'])   ? $config['zf-oauth2']['enforce_state']   : true;
         $allowImplicit  = isset($config['zf-oauth2']['allow_implicit'])  ? $config['zf-oauth2']['allow_implicit']  : false;
         $accessLifetime = isset($config['zf-oauth2']['access_lifetime']) ? $config['zf-oauth2']['access_lifetime'] : 3600;
@@ -52,13 +68,13 @@ class OAuth2ServerFactory implements FactoryInterface
             $clientOptions['allow_credentials_in_request_body'] = $options['allow_credentials_in_request_body'];
         }
         // Add the "Client Credentials" grant type (it is the simplest of the grant types)
-        $server->addGrantType(new ClientCredentials($storage, $clientOptions));
+        $server->addGrantType(new ClientCredentials($server->getStorage('client_credentials'), $clientOptions));
 
         // Add the "Authorization Code" grant type (this is where the oauth magic happens)
-        $server->addGrantType(new AuthorizationCode($storage));
+        $server->addGrantType(new AuthorizationCode($server->getStorage('authorization_code')));
 
         // Add the "User Credentials" grant type
-        $server->addGrantType(new UserCredentials($storage));
+        $server->addGrantType(new UserCredentials($server->getStorage('user_credentials')));
 
         $refreshOptions = array();
         if (isset($options['always_issue_new_refresh_token'])) {
@@ -68,7 +84,7 @@ class OAuth2ServerFactory implements FactoryInterface
             $refreshOptions['refresh_token_lifetime'] = $options['refresh_token_lifetime'];
         }
         // Add the "Refresh Token" grant type
-        $server->addGrantType(new RefreshToken($storage, $refreshOptions));
+        $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
 
         return $server;
     }
