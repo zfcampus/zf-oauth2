@@ -135,11 +135,10 @@ class AuthController extends AbstractActionController
             $is_authorized,
             $this->getRequest()->getQuery('user_id', null)
         );
-        if ($is_authorized) {
-            $redirect = $response->getHttpHeader('Location');
-            if (!empty($redirect)) {
-                return $this->redirect()->toUrl($redirect);
-            }
+
+        $redirect = $response->getHttpHeader('Location');
+        if (! empty($redirect)) {
+            return $this->redirect()->toUrl($redirect);
         }
 
         $parameters = $response->getParameters();
