@@ -130,8 +130,14 @@ class MongoAdapter extends OAuth2Mongo
      * @param string $user_id
      * @return bool
      */
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope_or_user_id = null, $user_id = null)
-    {
+    public function setClientDetails(
+        $client_id,
+        $client_secret = null,
+        $redirect_uri = null,
+        $grant_types = null,
+        $scope_or_user_id = null,
+        $user_id = null
+    ) {
         if (func_num_args() > 5) {
             $scope = $scope_or_user_id;
         } else {

@@ -10,7 +10,6 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Controller\AuthController;
 
-
 class AuthControllerFactory implements FactoryInterface
 {
     /**
