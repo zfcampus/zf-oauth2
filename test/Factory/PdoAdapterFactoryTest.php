@@ -75,7 +75,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testAllowsPassingDbOptions()
     {
-         $this->services->setService('Config', array(
+        $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'db' => array(
                     'username' => 'foo',
