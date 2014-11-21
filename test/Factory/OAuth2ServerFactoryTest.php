@@ -16,7 +16,6 @@ use OAuth2\GrantType\UserCredentials;
 
 class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
 {
-
     /**
      * @var OAuth2ServerFactory
      */
@@ -136,6 +135,5 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->factory = new OAuth2ServerFactory();
 
         $this->services = $services = new ServiceManager();
-
     }
 }
