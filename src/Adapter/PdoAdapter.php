@@ -101,7 +101,10 @@ class PdoAdapter extends OAuth2Pdo
      */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
-        $stmt = $this->db->prepare(sprintf('SELECT * from %s where client_id = :client_id', $this->config['client_table']));
+        $stmt = $this->db->prepare(sprintf(
+            'SELECT * from %s where client_id = :client_id',
+            $this->config['client_table']
+        ));
         $stmt->execute(compact('client_id'));
         $result = $stmt->fetch();
 
@@ -120,8 +123,14 @@ class PdoAdapter extends OAuth2Pdo
      * @param string $user_id
      * @return bool
      */
-    public function setClientDetails($client_id, $client_secret = null, $redirect_uri = null, $grant_types = null, $scope_or_user_id = null, $user_id = null)
-    {
+    public function setClientDetails(
+        $client_id,
+        $client_secret = null,
+        $redirect_uri = null,
+        $grant_types = null,
+        $scope_or_user_id = null,
+        $user_id = null
+    ) {
         if (func_num_args() > 5) {
             $scope = $scope_or_user_id;
         } else {
@@ -134,9 +143,23 @@ class PdoAdapter extends OAuth2Pdo
         }
         // if it exists, update it.
         if ($this->getClientDetails($client_id)) {
-            $stmt = $this->db->prepare($sql = sprintf('UPDATE %s SET client_secret=:client_secret, redirect_uri=:redirect_uri, grant_types=:grant_types, scope=:scope, user_id=:user_id where client_id=:client_id', $this->config['client_table']));
+            $stmt = $this->db->prepare(sprintf(
+                'UPDATE %s '
+                . 'SET '
+                . 'client_secret=:client_secret, '
+                . 'redirect_uri=:redirect_uri, '
+                . 'grant_types=:grant_types, '
+                . 'scope=:scope, '
+                . 'user_id=:user_id '
+                . 'WHERE client_id=:client_id',
+                $this->config['client_table']
+            ));
         } else {
-            $stmt = $this->db->prepare(sprintf('INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)', $this->config['client_table']));
+            $stmt = $this->db->prepare(sprintf(
+                'INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) '
+                . 'VALUES (:client_id, :client_secret, :redirect_uri, :grant_types, :scope, :user_id)',
+                $this->config['client_table']
+            ));
         }
         return $stmt->execute(compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
     }
@@ -163,7 +186,8 @@ class PdoAdapter extends OAuth2Pdo
             ));
         } else {
             $stmt = $this->db->prepare(sprintf(
-                'INSERT INTO %s (username, password, first_name, last_name) VALUES (:username, :password, :firstName, :lastName)',
+                'INSERT INTO %s (username, password, first_name, last_name) '
+                . 'VALUES (:username, :password, :firstName, :lastName)',
                 $this->config['user_table']
             ));
         }
