@@ -34,10 +34,18 @@ class OAuth2ServerFactory implements FactoryInterface
 
         $storage = $services->get($config['zf-oauth2']['storage']);
 
-        $enforceState   = isset($config['zf-oauth2']['enforce_state'])   ? $config['zf-oauth2']['enforce_state']   : true;
-        $allowImplicit  = isset($config['zf-oauth2']['allow_implicit'])  ? $config['zf-oauth2']['allow_implicit']  : false;
-        $accessLifetime = isset($config['zf-oauth2']['access_lifetime']) ? $config['zf-oauth2']['access_lifetime'] : 3600;
-        $options        = isset($config['zf-oauth2']['options'])         ? $config['zf-oauth2']['options']         : array();
+        $enforceState   = isset($config['zf-oauth2']['enforce_state'])
+            ? $config['zf-oauth2']['enforce_state']
+            : true;
+        $allowImplicit  = isset($config['zf-oauth2']['allow_implicit'])
+            ? $config['zf-oauth2']['allow_implicit']
+            : false;
+        $accessLifetime = isset($config['zf-oauth2']['access_lifetime'])
+            ? $config['zf-oauth2']['access_lifetime']
+            : 3600;
+        $options        = isset($config['zf-oauth2']['options'])
+            ? $config['zf-oauth2']['options']
+            : array();
         $options        = array_merge(array(
             'enforce_state'   => $enforceState,
             'allow_implicit'  => $allowImplicit,
