@@ -83,6 +83,33 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->assertEquals($expectedService, $service);
     }
 
+    public function testServiceCreatedWithOverriddenValuesInOptionsSubArray()
+    {
+        $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
+
+        $this->services->setService('TestAdapter', $adapter);
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'storage' => 'TestAdapter',
+                'options' => array(
+                    'enforce_state'   => false,
+                    'allow_implicit'  => true,
+                    'access_lifetime' => 12000,
+                ),
+            )
+        ));
+
+        $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => false, 'allow_implicit' => true, 'access_lifetime' => 12000));
+        $expectedService->addGrantType(new ClientCredentials($adapter));
+        $expectedService->addGrantType(new AuthorizationCode($adapter));
+        $expectedService->addGrantType(new UserCredentials($adapter));
+        $expectedService->addGrantType(new RefreshToken($adapter));
+
+        $service = $this->factory->createService($this->services);
+        $this->assertInstanceOf('OAuth2\Server', $service);
+        $this->assertEquals($expectedService, $service);
+    }
+
     protected function setUp()
     {
         $this->factory = new OAuth2ServerFactory();

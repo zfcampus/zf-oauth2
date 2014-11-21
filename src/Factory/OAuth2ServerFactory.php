@@ -38,11 +38,11 @@ class OAuth2ServerFactory implements FactoryInterface
         $allowImplicit  = isset($config['zf-oauth2']['allow_implicit'])  ? $config['zf-oauth2']['allow_implicit']  : false;
         $accessLifetime = isset($config['zf-oauth2']['access_lifetime']) ? $config['zf-oauth2']['access_lifetime'] : 3600;
         $options        = isset($config['zf-oauth2']['options'])         ? $config['zf-oauth2']['options']         : array();
-        $options        = array_merge($options, array(
+        $options        = array_merge(array(
             'enforce_state'   => $enforceState,
             'allow_implicit'  => $allowImplicit,
             'access_lifetime' => $accessLifetime
-        ));
+        ), $options);
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, $options);
