@@ -100,7 +100,6 @@ class MongoAdapter extends OAuth2Mongo
         // @codeCoverageIgnoreEnd
 
         parent::__construct($connection, $config);
-
     }
 
     /**
