@@ -129,6 +129,65 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->assertInstanceOf('OAuth2\Server', $service);
         $this->assertEquals($expectedService, $service);
     }
+    
+    public function testServiceCreatedWithStoragesAsArray()
+    {
+        $storage = array(
+            'access_token'       => $this->getMockForAbstractClass('OAuth2\Storage\AccessTokenInterface'),
+            'authorization_code' => $this->getMockForAbstractClass('OAuth2\Storage\AuthorizationCodeInterface'),
+            'client_credentials' => $this->getMockForAbstractClass('OAuth2\Storage\ClientCredentialsInterface'),
+            'client'             => $this->getMockForAbstractClass('OAuth2\Storage\ClientInterface'),
+            'refresh_token'      => $this->getMockForAbstractClass('OAuth2\Storage\RefreshTokenInterface'),
+            'user_credentials'   => $this->getMockForAbstractClass('OAuth2\Storage\UserCredentialsInterface'),
+            'public_key'         => $this->getMockForAbstractClass('OAuth2\Storage\PublicKeyInterface'),
+            'jwt_bearer'         => $this->getMockForAbstractClass('OAuth2\Storage\JWTBearerInterface'),
+            'scope'              => $this->getMockForAbstractClass('OAuth2\Storage\ScopeInterface'),
+        );
+            
+        $this->services->setService('OAuth2\Storage\AccessToken', $storage['access_token']);
+        $this->services->setService('OAuth2\Storage\AuthorizationCode', $storage['authorization_code']);
+        $this->services->setService('OAuth2\Storage\ClientCredentials', $storage['client_credentials']);
+        $this->services->setService('OAuth2\Storage\Client', $storage['client']);
+        $this->services->setService('OAuth2\Storage\RefreshToken', $storage['refresh_token']);
+        $this->services->setService('OAuth2\Storage\UserCredentials', $storage['user_credentials']);
+        $this->services->setService('OAuth2\Storage\PublicKey', $storage['public_key']);
+        $this->services->setService('OAuth2\Storage\JWTBearer', $storage['jwt_bearer']);
+        $this->services->setService('OAuth2\Storage\Scope', $storage['scope']);
+        
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'storage'        => array(
+                    'access_token'       => 'OAuth2\Storage\AccessToken',
+                    'authorization_code' => 'OAuth2\Storage\AuthorizationCode',
+                    'client_credentials' => 'OAuth2\Storage\ClientCredentials',
+                    'client'             => 'OAuth2\Storage\Client',
+                    'refresh_token'      => 'OAuth2\Storage\RefreshToken',
+                    'user_credentials'   => 'OAuth2\Storage\UserCredentials',
+                    'public_key'         => 'OAuth2\Storage\PublicKey',
+                    'jwt_bearer'         => 'OAuth2\Storage\JWTBearer',
+                    'scope'              => 'OAuth2\Storage\Scope',
+                )
+            )
+        ));
+
+        $expectedService = new \OAuth2\Server(
+            $storage,
+            array(
+                'enforce_state'   => true,
+                'allow_implicit'  => false,
+                'access_lifetime' => 3600
+            )
+        );
+        $expectedService->addGrantType(new ClientCredentials($storage['client_credentials']));
+        $expectedService->addGrantType(new AuthorizationCode($storage['authorization_code']));
+        $expectedService->addGrantType(new UserCredentials($storage['user_credentials']));
+        $expectedService->addGrantType(new RefreshToken($storage['refresh_token']));
+
+        $service = $this->factory->createService($this->services);
+        $this->assertInstanceOf('OAuth2\Server', $service);
+        $this->assertEquals($expectedService, $service);
+    }
+    
 
     protected function setUp()
     {
