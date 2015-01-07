@@ -1,6 +1,7 @@
 #!/bin/sh
-SCRIPT_PATH=$(php -r "echo readlink('${0}');")
-WORKDIR=$(php -r "echo dirname(dirname('${SCRIPT_PATH}'));")
+SCRIPT_PATH=$(readlink -f $0)
+WORKDIR=$(dirname $SCRIPT_PATH)
+WORKDIR=$(dirname $WORKDIR)
 
 PHP_VERSION=$(php -v | grep '^PHP [[:digit:]].[[:digit:]]' | cut -d ' ' -f2)
 IS_PHP_5_3=$(php -r "echo version_compare('${PHP_VERSION}', '5.4.0');")
