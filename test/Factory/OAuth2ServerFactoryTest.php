@@ -4,6 +4,7 @@
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 namespace ZFTest\OAuth2\Factory;
+
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use ZF\OAuth2\Factory\OAuth2ServerFactory;
@@ -226,7 +227,16 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 ),
             )
         ));
-        $expectedService = new \OAuth2\Server($adapter, array('enforce_state' => true, 'allow_implicit' => false, 'access_lifetime' => 3600));
+
+        $expectedService = new \OAuth2\Server(
+            $adapter,
+            array(
+                'enforce_state'   => true,
+                'allow_implicit'  => false,
+                'access_lifetime' => 3600
+            )
+        );
+
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
         $service = $this->factory->createService($this->services);
