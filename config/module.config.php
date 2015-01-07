@@ -78,6 +78,8 @@ return array(
          *       // see https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php#L57-L66
          *   ]
          */
+        'api_problem_error_response' => true, // if true, client errors is returned in application/problem+json content type,
+                                              // otherwise in format from oauth2 specification (default: true)
     ),
     'zf-content-negotiation' => array(
         'ZF\OAuth2\Controller\Auth' => array(

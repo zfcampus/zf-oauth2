@@ -24,6 +24,11 @@ class AuthController extends AbstractActionController
     protected $server;
 
     /**
+     * @var boolean
+     */
+    protected $apiProblemErrorResponse = true;
+
+    /**
      * Constructor
      *
      * @param $server OAuth2Server
@@ -31,6 +36,22 @@ class AuthController extends AbstractActionController
     public function __construct(OAuth2Server $server)
     {
         $this->server = $server;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isApiProblemErrorResponse()
+    {
+        return $this->apiProblemErrorResponse;
+    }
+
+    /**
+     * @param boolean $apiProblemErrorResponse
+     */
+    public function setApiProblemErrorResponse($apiProblemErrorResponse)
+    {
+        $this->apiProblemErrorResponse = $apiProblemErrorResponse;
     }
 
     /**
@@ -52,21 +73,11 @@ class AuthController extends AbstractActionController
 
         $oauth2request = $this->getOAuth2Request();
         $response = $this->server->handleTokenRequest($oauth2request);
-        if ($response->isClientError()) {
-            $parameters       = $response->getParameters();
-            $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
-            $error            = isset($parameters['error'])             ? $parameters['error']             : null;
-            $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
 
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $errorDescription,
-                    $errorUri,
-                    $error
-                )
-            );
+        if ($response->isClientError()) {
+            return $this->getErrorResponse($response);
         }
+
         return $this->setHttpResponse($response);
     }
 
@@ -78,17 +89,9 @@ class AuthController extends AbstractActionController
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
         if (!$this->server->verifyResourceRequest($this->getOAuth2Request())) {
             $response   = $this->server->getResponse();
-            $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $parameters['error_description'],
-                    $errorUri,
-                    $parameters['error']
-                )
-            );
+            return $this->getApiProblemResponse($response);
         }
+
         $httpResponse = $this->getResponse();
         $httpResponse->setStatusCode(200);
         $httpResponse->getHeaders()->addHeaders(array('Content-type' => 'application/json'));
@@ -107,17 +110,10 @@ class AuthController extends AbstractActionController
         $response = new OAuth2Response();
 
         // validate the authorize request
-        if (!$this->server->validateAuthorizeRequest($request, $response)) {
-            $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $parameters['error_description'],
-                    $errorUri,
-                    $parameters['error']
-                )
-            );
+        $isValid = $this->server->validateAuthorizeRequest($request, $response);
+
+        if (!$isValid) {
+            return $this->getErrorResponse($response);
         }
 
         $authorized = $request->request('authorized', false);
@@ -141,16 +137,7 @@ class AuthController extends AbstractActionController
             return $this->redirect()->toUrl($redirect);
         }
 
-        $parameters = $response->getParameters();
-        $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-        return new ApiProblemResponse(
-            new ApiProblem(
-                $response->getStatusCode(),
-                $parameters['error_description'],
-                $errorUri,
-                $parameters['error']
-            )
-        );
+        return $this->getErrorResponse($response);
     }
 
     /**
@@ -164,6 +151,42 @@ class AuthController extends AbstractActionController
         ));
         $view->setTemplate('oauth/receive-code');
         return $view;
+    }
+
+    /**
+     * @param OAuth2Response $response
+     * @return \ZF\ApiProblem\ApiProblemResponse|\Zend\Stdlib\ResponseInterface
+     */
+    protected function getErrorResponse(OAuth2Response $response)
+    {
+        if ($this->isApiProblemErrorResponse()) {
+            return $this->getApiProblemResponse($response);
+        } else {
+            return $this->setHttpResponse($response);
+        }
+    }
+
+    /**
+     * Map OAuth2Response to ApiProblemResponse
+     *
+     * @param OAuth2Response $response
+     * @return ApiProblemResponse
+     */
+    protected function getApiProblemResponse(OAuth2Response $response)
+    {
+        $parameters       = $response->getParameters();
+        $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
+        $error            = isset($parameters['error'])             ? $parameters['error']             : null;
+        $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
+
+        return new ApiProblemResponse(
+            new ApiProblem(
+                $response->getStatusCode(),
+                $errorDescription,
+                $errorUri,
+                $error
+            )
+        );
     }
 
     /**
@@ -209,6 +232,9 @@ class AuthController extends AbstractActionController
         }
         if (isset($server['PHP_AUTH_PW'])) {
             $headers['PHP_AUTH_PW'] = $server['PHP_AUTH_PW'];
+        }
+        if (isset($server['HTTP_AUTHORIZATION'])) {
+            $headers['AUTHORIZATION'] = $server['HTTP_AUTHORIZATION'];
         }
 
         // Ensure the bodyParams are passed as an array
