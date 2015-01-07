@@ -48,7 +48,11 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
 
         $this->services = $services = new ServiceManager();
 
-        $this->services->setService('Config', array());
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'api_problem_error_response' => true,
+            ),
+        ));
 
         $this->controllers = $controllers = new ControllerManager();
         $controllers->setServiceLocator(new ServiceManager());
