@@ -4,6 +4,9 @@
         <testsuite name="ZF\OAuth2 Tests">
             <directory>./test</directory>
         </testsuite>
+        <testsuite name="doctrine">
+            <directory>./test/Doctrine</directory>
+        </testsuite>
     </testsuites>
 
     <filter>

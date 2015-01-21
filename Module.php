@@ -6,11 +6,44 @@
 
 namespace ZF\OAuth2;
 
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Zend\ModuleManager\ModuleManager;
+use ZF\OAuth2\EventListener\UserClientSubscriber;
+
 /**
  * ZF2 module
  */
 class Module
 {
+    public function init(ModuleManager $moduleManager)
+    {
+    }
+
+    public function onBootstrap($e)
+    {
+        $app     = $e->getParam('application');
+        $sm      = $app->getServiceManager();
+        $config = $sm->get('Config');
+
+        // Add the default entity driver only if specified in configuration
+        if (isset($config['zf-oauth2']['storage_settings']['enable_default_entities'])
+            && $config['zf-oauth2']['storage_settings']['enable_default_entities']) {
+            $chain = $sm->get($config['zf-oauth2']['storage_settings']['driver']);
+            $chain->addDriver(new XmlDriver(__DIR__ . '/config/xml'), 'ZF\OAuth2\Entity');
+        }
+
+        if (isset($config['zf-oauth2']['storage_settings']['dynamic_mapping'])
+            && $config['zf-oauth2']['storage_settings']['dynamic_mapping']) {
+
+            $userClientSubscriber = new UserClientSubscriber($config['zf-oauth2']['storage_settings']['dynamic_mapping']);
+
+            $eventManager = $sm->get($config['zf-oauth2']['storage_settings']['event_manager']);
+
+            // $em is an instance of the Event Manager
+            $eventManager->addEventSubscriber($userClientSubscriber);
+        }
+    }
+
     /**
      * Retrieve autoloader configuration
      *

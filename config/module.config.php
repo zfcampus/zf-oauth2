@@ -50,10 +50,14 @@ return array(
         ),
     ),
     'service_manager' => array(
+        'abstract_factories' => array(
+            'ZF\OAuth2\Factory\DoctrineMapperFactory',
+        ),
         'factories' => array(
-            'ZF\OAuth2\Adapter\PdoAdapter'   => 'ZF\OAuth2\Factory\PdoAdapterFactory',
-            'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory',
-            'ZF\OAuth2\Service\OAuth2Server' => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
+            'ZF\OAuth2\Adapter\DoctrineAdapter' => 'ZF\OAuth2\Factory\DoctrineAdapterFactory',
+            'ZF\OAuth2\Adapter\PdoAdapter'      => 'ZF\OAuth2\Factory\PdoAdapterFactory',
+            'ZF\OAuth2\Adapter\MongoAdapter'    => 'ZF\OAuth2\Factory\MongoAdapterFactory',
+            'ZF\OAuth2\Service\OAuth2Server'    => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
         )
     ),
     'view_manager' => array(

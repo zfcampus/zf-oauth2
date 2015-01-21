@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="ZF\OAuth2\Entity\Jwt" table="Jwt_OAuth2">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="subject" type="string" nullable="true"/>
+    <field name="publicKey" type="text" nullable="true"/>
+    <many-to-one field="client" target-entity="ZF\OAuth2\Entity\Client" inversed-by="jwt">
+      <join-columns>
+        <join-column name="client_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>
