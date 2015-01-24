@@ -36,7 +36,8 @@
         "zendframework/zend-log": "~2.3",
         "zendframework/zend-modulemanager": "~2.3",
         "zendframework/zend-serializer": "~2.3",
-        "zendframework/zend-test": "~2.3"
+        "zendframework/zend-test": "~2.3",
+        "zendframework/zend-i18n": "~2.3"
     },
     "autoload": {
         "psr-4": {
