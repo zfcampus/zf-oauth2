@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="Client">
+    <field name="id" id="true" type="integer"/>
+    <field name="clientId" type="string"/>
+    <field name="secret" type="string"/>
+    <field name="redirectUri" type="string"/>
+    <field name="grantType" type="string"/>
+    <reference-many field="accessToken" target-document="AccessToken" mapped-by="client"/>
+    <reference-many field="authenticationCode" target-document="AuthenticationCode" mapped-by="client"/>
+    <reference-many field="refreshToken" target-document="RefreshToken" mapped-by="client"/>
+    <reference-many field="jwt" target-document="Jwt" mapped-by="client"/>
+    <reference-many field="publicKey" target-document="PublicKey" mapped-by="client"/>
+    <reference-many field="jti" target-document="Jti" mapped-by="client"/>
+  </document>
+</doctrine-mongo-mapping>

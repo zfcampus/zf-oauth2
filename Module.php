@@ -6,7 +6,8 @@
 
 namespace ZF\OAuth2;
 
-use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver as OrmXmlDriver;
+use Doctrine\Odm\Mapping\Driver\XmlDriver as OdmXmlDriver;
 use Zend\ModuleManager\ModuleManager;
 use ZF\OAuth2\EventListener\UserClientSubscriber;
 
@@ -25,11 +26,18 @@ class Module
         $sm      = $app->getServiceManager();
         $config = $sm->get('Config');
 
-        // Add the default entity driver only if specified in configuration
+        // Add the default ORM entity driver only if specified in configuration
         if (isset($config['zf-oauth2']['storage_settings']['enable_default_entities'])
             && $config['zf-oauth2']['storage_settings']['enable_default_entities']) {
             $chain = $sm->get($config['zf-oauth2']['storage_settings']['driver']);
-            $chain->addDriver(new XmlDriver(__DIR__ . '/config/xml'), 'ZF\OAuth2\Entity');
+            $chain->addDriver(new OrmXmlDriver(__DIR__ . '/config/orm'), 'ZF\OAuth2\Entity');
+        }
+
+        // Add the default ODM document driver if specified
+        if (isset($config['zf-oauth2']['storage_settings']['enable_default_documents'])
+            && $config['zf-oauth2']['storage_settings']['enable_default_documents']) {
+            $chain = $sm->get($config['zf-oauth2']['storage_settings']['driver']);
+            $chain->addDriver(new OdmXmlDriver(__DIR__ . '/config/odm'), 'ZF\OAuth2\Document');
         }
 
         if (isset($config['zf-oauth2']['storage_settings']['dynamic_mapping'])
