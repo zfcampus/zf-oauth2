@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="RefreshTokenToScope">
+    <field name="Scope_id" type="integer"/>
+    <field name="RefreshToken_id" type="integer"/>
+  </document>
+</doctrine-mongo-mapping>

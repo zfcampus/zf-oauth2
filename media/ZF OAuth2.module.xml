@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<skipper version="3.0.0.1104" mvc="Without MVC" orm="Doctrine2">
+  <module name="ZF OAuth2" import-format="Doctrine2Xml" import-path="../config/xml" uuid="e33a902b-9096-46f4-81af-cb8fa813a736">
+    <entity name="Client" uuid="0e40a98d-82ec-47f1-acc0-649982b1c48a">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="f24288d3-c5ab-4e4f-a251-0bca949873d1"/>
+      <field name="clientId" type="string" uuid="5902288a-0d1f-44c0-a02c-19bc92de37b1"/>
+      <field name="secret" type="string" uuid="1b0c7264-2fce-4217-9011-ddc42ee9afd2"/>
+      <field name="redirectUri" type="text" uuid="e419d490-b93f-4a8b-b21b-03f3fc6a75ae"/>
+      <field name="grantType" type="array" uuid="475c289c-1057-4314-a146-955108acb56a"/>
+      <index name="idx_clientId_unique" unique="true">
+        <index-field name="clientId"/>
+      </index>
+      <orm-attributes>
+        <attribute name="table">Client_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="AccessToken" uuid="0cef011b-fcdf-4e6e-a813-2a8d49ba4748">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="b27267d6-52c7-4d23-b414-0dc5cf604105"/>
+      <field name="accessToken" type="string" uuid="209f4728-d8cc-498b-808f-ecd7b473eaa6"/>
+      <field name="expires" type="datetime" uuid="a1a27c78-6780-4bb9-882a-010170c2ab64"/>
+      <field name="client_id" type="integer" required="true" uuid="57674c7f-3b8f-4381-b9e4-dfe8d5eb8ca7"/>
+      <orm-attributes>
+        <attribute name="table">AccessToken_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AccessToken" to="Client" owner-alias="accessToken" inverse-alias="client" uuid="d9c8b226-5b7a-4991-adb8-f01509ffdc87">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="RefreshToken" uuid="8c75fc92-0e0a-43ed-b5dc-5859aba057ae">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7ac57601-29a0-493a-9728-ae22b8ea7b23"/>
+      <field name="refreshToken" type="string" uuid="847e9b03-a76d-4bd9-9905-b241bac4faf1"/>
+      <field name="expires" type="datetime" uuid="e1492093-51f1-4369-82ee-3e0711410879"/>
+      <field name="client_id" type="integer" required="true" uuid="c0bb2d2f-f5d6-4232-953f-5b8e80025751"/>
+      <orm-attributes>
+        <attribute name="table">RefreshToken_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="RefreshToken" to="Client" owner-alias="refreshToken" inverse-alias="client" uuid="3efa4b07-67d5-48a1-94e8-69ad2a5bc60e">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="AuthorizationCode" uuid="1b40f6a9-e21a-49d3-8d44-604e36d28d35">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="72326417-df2b-42a0-b46d-298cdae4ff4d"/>
+      <field name="authorizationCode" type="string" uuid="2a3c669d-f44f-4ef0-b283-118ca75eda38"/>
+      <field name="redirectUri" type="text" uuid="dea2004d-47b5-4c53-b1e9-3347e16ab350"/>
+      <field name="expires" type="datetime" uuid="48ad82e7-ff43-4561-a40f-99f71b7a6ecd"/>
+      <field name="idToken" type="text" uuid="0a5faae6-ad87-4aa6-bd17-325e84aa8961"/>
+      <field name="client_id" type="integer" required="true" uuid="471392b9-dd08-420b-9e01-bb305836c9cc"/>
+      <orm-attributes>
+        <attribute name="table">AuthorizationCode_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="AuthorizationCode" to="Client" owner-alias="authorizationCode" inverse-alias="client" uuid="2664c472-a222-4480-80e6-34943b78930f">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="Jwt" uuid="9c143447-a1f4-4187-a5f9-45e768f78ebb">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="02e228e3-4d24-4334-add3-3358482e75ea"/>
+      <field name="subject" type="string" uuid="253a38fa-22dc-492f-8b3a-819481f3daec"/>
+      <field name="publicKey" type="text" uuid="fd97023c-adb4-4715-9026-fa446ba12129"/>
+      <field name="client_id" type="integer" required="true" uuid="508c578d-8f57-4c20-ab5e-3291cf6652cc"/>
+      <orm-attributes>
+        <attribute name="table">Jwt_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Jwt" to="Client" owner-alias="jwt" inverse-alias="client" uuid="6b2ceec2-f65b-4944-be20-613a797e5829">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="Jti" uuid="f42aa952-941d-4cec-adaf-5df5bc023867">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="1e6f57e8-be62-4f52-9679-45be5681211c"/>
+      <field name="subject" type="string" uuid="4248a4db-cb20-4de9-af74-0df6ff0cf7f8"/>
+      <field name="audience" type="string" uuid="397557b3-5117-4ad6-9012-a46c809b93e3"/>
+      <field name="expires" type="datetime" uuid="27ee9c72-e4ca-469a-9cdb-8375ac735979"/>
+      <field name="jti" type="text" uuid="07d4de52-147f-4355-b4bf-8948d258580c"/>
+      <field name="client_id" type="integer" required="true" uuid="e016f63a-2812-4988-a728-d3ea46167da2"/>
+      <orm-attributes>
+        <attribute name="table">Jti_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="Jti" to="Client" owner-alias="jti" inverse-alias="client" uuid="1a897fc1-617e-4cc3-82b7-54f564d3335d">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="Scope" uuid="8cc40580-9611-471f-a6c7-9a64ec3b2869">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="c8033880-f92f-47e6-bbf8-e9f8a99299fb"/>
+      <field name="scope" type="text" uuid="54d7a7b3-1ffc-44f5-a198-fcd2d1f14dd5"/>
+      <field name="isDefault" type="boolean" uuid="944d76ea-159b-43fb-a182-5100908dfd7b"/>
+      <orm-attributes>
+        <attribute name="table">Scope_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="PublicKey" uuid="b6562bcc-4fca-413e-a560-91da4d75dc9f">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="522217c1-f9e7-445d-a709-75c846b9724f"/>
+      <field name="publicKey" type="text" uuid="25e4e0a0-f374-462e-acb1-80335f0f995a"/>
+      <field name="privateKey" type="text" uuid="f20479d1-190f-42da-a99d-214515ccef6a"/>
+      <field name="encryptionAlgorithm" type="string" uuid="83593e76-ad34-4103-b524-37898567ede8"/>
+      <field name="client_id" type="integer" required="true" uuid="8bbf535b-14cb-432c-921f-c9cf693db8e2"/>
+      <orm-attributes>
+        <attribute name="table">PublicKey_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="PublicKey" to="Client" owner-alias="publicKey" inverse-alias="client" uuid="9daca6d8-8f09-4f97-bbfd-6db05bdf3e58">
+      <association-field from="client_id" to="id"/>
+    </association>
+    <entity name="ClientToScope" uuid="fc3df9ba-7e50-4415-90d4-6009251c5942">
+      <field name="client_id" type="integer" required="true" primary="true" uuid="de2bac28-b8ac-4ee2-a53b-7cf47e7d137a"/>
+      <field name="scope_id" type="integer" required="true" primary="true" uuid="b3c31b74-7ac9-48dd-a7ba-844d788133ce"/>
+      <orm-attributes>
+        <attribute name="table">ClientToScope_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="ClientToScope" uuid="1d7e8cae-9456-4602-a095-f2048b9303c4">
+      <many-to-many-entity name="Scope" owning-side="true" alias="scope" uuid="5a9f1849-17bf-4479-9c06-dcd5e1784e90">
+        <many-to-many-field from="scope_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="Client" owning-side="false" alias="client" uuid="f71382dc-97f2-4398-a7fd-cd6155b23f83">
+        <many-to-many-field from="client_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="AuthorizationCodeToScope" uuid="654eac84-7c6d-4280-9138-1658291dfb7e">
+      <field name="authorization_code_id" type="integer" required="true" primary="true" uuid="f493d087-c62c-4575-9eff-8ec38940af06"/>
+      <field name="scope_id" type="integer" required="true" primary="true" uuid="837101ff-24c2-41a8-8266-66db04fc9a5b"/>
+      <orm-attributes>
+        <attribute name="table">AuthorizationCodeToScope_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="AuthorizationCodeToScope" uuid="609e9b50-11d4-4ba4-8e4e-37a0286c0358">
+      <many-to-many-entity name="Scope" owning-side="true" alias="scope" uuid="d7fb61d0-fe82-458d-a2a6-5b4cc9065a49">
+        <many-to-many-field from="scope_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="AuthorizationCode" owning-side="false" alias="authorizationCode" uuid="438b279b-99ed-4a90-9352-79845961ace6">
+        <many-to-many-field from="authorization_code_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="RefreshTokenToScope" uuid="d25ad9b3-1751-49e7-901d-a92fae42a8b2">
+      <field name="refresh_token_id" type="integer" required="true" primary="true" uuid="0461bc59-2d15-413b-96e7-1cf2d59fd38d"/>
+      <field name="scope_id" type="integer" required="true" primary="true" uuid="0cf2ddc4-4138-446c-9d9f-d744ab1aeddf"/>
+      <orm-attributes>
+        <attribute name="table">RefreshTokenToScope_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="RefreshTokenToScope" uuid="7563f43f-925d-4df3-bfd3-d2bf1855a0ca">
+      <many-to-many-entity name="Scope" owning-side="true" alias="scope" uuid="d69ad79d-983f-4cda-905f-1e084aefaff1">
+        <many-to-many-field from="scope_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="RefreshToken" owning-side="false" alias="refreshToken" uuid="216d4d0a-a391-4879-ad9e-d195d818dc27">
+        <many-to-many-field from="refresh_token_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <entity name="AccessTokenToScope" uuid="4f5f9113-1ca7-472d-ba02-7b178329ced8">
+      <field name="access_token_id" type="integer" required="true" primary="true" uuid="f3480d3c-ab18-4c39-8e69-a5f6ac69ad41"/>
+      <field name="scope_id" type="integer" required="true" primary="true" uuid="88e6e6f2-2899-471d-8694-ff1b4f09ef93"/>
+      <orm-attributes>
+        <attribute name="table">AccessTokenToScope_OAuth2</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="AccessTokenToScope" uuid="d6c88e38-48c1-43d7-b5e9-b6902ee48e7c">
+      <many-to-many-entity name="Scope" owning-side="true" alias="scope" uuid="391c57b9-1832-4a9a-b7fb-75b2c5c59ebf">
+        <many-to-many-field from="scope_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="AccessToken" owning-side="false" alias="accessToken" uuid="1a2f2f70-ba2a-49c8-a50c-ffe2206b4013">
+        <many-to-many-field from="access_token_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
+    <comment caption="Disconnected User" description="The ZF\OAuth2\Entity\User does not exist and should be replaced with a custom user entity with a client relation to dynamically assoicate them.  This is dynamically mapped and defined in the config." uuid="664daa50-d4a6-4d82-a35f-5eb5e2e8e7ca"/>
+    <region caption="Scope" uuid="98a49ed5-e644-4a4e-9b59-d5421643572a">
+      <entity-ref name="Scope"/>
+      <entity-ref name="ClientToScope"/>
+      <entity-ref name="AuthorizationCodeToScope"/>
+      <entity-ref name="RefreshTokenToScope"/>
+      <entity-ref name="AccessTokenToScope"/>
+    </region>
+    <region caption="Tokens" uuid="2842966b-796c-48f0-920e-74b0fc40ec24">
+      <entity-ref name="AccessToken"/>
+      <entity-ref name="RefreshToken"/>
+      <entity-ref name="AuthorizationCode"/>
+    </region>
+    <region caption="Encryption" uuid="f75990b4-77ef-4d38-950e-631e3b3b8fbb">
+      <comment caption="Audience" description="A Jti is a one-time token.  Per page 6 section 7 the OAuth2 server may maintain a list of Jwt which are used.  Per https://github.com/bshaffer/oauth2-server-php/pull/268#issuecomment-71499663 the use marker may be tracked in audience." uuid="05a610e1-fad6-4e65-8b59-c09ed14d78bb"/>
+      <entity-ref name="Jwt"/>
+      <entity-ref name="Jti"/>
+      <entity-ref name="PublicKey"/>
+    </region>
+    <orm-attributes>
+      <attribute name="namespace">ZF\OAuth2\Entity</attribute>
+    </orm-attributes>
+  </module>
+  <visual-data>
+    <comment uuid="05a610e1-fad6-4e65-8b59-c09ed14d78bb" bg-color="4294967264" position-x="31" position-y="236" size-x="0" size-x2="198" size-y="0" size-y2="92" txt-color="4278190080"/>
+    <entity uuid="0cef011b-fcdf-4e6e-a813-2a8d49ba4748" bg-color="4294967295" hdr-color="4292006610" position-x="59" position-y="16" size-x="0" size-x2="106" size-y="0" size-y2="73"/>
+    <entity uuid="0e40a98d-82ec-47f1-acc0-649982b1c48a" bg-color="4294967295" hdr-color="4292006610" position-x="300" position-y="203" size-x="0" size-x2="93" size-y="0" size-y2="87"/>
+    <many-to-many-association-entity uuid="1a2f2f70-ba2a-49c8-a50c-ffe2206b4013" split="1"/>
+    <entity uuid="1b40f6a9-e21a-49d3-8d44-604e36d28d35" bg-color="4294967295" hdr-color="4292006610" position-x="60" position-y="124" size-x="0" size-x2="127" size-y="0" size-y2="101"/>
+    <many-to-many-association uuid="1d7e8cae-9456-4602-a095-f2048b9303c4" color="4288059030"/>
+    <many-to-many-association-entity uuid="216d4d0a-a391-4879-ad9e-d195d818dc27" split="1"/>
+    <region uuid="2842966b-796c-48f0-920e-74b0fc40ec24" bg-color="4293194728" position-x="422" position-y="121" size-x="0" size-x2="225" size-y="0" size-y2="405"/>
+    <many-to-many-association-entity uuid="438b279b-99ed-4a90-9352-79845961ace6" split="1"/>
+    <entity uuid="4f5f9113-1ca7-472d-ba02-7b178329ced8" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="350" size-x="0" size-x2="127" size-y="0" size-y2="60"/>
+    <many-to-many-association uuid="609e9b50-11d4-4ba4-8e4e-37a0286c0358" color="4288059030"/>
+    <entity uuid="654eac84-7c6d-4280-9138-1658291dfb7e" bg-color="4294967295" hdr-color="4292006610" position-x="24" position-y="253" size-x="0" size-x2="148" size-y="0" size-y2="60"/>
+    <comment uuid="664daa50-d4a6-4d82-a35f-5eb5e2e8e7ca" bg-color="4294967264" position-x="39" position-y="5" size-x="0" size-x2="264" size-y="0" size-y2="72" txt-color="4278190080"/>
+    <many-to-many-association uuid="7563f43f-925d-4df3-bfd3-d2bf1855a0ca" color="4288059030"/>
+    <entity uuid="8c75fc92-0e0a-43ed-b5dc-5859aba057ae" bg-color="4294967295" hdr-color="4292006610" position-x="72" position-y="306" size-x="0" size-x2="106" size-y="0" size-y2="73"/>
+    <entity uuid="8cc40580-9611-471f-a6c7-9a64ec3b2869" bg-color="4294967295" hdr-color="4292006610" position-x="208" position-y="172" size-x="0" size-x2="99" size-y="0" size-y2="59"/>
+    <region uuid="98a49ed5-e644-4a4e-9b59-d5421643572a" bg-color="4292931823" position-x="675" position-y="122" size-x="0" size-x2="319" size-y="0" size-y2="424"/>
+    <entity uuid="9c143447-a1f4-4187-a5f9-45e768f78ebb" bg-color="4294967295" hdr-color="4292006610" position-x="52" position-y="41" size-x="0" size-x2="93" size-y="0" size-y2="73"/>
+    <entity uuid="b6562bcc-4fca-413e-a560-91da4d75dc9f" bg-color="4294967295" hdr-color="4292006610" position-x="50" position-y="126" size-x="0" size-x2="134" size-y="0" size-y2="87"/>
+    <entity uuid="d25ad9b3-1751-49e7-901d-a92fae42a8b2" bg-color="4294967295" hdr-color="4292006610" position-x="23" position-y="90" size-x="0" size-x2="127" size-y="0" size-y2="60"/>
+    <many-to-many-association-entity uuid="d69ad79d-983f-4cda-905f-1e084aefaff1" center-position-x="0" center-position-y="0"/>
+    <many-to-many-association uuid="d6c88e38-48c1-43d7-b5e9-b6902ee48e7c" color="4288059030"/>
+    <module uuid="e33a902b-9096-46f4-81af-cb8fa813a736" bg-color="4287552497" size-x="30" size-x2="1020" size-y="32" size-y2="651"/>
+    <entity uuid="f42aa952-941d-4cec-adaf-5df5bc023867" bg-color="4294967295" hdr-color="4292006610" position-x="58" position-y="357" size-x="0" size-x2="96" size-y="0" size-y2="101"/>
+    <many-to-many-association-entity uuid="f71382dc-97f2-4398-a7fd-cd6155b23f83" split="1"/>
+    <region uuid="f75990b4-77ef-4d38-950e-631e3b3b8fbb" bg-color="4292728527" position-x="20" position-y="117" size-x="0" size-x2="255" size-y="0" size-y2="484"/>
+    <entity uuid="fc3df9ba-7e50-4415-90d4-6009251c5942" bg-color="4294967295" hdr-color="4292006610" position-x="209" position-y="47" size-x="0" size-x2="96" size-y="0" size-y2="60"/>
+  </visual-data>
+</skipper>

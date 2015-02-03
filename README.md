@@ -10,11 +10,13 @@ library by Brent Shaffer to provide OAuth2 support.
 
 Requirements
 ------------
-  
+
 Please see the [composer.json](composer.json) file.
 
 Installation
 ------------
+
+If you are using Doctrine see the [Doctrine documentation](https://github.com/zfcampus/zf-oauth2/blob/master/docs/doctrine.md)
 
 You can install using:
 

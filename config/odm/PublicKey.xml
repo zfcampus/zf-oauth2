@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="PublicKey">
+    <field name="id" id="true" type="integer"/>
+    <field name="publicKey" type="string"/>
+    <field name="privateKey" type="string"/>
+    <field name="encryptionAlgorithm" type="string"/>
+    <reference-one field="client" target-document="Client" inversed-by="publicKey"/>
+  </document>
+</doctrine-mongo-mapping>

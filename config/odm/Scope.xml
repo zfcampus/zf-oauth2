@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="Scope">
+    <field name="id" id="true" type="integer"/>
+    <field name="scope" type="string"/>
+    <field name="isDefault" type="boolean"/>
+  </document>
+</doctrine-mongo-mapping>

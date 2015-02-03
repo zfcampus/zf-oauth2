@@ -1,2 +1,4 @@
 composer.lock
 vendor
+src/ZF
+test/data/DoctrineORMModule
