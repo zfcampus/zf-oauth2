@@ -216,7 +216,7 @@ class AuthController extends AbstractActionController
 
         return new OAuth2Request(
             $zf2Request->getQuery()->toArray(),
-            $this->bodyParams(),
+            $bodyParams,
             array(), // attributes
             array(), // cookies
             array(), // files
