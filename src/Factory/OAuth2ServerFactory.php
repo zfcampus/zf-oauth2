@@ -87,7 +87,7 @@ class OAuth2ServerFactory implements FactoryInterface
         $server->addGrantType(new UserCredentials($server->getStorage('user_credentials')));
 
         // Add the "JWT Bearer" grant type
-        $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer'),$audience));
+        $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer'), $audience));
 
         $refreshOptions = array();
         if (isset($options['always_issue_new_refresh_token'])) {
