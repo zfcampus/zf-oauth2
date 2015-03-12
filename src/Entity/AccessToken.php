@@ -36,6 +36,11 @@ class AccessToken implements ArraySerializableInterface
     private $scope;
 
     /**
+     * @var object
+     */
+    private $user;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -51,6 +56,7 @@ class AccessToken implements ArraySerializableInterface
             'expires' => $this->getExpires(),
             'client' => $this->getClient(),
             'scope' => $this->getScope(),
+            'user' => $this->getUser(),
         );
     }
 
@@ -79,6 +85,9 @@ class AccessToken implements ArraySerializableInterface
                         $this->addScope($scope);
                         $scope->addAccessToken($this);
                     }
+                    break;
+                case 'user':
+                    $this->setUser($value);
                     break;
                 default:
                     break;
@@ -198,5 +207,28 @@ class AccessToken implements ArraySerializableInterface
     public function getScope()
     {
         return $this->scope;
+    }
+
+    /**
+     * Set user
+     *
+     * @param $user
+     * @return AuthorizationCode
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return user
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

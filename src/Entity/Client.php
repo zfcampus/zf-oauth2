@@ -76,7 +76,7 @@ class Client implements ArraySerializableInterface
     private $scope;
 
     /**
-     * @var \RollNApi\Entity\User
+     * @var User
      */
     private $user;
 
@@ -506,10 +506,10 @@ class Client implements ArraySerializableInterface
     /**
      * Set user
      *
-     * @param \RollNApi\Entity\User $user
+     * @param $user
      * @return Client
      */
-    public function setUser(\RollNApi\Entity\User $user = null)
+    public function setUser($user = null)
     {
         $this->user = $user;
 
@@ -519,7 +519,7 @@ class Client implements ArraySerializableInterface
     /**
      * Get user
      *
-     * @return \RollNApi\Entity\User
+     * @return User
      */
     public function getUser()
     {

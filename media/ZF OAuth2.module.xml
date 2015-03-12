@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.0.0.1104" mvc="Without MVC" orm="Doctrine2">
+<skipper version="3.1.1.1184" mvc="Without MVC" orm="Doctrine2">
   <module name="ZF OAuth2" import-format="Doctrine2Xml" import-path="../config/xml" uuid="e33a902b-9096-46f4-81af-cb8fa813a736">
     <entity name="Client" uuid="0e40a98d-82ec-47f1-acc0-649982b1c48a">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="f24288d3-c5ab-4e4f-a251-0bca949873d1"/>
@@ -23,7 +23,7 @@
         <attribute name="table">AccessToken_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="AccessToken" to="Client" owner-alias="accessToken" inverse-alias="client" uuid="d9c8b226-5b7a-4991-adb8-f01509ffdc87">
+    <association from="AccessToken" to="Client" owner-alias="accessToken" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="d9c8b226-5b7a-4991-adb8-f01509ffdc87">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="RefreshToken" uuid="8c75fc92-0e0a-43ed-b5dc-5859aba057ae">
@@ -35,7 +35,7 @@
         <attribute name="table">RefreshToken_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="RefreshToken" to="Client" owner-alias="refreshToken" inverse-alias="client" uuid="3efa4b07-67d5-48a1-94e8-69ad2a5bc60e">
+    <association from="RefreshToken" to="Client" owner-alias="refreshToken" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="3efa4b07-67d5-48a1-94e8-69ad2a5bc60e">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="AuthorizationCode" uuid="1b40f6a9-e21a-49d3-8d44-604e36d28d35">
@@ -49,7 +49,7 @@
         <attribute name="table">AuthorizationCode_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="AuthorizationCode" to="Client" owner-alias="authorizationCode" inverse-alias="client" uuid="2664c472-a222-4480-80e6-34943b78930f">
+    <association from="AuthorizationCode" to="Client" owner-alias="authorizationCode" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="2664c472-a222-4480-80e6-34943b78930f">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="Jwt" uuid="9c143447-a1f4-4187-a5f9-45e768f78ebb">
@@ -61,7 +61,7 @@
         <attribute name="table">Jwt_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="Jwt" to="Client" owner-alias="jwt" inverse-alias="client" uuid="6b2ceec2-f65b-4944-be20-613a797e5829">
+    <association from="Jwt" to="Client" owner-alias="jwt" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="6b2ceec2-f65b-4944-be20-613a797e5829">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="Jti" uuid="f42aa952-941d-4cec-adaf-5df5bc023867">
@@ -75,7 +75,7 @@
         <attribute name="table">Jti_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="Jti" to="Client" owner-alias="jti" inverse-alias="client" uuid="1a897fc1-617e-4cc3-82b7-54f564d3335d">
+    <association from="Jti" to="Client" owner-alias="jti" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="1a897fc1-617e-4cc3-82b7-54f564d3335d">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="Scope" uuid="8cc40580-9611-471f-a6c7-9a64ec3b2869">
@@ -96,7 +96,7 @@
         <attribute name="table">PublicKey_OAuth2</attribute>
       </orm-attributes>
     </entity>
-    <association from="PublicKey" to="Client" owner-alias="publicKey" inverse-alias="client" uuid="9daca6d8-8f09-4f97-bbfd-6db05bdf3e58">
+    <association from="PublicKey" to="Client" owner-alias="publicKey" inverse-alias="client" many-owner="true" many-inverse="false" parent-required="true" uuid="9daca6d8-8f09-4f97-bbfd-6db05bdf3e58">
       <association-field from="client_id" to="id"/>
     </association>
     <entity name="ClientToScope" uuid="fc3df9ba-7e50-4415-90d4-6009251c5942">
@@ -187,7 +187,7 @@
     <entity uuid="0cef011b-fcdf-4e6e-a813-2a8d49ba4748" bg-color="4294967295" hdr-color="4292006610" position-x="59" position-y="16" size-x="0" size-x2="106" size-y="0" size-y2="73"/>
     <entity uuid="0e40a98d-82ec-47f1-acc0-649982b1c48a" bg-color="4294967295" hdr-color="4292006610" position-x="300" position-y="203" size-x="0" size-x2="93" size-y="0" size-y2="87"/>
     <many-to-many-association-entity uuid="1a2f2f70-ba2a-49c8-a50c-ffe2206b4013" split="1"/>
-    <entity uuid="1b40f6a9-e21a-49d3-8d44-604e36d28d35" bg-color="4294967295" hdr-color="4292006610" position-x="60" position-y="124" size-x="0" size-x2="127" size-y="0" size-y2="101"/>
+    <entity uuid="1b40f6a9-e21a-49d3-8d44-604e36d28d35" bg-color="4294967295" hdr-color="4292006610" position-x="59" position-y="126" size-x="0" size-x2="127" size-y="0" size-y2="101"/>
     <many-to-many-association uuid="1d7e8cae-9456-4602-a095-f2048b9303c4" color="4288059030"/>
     <many-to-many-association-entity uuid="216d4d0a-a391-4879-ad9e-d195d818dc27" split="1"/>
     <region uuid="2842966b-796c-48f0-920e-74b0fc40ec24" bg-color="4293194728" position-x="422" position-y="121" size-x="0" size-x2="225" size-y="0" size-y2="405"/>

@@ -12,9 +12,8 @@ namespace ZF\OAuth2\Entity;
  */
 interface UserInterface
 {
-    public function getId();
-    public function getUsername();
-    public function setUsername();
-    public function getPassword();
-    public function setPassword();
+    public function getClient();
+    public function getAccessToken();
+    public function getAuthorizationCode();
+    public function getRefreshToken();
 }

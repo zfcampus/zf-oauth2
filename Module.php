@@ -8,7 +8,7 @@ namespace ZF\OAuth2;
 
 use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Zend\ModuleManager\ModuleManager;
-use ZF\OAuth2\EventListener\UserClientSubscriber;
+use ZF\OAuth2\EventListener\DynamicMappingSubscriber;
 
 /**
  * ZF2 module
@@ -35,12 +35,12 @@ class Module
         if (isset($config['zf-oauth2']['storage_settings']['dynamic_mapping'])
             && $config['zf-oauth2']['storage_settings']['dynamic_mapping']) {
 
-            $userClientSubscriber = new UserClientSubscriber($config['zf-oauth2']['storage_settings']['dynamic_mapping']);
+            $dynamicMappingSubscriber = new DynamicMappingSubscriber($config['zf-oauth2']['storage_settings']['dynamic_mapping']);
 
             $eventManager = $sm->get($config['zf-oauth2']['storage_settings']['event_manager']);
 
             // $em is an instance of the Event Manager
-            $eventManager->addEventSubscriber($userClientSubscriber);
+            $eventManager->addEventSubscriber($dynamicMappingSubscriber);
         }
     }
 

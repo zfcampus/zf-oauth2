@@ -3,12 +3,11 @@
 namespace ZF\OAuth2\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Zend\Stdlib\ArraySerializableInterface;
 
 /**
  * AuthorizationCode
  */
-class AuthorizationCode implements ArraySerializableInterface
+class AuthorizationCode
 {
     /**
      * @var string
@@ -46,6 +45,11 @@ class AuthorizationCode implements ArraySerializableInterface
     private $scope;
 
     /**
+     * @var object
+     */
+    private $user;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -63,6 +67,7 @@ class AuthorizationCode implements ArraySerializableInterface
             'idToken' => $this->getIdToken(),
             'scope' => $this->getScope(),
             'client' => $this->getClient(),
+            'user' => $this->getUser(),
         );
     }
 
@@ -91,18 +96,19 @@ class AuthorizationCode implements ArraySerializableInterface
                         $this->removeScope($remove);
                         $remove->removeAuthorizationCode($this);
                     }
-
                     // Add new collection
                     foreach ($value as $scope) {
                         $this->addScope($scope);
                         $scope->addAuthorizationCode($this);
                     }
                     break;
+                case 'user':
+                    $this->setUser($value);
+                    break;
                 default:
                     break;
             }
         }
-
         return $this;
     }
 
@@ -262,5 +268,28 @@ class AuthorizationCode implements ArraySerializableInterface
     public function getScope()
     {
         return $this->scope;
+    }
+
+    /**
+     * Set user
+     *
+     * @param $user
+     * @return AuthorizationCode
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return user
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

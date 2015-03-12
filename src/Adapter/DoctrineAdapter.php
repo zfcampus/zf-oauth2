@@ -654,6 +654,7 @@ class DoctrineAdapter implements
             'expires' => $expires,
             'scope' => $scope,
             'id_token' => $id_token,
+            'user_id' => $user_id,
         ));
 
         $authorizationCode->exchangeArray($mapper->getDoctrineArrayCopy());
@@ -968,6 +969,7 @@ class DoctrineAdapter implements
             'user_id' => $user_id,
             'expires' => $expires,
             'scope' => $scope,
+            'user_id' => $user_id,
         ));
 
         $scopes = new ArrayCollection;
