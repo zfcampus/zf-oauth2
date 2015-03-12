@@ -339,10 +339,15 @@ abstract class AbstractMapper implements ObjectManagerAwareInterface, ServiceLoc
                                             $foundRecursiveMapping = true;
                                             $doctrineData = $relation->getArrayCopy();
                                             $recursiveEntity = $doctrineData[$mapperFieldConfig['name']];
-                                            $recursiveEntityData = $recursiveEntity->getArrayCopy();
 
-                                            $oAuth2Data[$oAuth2Field] =
-                                            $recursiveEntityData[$mapperFieldConfig['entity_field_name']];
+                                            if ($recursiveEntity) {
+                                                $recursiveEntityData = $recursiveEntity->getArrayCopy();
+                                                $oAuth2Data[$oAuth2Field] =
+                                                    $recursiveEntityData[$mapperFieldConfig['entity_field_name']];
+
+                                                $doctrineData[$mapperFieldConfig['name']] = $recursiveEntity;
+                                            }
+
                                             $doctrineData[$mapperFieldConfig['name']] = $recursiveEntity;
                                         }
                                     }
