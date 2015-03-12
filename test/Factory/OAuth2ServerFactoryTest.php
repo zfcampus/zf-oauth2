@@ -59,7 +59,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
-	$expectedService->addGrantType(new JwtBearer($adapter, ''));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
