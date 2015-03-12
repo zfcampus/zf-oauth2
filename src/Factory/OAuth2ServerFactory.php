@@ -58,6 +58,9 @@ class OAuth2ServerFactory implements FactoryInterface
         $accessLifetime = isset($config['zf-oauth2']['access_lifetime'])
             ? $config['zf-oauth2']['access_lifetime']
             : 3600;
+        $audience = isset($config['zf-oauth2']['audience'])
+            ? $config['zf-oauth2']['audience']
+            : '';
         $options        = isset($config['zf-oauth2']['options'])
             ? $config['zf-oauth2']['options']
             : array();
@@ -84,7 +87,7 @@ class OAuth2ServerFactory implements FactoryInterface
         $server->addGrantType(new UserCredentials($server->getStorage('user_credentials')));
 
         // Add the "JWT Bearer" grant type
-        $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer')));
+        $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer'),$audience));
 
         $refreshOptions = array();
         if (isset($options['always_issue_new_refresh_token'])) {
