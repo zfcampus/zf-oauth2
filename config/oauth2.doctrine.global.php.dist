@@ -1,16 +1,11 @@
 <?php
 
+/**
+ * The user entity is always stored in another namespace than ZF\OAuth2
+ */
+$userEntity = 'DoctrineOAuth2\Entity\User';
+
 return array(
-    'doctrine' => array(
-        'connection' => array(
-            'orm_default' => array(
-                'driverClass' => 'Doctrine\DBAL\Driver\PDOSqlite\Driver',
-                'params' => array(
-                    'path' => __DIR__ . '/../data/doctrine.db',
-                ),
-            ),
-        ),
-    ),
     'zf-oauth2' => array(
         'storage' => 'ZF\OAuth2\Adapter\DoctrineAdapter',
         'storage_settings' => array(
@@ -22,17 +17,29 @@ return array(
             // Dynamically map the user_entity to the client_entity
             'dynamic_mapping' => array(
                 'user_entity' => array(
-                    'entity' => 'RollNApi\Entity\User',
+                    'entity' => $userEntity,
                     'field' => 'user',
                 ),
                 'client_entity' => array(
                     'entity' => 'ZF\OAuth2\Entity\Client',
                     'field' => 'client',
                 ),
+                'access_token_entity' => array(
+                    'entity' => 'ZF\OAuth2\Entity\AccessToken',
+                    'field' => 'accessToken',
+                ),
+                'authorization_code_entity' => array(
+                    'entity' => 'ZF\OAuth2\Entity\AuthorizationCode',
+                    'field' => 'authorizationCode',
+                ),
+                'refresh_token_entity' => array(
+                    'entity' => 'ZF\OAuth2\Entity\RefreshToken',
+                    'field' => 'refreshToken',
+                ),
             ),
             'mapping' => array(
                 'ZF\OAuth2\Mapper\User' => array(
-                    'entity' => 'RollNApi\Entity\User',
+                    'entity' => $userEntity,
                     'mapping' => array(
                         'user_id' => array(
                             'type' => 'field',
@@ -85,9 +92,9 @@ return array(
                             'type' => 'relation',
                             'name' => 'user',
                             'entity_field_name' => 'id',
-                            'entity' => 'RollNApi\Entity\User',
+                            'entity' => $userEntity,
                             'datatype' => 'integer',
-                            'allow_null' => true, # used for unit tests
+                            'allow_null' => true,
                         ),
                     ),
                 ),
@@ -118,6 +125,13 @@ return array(
                             'entity' => 'ZF\OAuth2\Entity\Client',
                             'datatype' => 'integer',
                         ),
+                        'user_id' => array(
+                            'type' => 'relation',
+                            'name' => 'user',
+                            'entity_field_name' => 'id',
+                            'entity' => $userEntity
+                            'datatype' => 'integer',
+                        ),
                     ),
                 ),
 
@@ -145,6 +159,13 @@ return array(
                             'name' => 'client',
                             'entity_field_name' => 'clientId',
                             'entity' => 'ZF\OAuth2\Entity\Client',
+                            'datatype' => 'integer',
+                        ),
+                        'user_id' => array(
+                            'type' => 'relation',
+                            'name' => 'user',
+                            'entity_field_name' => 'id',
+                            'entity' => $userEntity,
                             'datatype' => 'integer',
                         ),
                     ),
@@ -186,6 +207,13 @@ return array(
                             'entity' => 'ZF\OAuth2\Entity\Client',
                             'datatype' => 'integer',
                         ),
+                        'user_id' => array(
+                            'type' => 'relation',
+                            'name' => 'user',
+                            'entity_field_name' => 'id',
+                            'entity' => $userEntity,
+                            'datatype' => 'integer',
+                        ),
                     ),
                 ),
 
@@ -205,7 +233,7 @@ return array(
                         'client_id' => array(
                             'type' => 'relation',
                             'name' => 'client',
-                            'entity_field_name' => 'id',
+                            'entity_field_name' => 'clientId',
                             'entity' => 'ZF\OAuth2\Entity\Client',
                             'datatype' => 'integer',
                         ),
