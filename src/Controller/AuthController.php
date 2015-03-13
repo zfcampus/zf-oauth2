@@ -132,13 +132,8 @@ class AuthController extends AbstractActionController
         $is_authorized = ($authorized === 'yes');
 
         // Find the user requesting access
-        $user_id = $this->getRequest()->getQuery('user_id', null);
-        try {
-            $authentication = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
-            $user_id = $authentication->getIdentity();
-        } catch (Exception $e) {
-            // If service locator not found id will not change
-        }
+        $userIdProvider = $this->getServiceLocator()->get('ZF\OAuth2\Provider\UserId');
+        $user_id = $userIdProvider();
 
         $this->server->handleAuthorizeRequest(
             $request,

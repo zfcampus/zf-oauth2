@@ -205,9 +205,6 @@ abstract class AbstractMapper implements ObjectManagerAwareInterface, ServiceLoc
                         break;
                     // Find the relation for the given value and assign to data
                     case 'relation':
-
-#                print_r($this->getObjectManager()->getClassMetadata($config['mapping'][$key]['entity']));
-
                         $relation = $this->getObjectManager()->getRepository($config['mapping'][$key]['entity'])
                         ->findOneBy(array(
                             $config['mapping'][$key]['entity_field_name'] => $value,
