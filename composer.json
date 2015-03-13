@@ -6,7 +6,8 @@
         "api",
         "oauth2",
         "framework",
-        "zf2"
+        "zf2",
+        "doctrine"
     ],
     "repositories": [
         { "type": "composer", "url": "https://packages.zendframework.com/" }
@@ -29,14 +30,15 @@
     },
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*",
-        "squizlabs/php_codesniffer": "~1.5",
-        "zendframework/zend-config": "~2.3",
-        "zendframework/zend-form": "~2.3",
-        "zendframework/zend-loader": "~2.3",
-        "zendframework/zend-log": "~2.3",
-        "zendframework/zend-modulemanager": "~2.3",
-        "zendframework/zend-serializer": "~2.3",
-        "zendframework/zend-test": "~2.3"
+        "squizlabs/php_codesniffer": "~2",
+        "zendframework/zendframework": ">=2.3.2,<3.0.0",
+        "doctrine/doctrine-orm-module": "*",
+        "phpro/zf-doctrine-hydration-module": ">=0.1.5",
+        "zfcampus/zf-apigility": "~1.0",
+        "zfcampus/zf-apigility-documentation": "~1.0",
+        "zfcampus/zf-apigility-doctrine": "~0.3",
+        "zf-commons/zfc-user-doctrine-orm": "~1.0",
+        "hounddog/doctrine-data-fixture-module": "0.0.*"
     },
     "autoload": {
         "psr-4": {

@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" action="<?= $_SERVER['REQUEST_URI']; ?>">
     <label>Do You Authorize <?php echo $this->escapeHtml($this->clientId) ?>?</label><br />
     <input type="submit" name="authorized" value="yes">
     <input type="submit" name="authorized" value="no">

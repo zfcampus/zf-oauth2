@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="ZF\OAuth2\Entity\Scope" table="Scope_OAuth2">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="scope" type="text" nullable="true"/>
+    <field name="isDefault" type="boolean" nullable="true"/>
+    <many-to-many field="client" target-entity="ZF\OAuth2\Entity\Client" inversed-by="scope">
+      <join-table name="ClientToScope_OAuth2">
+        <join-columns>
+          <join-column name="scope_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="client_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="authorizationCode" target-entity="ZF\OAuth2\Entity\AuthorizationCode" inversed-by="scope">
+      <join-table name="AuthorizationCodeToScope_OAuth2">
+        <join-columns>
+          <join-column name="scope_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="authorization_code_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="refreshToken" target-entity="ZF\OAuth2\Entity\RefreshToken" inversed-by="scope">
+      <join-table name="RefreshTokenToScope_OAuth2">
+        <join-columns>
+          <join-column name="scope_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="refresh_token_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="accessToken" target-entity="ZF\OAuth2\Entity\AccessToken" inversed-by="scope">
+      <join-table name="AccessTokenToScope_OAuth2">
+        <join-columns>
+          <join-column name="scope_id" referenced-column-name="id" nullable="false"/>
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="access_token_id" referenced-column-name="id" nullable="false"/>
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+  </entity>
+</doctrine-mapping>

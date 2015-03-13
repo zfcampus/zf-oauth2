@@ -10,11 +10,13 @@ library by Brent Shaffer to provide OAuth2 support.
 
 Requirements
 ------------
-  
+
 Please see the [composer.json](composer.json) file.
 
 Installation
 ------------
+
+If you are using Doctrine see the [Doctrine documentation](https://github.com/zfcampus/zf-oauth2/blob/master/docs/doctrine.md)
 
 You can install using:
 
@@ -304,6 +306,29 @@ var parseQueryString = function( queryString ) {
 // get token params from URL fragment
 var tokenParams = parseQueryString(window.location.hash.substr(1));
 ```
+
+
+Authorization Code User ID
+--------------------------
+
+When a request is made for an Authorization Code it is common to store the user the token is being requested for.
+This is done with an invokable mapped to ``` ZF\OAuth2\Provider\UserId ```
+
+The default UserID Provider uses a request query paramter ``` user_id=123 ``` and handled with
+``` ZF\OAuth2\Provider\UserId\Request ```
+
+Provided with this repository is
+``` ZF\OAuth2\Provider\UserId\AuthorizationService ``` which uses ``` Zend\Authentication\AuthenticationService ``` to
+fetch the identity.  To override the default UserId provider add the config to your module.config.php
+
+```
+    'service_manager' => array(
+        'invokables' => array(
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\AuthenticationService',
+        ),
+    ),
+```
+
 
 Access a test resource
 ----------------------

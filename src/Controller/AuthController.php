@@ -15,6 +15,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ContentNegotiation\ViewModel;
+use Exception;
 
 class AuthController extends AbstractActionController
 {
@@ -129,11 +130,16 @@ class AuthController extends AbstractActionController
         }
 
         $is_authorized = ($authorized === 'yes');
+
+        // Find the user requesting access
+        $userIdProvider = $this->getServiceLocator()->get('ZF\OAuth2\Provider\UserId');
+        $user_id = $userIdProvider();
+
         $this->server->handleAuthorizeRequest(
             $request,
             $response,
             $is_authorized,
-            $this->getRequest()->getQuery('user_id', null)
+            $user_id
         );
 
         $redirect = $response->getHttpHeader('Location');
