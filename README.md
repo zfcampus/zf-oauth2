@@ -147,6 +147,36 @@ oauth_clients collection:
 }
 ```
 
+User ID Provider
+----------------
+
+When a user requests an authorization code they may provide their user_id as a request parameter to the /oauth/authorize route.  This will store the user_id in the access_token, refresh_token, and authorization_code tables as the user goes throught the oauth2 process.
+
+A user may be authenticated through Zend\Authentication or another authentication means.  When a user must provide authentication before they may access the /oauth/authorize route the authenticated user id should be used.  This is done with an service manager alias ``` ZF\OAuth2\Provider\UserId ```
+
+The default UserID Provider uses a request query paramter ``` user_id=123 ``` and handled with ``` ZF\OAuth2\Provider\UserId\Request ```
+
+Provided with this repository is ``` ZF\OAuth2\Provider\UserId\AuthorizationService ``` which uses ``` Zend\Authentication\AuthenticationService ``` to fetch the identity.  To change the User ID Provider add the service_manager config:
+
+```
+use ZF\OAuth2\Provider\UserId\AuthenticationService 
+    as UserIdProviderAuthenticationService;
+
+return array(
+    'service_manager' => 
+        'factories' => array(
+            'ZF\OAuth2\Provider\UserId' => function($serviceManager)
+            {
+                $provider = new UserIdProviderAuthenticationService();
+                $provider->setAuthenticationService($serviceManager->get('Zend\Authentication\AuthenticationService'));
+
+                return $provider;
+            },
+        ),
+    ),
+),
+```
+
 How to test OAuth2
 ------------------
 

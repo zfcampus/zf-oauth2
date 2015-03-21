@@ -7,6 +7,8 @@
 namespace ZFTest\OAuth2\Controller;
 
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
 
 class AuthControllerTest extends AbstractHttpControllerTestCase
 {
@@ -16,7 +18,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     {
         copy(
             __DIR__ . '/../TestAsset/database/pdo.db',
-            __DIR__ . '/../TestAsset/database/pdo-test.db'
+            sys_get_temp_dir() . '/pdo-test.db'
         );
 
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/pdo.application.config.php');
@@ -27,14 +29,17 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     public function getDb()
     {
         $config = $this->getApplication()->getServiceManager()->get('Config');
-        $db = new \PDO($config['zf-oauth2']['db']['dsn']);
+        $adapter = new Adapter(array(
+            'driver' => 'pdo',
+            'dsn' => $config['zf-oauth2']['db']['dsn'],
+        ));
 
-        return $db;
+        return $adapter;
     }
 
     public function tearDown()
     {
-        @unlink(__DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
+        @unlink(sys_get_temp_dir() . '/pdo-test.db');
     }
 
     public function testToken()
@@ -93,6 +98,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_GET['response_type'] = 'code';
         $_GET['client_id'] = 'testclient';
         $_GET['state'] = 'xyz';
+        $_GET['user_id'] = 123;
         $_GET['redirect_uri'] = '/oauth/receivecode';
         $_POST['authorized'] = 'yes';
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -106,6 +112,18 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         if (preg_match('#code=([0-9a-f]+)#', $location, $matches)) {
             $code = $matches[1];
         }
+
+        // test data in database is correct
+        $adapter = $this->getDb();
+        $sql = new Sql($adapter);
+        $select = $sql->select();
+        $select->from('oauth_authorization_codes');
+        $select->where(array('authorization_code' => $code));
+
+        $selectString = $sql->getSqlStringForSqlObject($select);
+        $results = $adapter->query($selectString, $adapter::QUERY_MODE_EXECUTE)->toArray();
+        $this->assertEquals('123', $results[0]['user_id']);
+
         // test get token from authorized code
         $request = $this->getRequest();
         $request->getPost()->set('grant_type', 'authorization_code');
