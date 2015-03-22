@@ -17,10 +17,13 @@ class AuthControllerCopyTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
-        @copy(__DIR__ . '/../TestAsset/autoload_zend_authenticationservice/db_oauth2.sqlite', 
-            __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/dbtest.sqlite');
+        @copy(
+            __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/db_oauth2.sqlite',
+            __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/dbtest.sqlite'
+        );
 
-        $this->setApplicationConfig(include __DIR__ . '/../TestAsset/zend.authenticationservice.application.config.php');
+        $this->setApplicationConfig(include __DIR__ .
+            '/../TestAsset/zend.authenticationservice.application.config.php');
 
         $this->loader = new Loader;
         $this->loader->register();
@@ -41,7 +44,7 @@ class AuthControllerCopyTest extends AbstractHttpControllerTestCase
         @unlink(__DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
     }
 
-    public function getAuthenticationService() 
+    public function getAuthenticationService()
     {
         $storage = M::mock('Zend\Authentication\Storage\StorageInterface');
         $storage->shouldReceive('isEmpty')->once()->andReturn(false);
