@@ -24,6 +24,14 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
     }
 
+    public function getDb()
+    {
+        $config = $this->getApplication()->getServiceManager()->get('Config');
+        $db = new \PDO($config['zf-oauth2']['db']['dsn']);
+
+        return $db;
+    }
+
     public function tearDown()
     {
         @unlink(__DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
