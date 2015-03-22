@@ -37,6 +37,7 @@
         "zendframework/zend-modulemanager": "~2.3",
         "zendframework/zend-serializer": "~2.3",
         "zendframework/zend-test": "~2.3",
+        "zendframework/zend-authentication": "~2.3",
         "mockery/mockery": "0.9.*"
     },
     "autoload": {
