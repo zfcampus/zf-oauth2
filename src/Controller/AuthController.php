@@ -128,12 +128,16 @@ class AuthController extends AbstractActionController
             return $view;
         }
 
-        $is_authorized = ($authorized === 'yes');
+        $isAuthorized = ($authorized === 'yes');
+
+        $userIdProvider = $this->getServiceLocator()
+            ->get('ZF\OAuth2\Provider\UserId');
+
         $this->server->handleAuthorizeRequest(
             $request,
             $response,
-            $is_authorized,
-            $this->getRequest()->getQuery('user_id', null)
+            $isAuthorized,
+            $userIdProvider()
         );
 
         $redirect = $response->getHttpHeader('Location');

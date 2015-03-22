@@ -14,10 +14,22 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
-        @copy(__DIR__ . '/../TestAsset/autoload/db_oauth2.sqlite', __DIR__ . '/../TestAsset/autoload/dbtest.sqlite');
+        copy(
+            __DIR__ . '/../TestAsset/database/pdo.db',
+            __DIR__ . '/../TestAsset/database/pdo-test.db'
+        );
 
-        $this->setApplicationConfig(include __DIR__ . '/../TestAsset/application.config.php');
+        $this->setApplicationConfig(include __DIR__ . '/../TestAsset/pdo.application.config.php');
+
         parent::setUp();
+    }
+
+    public function getDb()
+    {
+        $config = $this->getApplication()->getServiceManager()->get('Config');
+        $db = new \PDO($config['zf-oauth2']['db']['dsn']);
+
+        return $db;
     }
 
     public function tearDown()
@@ -81,6 +93,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $_GET['response_type'] = 'code';
         $_GET['client_id'] = 'testclient';
         $_GET['state'] = 'xyz';
+        $_GET['user_id'] = 123;
         $_GET['redirect_uri'] = '/oauth/receivecode';
         $_POST['authorized'] = 'yes';
         $_SERVER['REQUEST_METHOD'] = 'POST';
@@ -94,6 +107,16 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         if (preg_match('#code=([0-9a-f]+)#', $location, $matches)) {
             $code = $matches[1];
         }
+
+        // test data in database is correct
+        $row = $this->getDb()->query("
+            SELECT * 
+            FROM oauth_authorization_codes 
+            WHERE authorization_code = '" . $code . "'
+        ")->fetch();
+
+        $this->assertEquals('123', $row['user_id']);
+
         // test get token from authorized code
         $request = $this->getRequest();
         $request->getPost()->set('grant_type', 'authorization_code');

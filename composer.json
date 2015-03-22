@@ -29,14 +29,16 @@
     },
     "require-dev": {
         "phpunit/PHPUnit": "3.7.*",
-        "squizlabs/php_codesniffer": "~1.5",
+        "squizlabs/php_codesniffer": "~2",
         "zendframework/zend-config": "~2.3",
         "zendframework/zend-form": "~2.3",
         "zendframework/zend-loader": "~2.3",
         "zendframework/zend-log": "~2.3",
         "zendframework/zend-modulemanager": "~2.3",
         "zendframework/zend-serializer": "~2.3",
-        "zendframework/zend-test": "~2.3"
+        "zendframework/zend-test": "~2.3",
+        "zendframework/zend-authentication": "~2.3",
+        "mockery/mockery": "0.9.*"
     },
     "autoload": {
         "psr-4": {

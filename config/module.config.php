@@ -50,6 +50,9 @@ return array(
         ),
     ),
     'service_manager' => array(
+        'invokables' => array(
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\Request',
+        ),
         'factories' => array(
             'ZF\OAuth2\Adapter\PdoAdapter'   => 'ZF\OAuth2\Factory\PdoAdapterFactory',
             'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory',
