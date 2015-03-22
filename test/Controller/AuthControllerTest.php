@@ -21,7 +21,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         parent::setUp();
     }
 
-    public function getDb() 
+    public function getDb()
     {
         $config = $this->getApplication()->getServiceManager()->get('Config');
         $db = new \PDO($config['zf-oauth2']['db']['dsn']);
