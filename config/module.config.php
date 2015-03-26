@@ -78,6 +78,12 @@ return array(
          *       // see https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php#L57-L66
          *   ]
          */
+        'grant_types' => array(
+            'client_credentials' => true,
+            'authorization_code' => true,
+            'password'           => true,
+            'refresh_token'      => true,
+        ),
     ),
     'zf-content-negotiation' => array(
         'ZF\OAuth2\Controller\Auth' => array(
