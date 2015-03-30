@@ -242,7 +242,8 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('You accessed my APIs!', $response['message']);
 
         // test resource through token by Bearer header
-        $server->set('HTTP_AUTHORIZATION', "Bearer $token");
+        $request->getHeaders()
+            ->addHeaderLine('Authorization', 'Bearer ' . $token);
         unset($post['access_token']);
         $request->setMethod('GET');
 
