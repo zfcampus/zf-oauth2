@@ -14,6 +14,7 @@ use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
+use OAuth2\GrantType\JwtBearer;
 
 class OAuth2ServerFactory implements FactoryInterface
 {
@@ -57,6 +58,9 @@ class OAuth2ServerFactory implements FactoryInterface
         $accessLifetime = isset($config['zf-oauth2']['access_lifetime'])
             ? $config['zf-oauth2']['access_lifetime']
             : 3600;
+        $audience = isset($config['zf-oauth2']['audience'])
+            ? $config['zf-oauth2']['audience']
+            : '';
         $options        = isset($config['zf-oauth2']['options'])
             ? $config['zf-oauth2']['options']
             : array();
@@ -81,6 +85,9 @@ class OAuth2ServerFactory implements FactoryInterface
 
         // Add the "User Credentials" grant type
         $server->addGrantType(new UserCredentials($server->getStorage('user_credentials')));
+
+        // Add the "JWT Bearer" grant type
+        $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer'), $audience));
 
         $refreshOptions = array();
         if (isset($options['always_issue_new_refresh_token'])) {
