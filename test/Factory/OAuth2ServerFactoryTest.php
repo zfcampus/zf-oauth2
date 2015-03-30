@@ -12,6 +12,7 @@ use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
+use OAuth2\GrantType\JwtBearer;
 
 class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
 {
@@ -46,6 +47,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'authorization_code' => true,
                     'password'           => true,
                     'refresh_token'      => true,
+                    'jwt'                => true,
                 ),
             ),
         ));
@@ -63,6 +65,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
@@ -84,6 +87,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'authorization_code' => true,
                     'password'           => true,
                     'refresh_token'      => true,
+                    'jwt'                => true,
                 ),
             ),
         ));
@@ -101,6 +105,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
@@ -125,6 +130,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'authorization_code' => true,
                     'password'           => true,
                     'refresh_token'      => true,
+                    'jwt'                => true,
                 ),
             )
         ));
@@ -142,6 +148,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
@@ -190,6 +197,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'authorization_code' => true,
                     'password'           => true,
                     'refresh_token'      => true,
+                    'jwt'                => true,
                 ),
             )
         ));
@@ -207,6 +215,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new AuthorizationCode($storage['authorization_code']));
         $expectedService->addGrantType(new UserCredentials($storage['user_credentials']));
         $expectedService->addGrantType(new RefreshToken($storage['refresh_token']));
+        $expectedService->addGrantType(new JwtBearer($storage['jwt_bearer'], ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);

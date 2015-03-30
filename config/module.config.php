@@ -83,6 +83,7 @@ return array(
             'authorization_code' => true,
             'password'           => true,
             'refresh_token'      => true,
+            'jwt'                => true,
         ),
         /*
          * Error reporting style
