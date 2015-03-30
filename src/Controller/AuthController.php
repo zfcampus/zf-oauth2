@@ -39,7 +39,9 @@ class AuthController extends AbstractActionController
     }
 
     /**
-     * @return boolean
+     * Should the controller return ApiProblemResponse?
+     *
+     * @return bool
      */
     public function isApiProblemErrorResponse()
     {
@@ -47,11 +49,17 @@ class AuthController extends AbstractActionController
     }
 
     /**
-     * @param boolean $apiProblemErrorResponse
+     * Indicate whether ApiProblemResponse or oauth2 errors should be returned.
+     *
+     * Boolean true indicates ApiProblemResponse should be returned (the
+     * default), while false indicates oauth2 errors (per the oauth2 spec)
+     * should be returned.
+     *
+     * @param bool $apiProblemErrorResponse
      */
     public function setApiProblemErrorResponse($apiProblemErrorResponse)
     {
-        $this->apiProblemErrorResponse = $apiProblemErrorResponse;
+        $this->apiProblemErrorResponse = (bool) $apiProblemErrorResponse;
     }
 
     /**
@@ -155,15 +163,15 @@ class AuthController extends AbstractActionController
 
     /**
      * @param OAuth2Response $response
-     * @return \ZF\ApiProblem\ApiProblemResponse|\Zend\Stdlib\ResponseInterface
+     * @return ApiProblemResponse|\Zend\Stdlib\ResponseInterface
      */
     protected function getErrorResponse(OAuth2Response $response)
     {
         if ($this->isApiProblemErrorResponse()) {
             return $this->getApiProblemResponse($response);
-        } else {
-            return $this->setHttpResponse($response);
         }
+
+        return $this->setHttpResponse($response);
     }
 
     /**
@@ -232,9 +240,6 @@ class AuthController extends AbstractActionController
         }
         if (isset($server['PHP_AUTH_PW'])) {
             $headers['PHP_AUTH_PW'] = $server['PHP_AUTH_PW'];
-        }
-        if (isset($server['HTTP_AUTHORIZATION'])) {
-            $headers['AUTHORIZATION'] = $server['HTTP_AUTHORIZATION'];
         }
 
         // Ensure the bodyParams are passed as an array
