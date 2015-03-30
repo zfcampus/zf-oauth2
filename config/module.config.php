@@ -84,6 +84,15 @@ return array(
             'password'           => true,
             'refresh_token'      => true,
         ),
+        /*
+         * Error reporting style
+         *
+         * If true, client errors are returned using the
+         * application/problem+json content type,
+         * otherwise in the format described in the oauth2 specification 
+         * (default: true)
+         */
+        'api_problem_error_response' => true,
     ),
     'zf-content-negotiation' => array(
         'ZF\OAuth2\Controller\Auth' => array(
