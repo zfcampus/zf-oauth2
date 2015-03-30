@@ -4,10 +4,10 @@ if ($this->code) {
     printf("<p>Use this code to request an access token.</p>");
     printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
     printf(
-        "<p>http --auth testclient:testpass -f POST http://%s/oauth grant_type=authorization_code code=%s redirect_uri=%s</p>",
+        "<p>http -f POST http://%s/oauth grant_type=authorization_code redirect_uri=%s client_id=testclient client_secret=testpass code=%s</p>",
         $_SERVER['HTTP_HOST'],
-        $this->code,
-        '/oauth/receivecode'
+        '/oauth/receivecode',
+        $this->code
     );
     printf("<p>or using <a href=\"http://curl.haxx.se/docs/manpage.html\">CURL</a>:</p>");
     printf(
