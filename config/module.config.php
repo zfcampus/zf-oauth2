@@ -50,9 +50,16 @@ return array(
         ),
     ),
     'service_manager' => array(
+        'aliases' => array(
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\Request',
+        ),
+        'invokables' => array(
+            'ZF\OAuth2\Provider\UserId\Request' => 'ZF\OAuth2\Provider\UserId\Request',
+        ),
         'factories' => array(
-            'ZF\OAuth2\Adapter\PdoAdapter'   => 'ZF\OAuth2\Factory\PdoAdapterFactory',
+            'ZF\OAuth2\Adapter\PdoAdapter' => 'ZF\OAuth2\Factory\PdoAdapterFactory',
             'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory',
+            'ZF\OAuth2\Provider\UserId\AuthenticationService' => 'ZF\OAuth2\Provider\UserId\AuthenticationServiceFactory',
             'ZF\OAuth2\Service\OAuth2Server' => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
         )
     ),
