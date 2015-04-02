@@ -15,6 +15,8 @@ use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ContentNegotiation\ViewModel;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use ZF\OAuth2\Provider\UserId\Request as UserIdProviderRequest;
 
 class AuthController extends AbstractActionController
 {
@@ -132,12 +134,22 @@ class AuthController extends AbstractActionController
             return $view;
         }
 
-        $is_authorized = ($authorized === 'yes');
+        $isAuthorized = ($authorized === 'yes');
+
+        // If a UserId provider is set in service locator use
+        // that object.  Otherwise default to Request.
+        try {
+            $userIdProvider = $this->getServiceLocator()
+                ->get('ZF\OAuth2\Provider\UserId');
+        } catch (ServiceNotFoundException $e) {
+            $userIdProvider = new UserIdProviderRequest();
+        }
+
         $this->server->handleAuthorizeRequest(
             $request,
             $response,
-            $is_authorized,
-            $this->getRequest()->getQuery('user_id', null)
+            $isAuthorized,
+            $userIdProvider($this->getRequest())
         );
 
         $redirect = $response->getHttpHeader('Location');

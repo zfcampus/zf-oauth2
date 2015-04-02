@@ -19,7 +19,7 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
 
         copy(
             __DIR__ . '/../../TestAsset/database/pdo.db',
-            __DIR__ . '/../../TestAsset/database/pdo-test.db'
+            sys_get_temp_dir() . '/pdo-test.db'
         );
     }
 
