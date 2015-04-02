@@ -29,17 +29,18 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     public function getDb()
     {
         $config = $this->getApplication()->getServiceManager()->get('Config');
-        $adapter = new Adapter(array(
+        return new Adapter(array(
             'driver' => 'pdo',
             'dsn' => $config['zf-oauth2']['db']['dsn'],
         ));
-
-        return $adapter;
     }
 
     public function tearDown()
     {
-        @unlink(sys_get_temp_dir() . '/pdo-test.db');
+        $db = sys_get_temp_dir() . '/pdo-test.db';
+        if (file_exists($db)) {
+            unlink(sys_get_temp_dir() . '/pdo-test.db');
+        }
     }
 
     public function testToken()

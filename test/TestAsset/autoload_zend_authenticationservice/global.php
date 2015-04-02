@@ -4,6 +4,7 @@
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 
+// @codingStandardsIgnoreFile
 return array(
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -23,7 +24,7 @@ return array(
     'zf-oauth2' => array(
         'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
         'db' => array(
-            'dsn'      => 'sqlite:' . sys_get_temp_dir() . '/dbtest.sqlite',
+            'dsn' => 'sqlite:' . sys_get_temp_dir() . '/dbtest.sqlite',
         ),
         'allow_implicit' => true,
         'enforce_state'  => true,
@@ -41,23 +42,13 @@ return array(
     'service_manager' => array(
         'aliases' => array(
             'translator' => 'MvcTranslator',
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\AuthenticationService',
         ),
         'invokables' => array(
             'Zend\Authentication\AuthenticationService' => 'Zend\Authentication\AuthenticationService',
         ),
-/*
-        'invokables' => array(
-            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\Request',
-        ),
-*/
         'factories' => array(
-            'ZF\OAuth2\Provider\UserId' => function($serviceManager)
-            {
-                $provider = new \ZF\OAuth2\Provider\UserId\AuthenticationService();
-                $provider->setAuthenticationService($serviceManager->get('Zend\Authentication\AuthenticationService'));
-
-                return $provider;
-            },
+            'ZF\OAuth2\Provider\UserId\AuthenticationService' => 'ZF\OAuth2\Provider\UserId\AuthenticationServiceFactory',
         ),
     ),
 );

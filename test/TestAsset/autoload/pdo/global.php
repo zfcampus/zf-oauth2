@@ -24,7 +24,6 @@ return array(
         'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
         'db' => array(
             'dsn' => 'sqlite:' . sys_get_temp_dir() . '/pdo-test.db',
-#            'dsn'      => 'sqlite:' . __DIR__ . '/../../database/pdo-test.db',
         ),
         'allow_implicit' => true,
         'enforce_state'  => true,

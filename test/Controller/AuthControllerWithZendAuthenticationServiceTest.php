@@ -6,9 +6,10 @@
 
 namespace ZFTest\OAuth2\Controller;
 
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
-use Mockery\Loader;
 use Mockery as M;
+use Mockery\Loader;
+use PDO;
+use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpControllerTestCase
 {
@@ -17,7 +18,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
 
     public function setUp()
     {
-        @copy(
+        copy(
             __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/db_oauth2.sqlite',
             sys_get_temp_dir() . '/dbtest.sqlite'
         );
@@ -35,14 +36,15 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
     public function getDb()
     {
         $config = $this->getApplication()->getServiceManager()->get('Config');
-        $db = new \PDO($config['zf-oauth2']['db']['dsn']);
-
-        return $db;
+        return new PDO($config['zf-oauth2']['db']['dsn']);
     }
 
     public function tearDown()
     {
-        @unlink(sys_get_temp_dir() . '/dbtest.sqlite');
+        $db = sys_get_temp_dir() . '/dbtest.sqlite';
+        if (file_exists($db)) {
+            unlink($db);
+        }
     }
 
     public function getAuthenticationService()
@@ -71,7 +73,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $this->getAuthenticationService();
 
         $this->dispatch('/oauth/authorize');
-        $this->assertTrue($this->getResponse()->isRedirect());
+        $this->assertTrue($this->getResponse()->isRedirect(), var_export($this->getResponse(), 1));
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
 
@@ -81,11 +83,13 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         }
 
         // test data in database is correct
-        $row = $this->getDb()->query("
-            SELECT *
-            FROM oauth_authorization_codes
-            WHERE authorization_code = '" . $code . "'
-        ")->fetch();
+        $query = sprintf(
+            'SELECT * FROM oauth_authorization_codes WHERE authorization_code = \'%s\'',
+            $code
+        );
+        $row = $this->getDb()
+            ->query($query)
+            ->fetch();
 
         $this->assertEquals('123', $row['user_id']);
 
@@ -103,6 +107,6 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertNotEmpty($response['access_token']);
     }
 }

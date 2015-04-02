@@ -19,7 +19,10 @@ class AuthControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $controllers)
     {
         $services = $controllers->getServiceLocator()->get('ServiceManager');
-        $authController = new AuthController($services->get('ZF\OAuth2\Service\OAuth2Server'));
+        $authController = new AuthController(
+            $services->get('ZF\OAuth2\Service\OAuth2Server'),
+            $services->get('ZF\OAuth2\Provider\UserId')
+        );
 
         $config = $services->get('Config');
         $authController->setApiProblemErrorResponse((isset($config['zf-oauth2']['api_problem_error_response'])

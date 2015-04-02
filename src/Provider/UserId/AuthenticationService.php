@@ -1,45 +1,39 @@
 <?php
+/**
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ */
 
 namespace ZF\OAuth2\Provider\UserId;
 
-use Zend\Stdlib\RequestInterface;
 use Zend\Authentication\AuthenticationService as ZendAuthenticationService;
+use Zend\Stdlib\RequestInterface;
 
 class AuthenticationService implements UserIdProviderInterface
 {
-    protected $authenticationService;
+    /**
+     * @var ZendAuthenticationService
+     */
+    private $authenticationService;
 
     /**
      *  Set authentication service
      *
-     * @param AuthenticationService $service
-     * @return $this
+     * @param ZendAuthenticationService $service
      */
-    public function setAuthenticationService(ZendAuthenticationService $service)
+    public function __construct(ZendAuthenticationService $service)
     {
         $this->authenticationService = $service;
-
-        return $this;
     }
 
     /**
-     *  Get authentication service
+     * Use Zend\Authentication\AuthenticationService to fetch the identity.
      *
-     * @param AuthenticationService $service
-     * @return $this
-     */
-    public function getAuthenticationService()
-    {
-        return $this->authenticationService;
-    }
-
-    /**
-     * Use the Zend authentication service to fetch the identity
-     *
-     * @return integer
+     * @param RequestInterface $request
+     * @return mixed
      */
     public function __invoke(RequestInterface $request)
     {
-        return $this->getAuthenticationService()->getIdentity();
+        return $this->authenticationService->getIdentity();
     }
 }

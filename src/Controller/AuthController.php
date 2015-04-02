@@ -12,32 +12,40 @@ use OAuth2\Server as OAuth2Server;
 use Zend\Http\PhpEnvironment\Request as PhpEnvironmentRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ContentNegotiation\ViewModel;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use ZF\OAuth2\Provider\UserId\Request as UserIdProviderRequest;
+use ZF\OAuth2\Provider\UserId\UserIdProviderInterface;
 
 class AuthController extends AbstractActionController
 {
-    /**
-     * @var OAuth2Server
-     */
-    protected $server;
-
     /**
      * @var boolean
      */
     protected $apiProblemErrorResponse = true;
 
     /**
+     * @var OAuth2Server
+     */
+    protected $server;
+
+    /**
+     * @var UserIdProviderInterface
+     */
+    protected $userIdProvider;
+
+    /**
      * Constructor
      *
-     * @param $server OAuth2Server
+     * @param OAuth2Server $server
+     * @param UserIdProviderInterface $userIdProvider
      */
-    public function __construct(OAuth2Server $server)
+    public function __construct(OAuth2Server $server, UserIdProviderInterface $userIdProvider)
     {
         $this->server = $server;
+        $this->userIdProvider = $userIdProvider;
     }
 
     /**
@@ -134,16 +142,8 @@ class AuthController extends AbstractActionController
             return $view;
         }
 
-        $isAuthorized = ($authorized === 'yes');
-
-        // If a UserId provider is set in service locator use
-        // that object.  Otherwise default to Request.
-        try {
-            $userIdProvider = $this->getServiceLocator()
-                ->get('ZF\OAuth2\Provider\UserId');
-        } catch (ServiceNotFoundException $e) {
-            $userIdProvider = new UserIdProviderRequest();
-        }
+        $isAuthorized   = ($authorized === 'yes');
+        $userIdProvider = $this->userIdProvider;
 
         $this->server->handleAuthorizeRequest(
             $request,

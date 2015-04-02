@@ -150,31 +150,31 @@ oauth_clients collection:
 User ID Provider
 ----------------
 
-When a user requests an authorization code they may provide their user_id as a request parameter to the /oauth/authorize route.  This will store the user_id in the access_token, refresh_token, and authorization_code tables as the user goes throught the oauth2 process.
+When a user requests an authorization code they may provide their user_id as a request parameter to
+the `/oauth/authorize` route.  This will store the `user_id` in the `access_token`, `refresh_token`,
+and `authorization_code` tables as the user goes throught the oauth2 process.
 
-A user may be authenticated through Zend\Authentication or another authentication means.  When a user must provide authentication before they may access the /oauth/authorize route the authenticated user id should be used.  This is done with an service manager alias ``` ZF\OAuth2\Provider\UserId ```
+A user may be authenticated through `Zend\Authentication\AuthenticationService` or another
+authentication means.  When a user must provide authentication before they may access the
+`/oauth/authorize` route, the authenticated user ID should be used. This is done with the service
+manager alias `ZF\OAuth2\Provider\UserId`.
 
-The default UserID Provider uses a request query paramter ``` user_id=123 ``` and handled with ``` ZF\OAuth2\Provider\UserId\Request ```
+The default User ID Provider uses the request query parameter `user_id` and is handled via the class
+`ZF\OAuth2\Provider\UserId\Request`.
 
-Provided with this repository is ``` ZF\OAuth2\Provider\UserId\AuthorizationService ``` which uses ``` Zend\Authentication\AuthenticationService ``` to fetch the identity.  To change the User ID Provider add the service_manager config:
+Provided with this repository is an alternative provider,
+`ZF\OAuth2\Provider\UserId\AuthorizationService`, which uses
+`Zend\Authentication\AuthenticationService` to fetch the identity.  To change the User ID Provider
+to use this service, change the `ZF\OAuth2\Provider\UserId` service alias to point at it:
 
-```
-use ZF\OAuth2\Provider\UserId\AuthenticationService 
-    as UserIdProviderAuthenticationService;
-
+```php
 return array(
     'service_manager' => 
-        'factories' => array(
-            'ZF\OAuth2\Provider\UserId' => function($serviceManager)
-            {
-                $provider = new UserIdProviderAuthenticationService();
-                $provider->setAuthenticationService($serviceManager->get('Zend\Authentication\AuthenticationService'));
-
-                return $provider;
-            },
+        'aliases' => array(
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\AuthenticationService',
         ),
     ),
-),
+);
 ```
 
 How to test OAuth2
