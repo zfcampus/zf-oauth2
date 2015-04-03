@@ -52,7 +52,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'ZF\OAuth2\Adapter\PdoAdapter'   => 'ZF\OAuth2\Factory\PdoAdapterFactory',
-            'ZF\OAuth2\Adapter\Db2Adapter'   => 'ZF\OAuth2\Factory\Db2AdapterFactory',
+            'ZF\OAuth2\Adapter\IbmDb2Adapter'   => 'ZF\OAuth2\Factory\IbmDb2AdapterFactory',
             'ZF\OAuth2\Adapter\MongoAdapter' => 'ZF\OAuth2\Factory\MongoAdapterFactory',
             'ZF\OAuth2\Service\OAuth2Server' => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
         )
