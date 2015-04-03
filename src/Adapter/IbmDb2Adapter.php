@@ -98,10 +98,10 @@ class IbmDb2Adapter extends OAuth2Db2
     public function checkClientCredentials($client_id, $client_secret = null)
     {
         $stmt = $this->db->prepare(sprintf(
-            'SELECT * from %s where client_id = :client_id',
+            'SELECT * from %s where client_id = ?',
             $this->config['client_table']
         ));
-        $stmt->execute(compact('client_id'));
+        $successfulExecute = db2_execute($stmt, compact('client_id'));
         $result = $stmt->fetch();
 
         // bcrypt verify
