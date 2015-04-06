@@ -53,7 +53,7 @@ class IbmDb2Adapter extends OAuth2Db2
      */
     protected function checkPassword($user, $password)
     {
-        return $this->verifyHash($password, $user['password']);
+        return $this->verifyHash($password, $user['PASSWORD']);
     }
 
     /**
@@ -97,15 +97,19 @@ class IbmDb2Adapter extends OAuth2Db2
      */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
-        $stmt = $this->db->prepare(sprintf(
+        $stmt = db2_prepare($this->db, sprintf(
             'SELECT * from %s where client_id = ?',
             $this->config['client_table']
         ));
+        if (false == $stmt) {
+            throw new \Exception(db2_stmt_errormsg());
+        }
+
         $successfulExecute = db2_execute($stmt, compact('client_id'));
-        $result = $stmt->fetch();
+        $result = db2_fetch_assoc($stmt);
 
         // bcrypt verify
-        return $this->verifyHash($client_secret, $result['client_secret']);
+        return $this->verifyHash($client_secret, $result['CLIENT_SECRET']);
     }
 
     /**
@@ -157,6 +161,9 @@ class IbmDb2Adapter extends OAuth2Db2
                 $this->config['client_table']
             ));
         }
+        if (false == $stmt) {
+            throw new \Exception(db2_stmt_errormsg());
+        }
         return db2_execute($stmt, compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
     }
 
@@ -176,7 +183,7 @@ class IbmDb2Adapter extends OAuth2Db2
 
         // if it exists, update it.
         if ($this->getUser($username)) {
-            $stmt = $this->db->prepare(sprintf(
+            $stmt = db2_prepare($this->db, sprintf(
                 'UPDATE %s SET password=?, first_name=?, last_name=? where username=?',
                 $this->config['user_table']
             ));
@@ -186,6 +193,9 @@ class IbmDb2Adapter extends OAuth2Db2
                 . 'VALUES (?, ?, ?, ?)',
                 $this->config['user_table']
             ));
+        }
+        if (false == $stmt) {
+            throw new \Exception(db2_stmt_errormsg());
         }
 
         return db2_execute($stmt, compact('username', 'password', 'firstName', 'lastName'));
