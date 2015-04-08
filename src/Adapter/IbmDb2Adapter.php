@@ -53,7 +53,7 @@ class IbmDb2Adapter extends OAuth2Db2
      */
     protected function checkPassword($user, $password)
     {
-        return $this->verifyHash($password, $user['PASSWORD']);
+        return $this->verifyHash($password, $user['password']);
     }
 
     /**
@@ -109,7 +109,7 @@ class IbmDb2Adapter extends OAuth2Db2
         $result = db2_fetch_assoc($stmt);
 
         // bcrypt verify
-        return $this->verifyHash($client_secret, $result['CLIENT_SECRET']);
+        return $this->verifyHash($client_secret, $result['client_secret']);
     }
 
     /**
