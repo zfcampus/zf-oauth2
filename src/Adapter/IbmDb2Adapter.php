@@ -8,6 +8,7 @@ use Zend\Crypt\Password\Bcrypt;
 /**
  * Extension of OAuth2\Storage\IbmDb2 that provides Bcrypt client_secret/password
  * encryption
+ * @author Alan Seiden <alan at alanseiden dot com> (of IbmDb2 changes)
  */
 class IbmDb2Adapter extends OAuth2Db2
 {
@@ -154,17 +155,21 @@ class IbmDb2Adapter extends OAuth2Db2
                 . 'WHERE client_id=?',
                 $this->config['client_table']
             ));
+            $params = compact('client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id', 'client_id');
+
         } else {
             $stmt = db2_prepare($this->db, sprintf(
                 'INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) '
                 . 'VALUES (?, ?, ?, ?, ?, ?)',
                 $this->config['client_table']
             ));
+            $params = compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id');
+
         }
         if (false == $stmt) {
             throw new \Exception(db2_stmt_errormsg());
         }
-        return db2_execute($stmt, compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id'));
+        return db2_execute($stmt, $params);
     }
 
     /**
@@ -187,17 +192,19 @@ class IbmDb2Adapter extends OAuth2Db2
                 'UPDATE %s SET password=?, first_name=?, last_name=? where username=?',
                 $this->config['user_table']
             ));
+            $params = compact('password', 'firstName', 'lastName', 'username');
         } else {
             $stmt = db2_prepare($this->db,sprintf(
                 'INSERT INTO %s (username, password, first_name, last_name) '
                 . 'VALUES (?, ?, ?, ?)',
                 $this->config['user_table']
             ));
+            $params = compact('username', 'password', 'firstName', 'lastName');
         }
         if (false == $stmt) {
             throw new \Exception(db2_stmt_errormsg());
         }
 
-        return db2_execute($stmt, compact('username', 'password', 'firstName', 'lastName'));
+        return db2_execute($stmt, $params);
     }
 }
