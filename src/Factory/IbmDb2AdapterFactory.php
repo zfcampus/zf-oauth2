@@ -30,7 +30,7 @@ class IbmDb2AdapterFactory implements FactoryInterface
 
         $username = isset($config['zf-oauth2']['db']['username']) ? $config['zf-oauth2']['db']['username'] : null;
         $password = isset($config['zf-oauth2']['db']['password']) ? $config['zf-oauth2']['db']['password'] : null;
-        $options  = isset($config['zf-oauth2']['db']['options']) ? $config['zf-oauth2']['db']['options'] : array();
+        $driver_options  = isset($config['zf-oauth2']['db']['driver_options']) ? $config['zf-oauth2']['db']['driver_options'] : array();
 
         $oauth2ServerConfig = array();
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
@@ -41,7 +41,7 @@ class IbmDb2AdapterFactory implements FactoryInterface
             'database'      => $config['zf-oauth2']['db']['database'],
             'username' => $username,
             'password' => $password,
-            'options'  => $options,
+            'driver_options'  => $driver_options,
         ), $oauth2ServerConfig);
     }
 }
