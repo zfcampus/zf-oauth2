@@ -3,7 +3,6 @@
  * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
-
 namespace ZFTest\OAuth2\Factory;
 
 use Zend\ServiceManager\ServiceManager;
@@ -13,6 +12,7 @@ use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
+use OAuth2\GrantType\JwtBearer;
 
 class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
 {
@@ -38,12 +38,18 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
     public function testServiceCreatedWithDefaults()
     {
         $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
-
         $this->services->setService('TestAdapter', $adapter);
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
-                'storage' => 'TestAdapter'
-            )
+                'storage' => 'TestAdapter',
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                    'jwt'                => true,
+                ),
+            ),
         ));
 
         $expectedService = new \OAuth2\Server(
@@ -54,10 +60,12 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'access_lifetime' => 3600
             )
         );
+
         $expectedService->addGrantType(new ClientCredentials($adapter));
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
@@ -67,7 +75,6 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
     public function testServiceCreatedWithOverriddenValues()
     {
         $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
-
         $this->services->setService('TestAdapter', $adapter);
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
@@ -75,7 +82,14 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'enforce_state'  => false,
                 'allow_implicit' => true,
                 'access_lifetime' => 12000,
-            )
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                    'jwt'                => true,
+                ),
+            ),
         ));
 
         $expectedService = new \OAuth2\Server(
@@ -86,10 +100,12 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'access_lifetime' => 12000
             )
         );
+
         $expectedService->addGrantType(new ClientCredentials($adapter));
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
@@ -109,6 +125,13 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'allow_implicit'  => true,
                     'access_lifetime' => 12000,
                 ),
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                    'jwt'                => true,
+                ),
             )
         ));
 
@@ -120,16 +143,18 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'access_lifetime' => 12000
             )
         );
+
         $expectedService->addGrantType(new ClientCredentials($adapter));
         $expectedService->addGrantType(new AuthorizationCode($adapter));
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
+        $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
         $this->assertEquals($expectedService, $service);
     }
-    
+
     public function testServiceCreatedWithStoragesAsArray()
     {
         $storage = array(
@@ -143,7 +168,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
             'jwt_bearer'         => $this->getMockForAbstractClass('OAuth2\Storage\JWTBearerInterface'),
             'scope'              => $this->getMockForAbstractClass('OAuth2\Storage\ScopeInterface'),
         );
-            
+
         $this->services->setService('OAuth2\Storage\AccessToken', $storage['access_token']);
         $this->services->setService('OAuth2\Storage\AuthorizationCode', $storage['authorization_code']);
         $this->services->setService('OAuth2\Storage\ClientCredentials', $storage['client_credentials']);
@@ -153,7 +178,7 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->services->setService('OAuth2\Storage\PublicKey', $storage['public_key']);
         $this->services->setService('OAuth2\Storage\JWTBearer', $storage['jwt_bearer']);
         $this->services->setService('OAuth2\Storage\Scope', $storage['scope']);
-        
+
         $this->services->setService('Config', array(
             'zf-oauth2' => array(
                 'storage'        => array(
@@ -166,7 +191,14 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                     'public_key'         => 'OAuth2\Storage\PublicKey',
                     'jwt_bearer'         => 'OAuth2\Storage\JWTBearer',
                     'scope'              => 'OAuth2\Storage\Scope',
-                )
+                ),
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                    'jwt'                => true,
+                ),
             )
         ));
 
@@ -178,21 +210,52 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
                 'access_lifetime' => 3600
             )
         );
+
         $expectedService->addGrantType(new ClientCredentials($storage['client_credentials']));
         $expectedService->addGrantType(new AuthorizationCode($storage['authorization_code']));
         $expectedService->addGrantType(new UserCredentials($storage['user_credentials']));
         $expectedService->addGrantType(new RefreshToken($storage['refresh_token']));
+        $expectedService->addGrantType(new JwtBearer($storage['jwt_bearer'], ''));
 
         $service = $this->factory->createService($this->services);
         $this->assertInstanceOf('OAuth2\Server', $service);
         $this->assertEquals($expectedService, $service);
     }
-    
+
+    public function testServiceCreatedWithSelectedGrandTypes()
+    {
+        $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
+        $this->services->setService('TestAdapter', $adapter);
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'storage' => 'TestAdapter',
+                'grant_types' => array(
+                    'client_credentials' => false,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                ),
+            )
+        ));
+
+        $expectedService = new \OAuth2\Server(
+            $adapter,
+            array(
+                'enforce_state'   => true,
+                'allow_implicit'  => false,
+                'access_lifetime' => 3600
+            )
+        );
+
+        $expectedService->addGrantType(new UserCredentials($adapter));
+        $expectedService->addGrantType(new RefreshToken($adapter));
+        $service = $this->factory->createService($this->services);
+        $this->assertInstanceOf('OAuth2\Server', $service);
+        $this->assertEquals($expectedService, $service);
+    }
 
     protected function setUp()
     {
         $this->factory = new OAuth2ServerFactory();
-
         $this->services = $services = new ServiceManager();
     }
 }

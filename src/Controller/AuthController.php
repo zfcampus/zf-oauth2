@@ -12,25 +12,64 @@ use OAuth2\Server as OAuth2Server;
 use Zend\Http\PhpEnvironment\Request as PhpEnvironmentRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
 use ZF\ContentNegotiation\ViewModel;
+use ZF\OAuth2\Provider\UserId\Request as UserIdProviderRequest;
+use ZF\OAuth2\Provider\UserId\UserIdProviderInterface;
 
 class AuthController extends AbstractActionController
 {
+    /**
+     * @var boolean
+     */
+    protected $apiProblemErrorResponse = true;
+
     /**
      * @var OAuth2Server
      */
     protected $server;
 
     /**
+     * @var UserIdProviderInterface
+     */
+    protected $userIdProvider;
+
+    /**
      * Constructor
      *
-     * @param $server OAuth2Server
+     * @param OAuth2Server $server
+     * @param UserIdProviderInterface $userIdProvider
      */
-    public function __construct(OAuth2Server $server)
+    public function __construct(OAuth2Server $server, UserIdProviderInterface $userIdProvider)
     {
         $this->server = $server;
+        $this->userIdProvider = $userIdProvider;
+    }
+
+    /**
+     * Should the controller return ApiProblemResponse?
+     *
+     * @return bool
+     */
+    public function isApiProblemErrorResponse()
+    {
+        return $this->apiProblemErrorResponse;
+    }
+
+    /**
+     * Indicate whether ApiProblemResponse or oauth2 errors should be returned.
+     *
+     * Boolean true indicates ApiProblemResponse should be returned (the
+     * default), while false indicates oauth2 errors (per the oauth2 spec)
+     * should be returned.
+     *
+     * @param bool $apiProblemErrorResponse
+     */
+    public function setApiProblemErrorResponse($apiProblemErrorResponse)
+    {
+        $this->apiProblemErrorResponse = (bool) $apiProblemErrorResponse;
     }
 
     /**
@@ -52,21 +91,11 @@ class AuthController extends AbstractActionController
 
         $oauth2request = $this->getOAuth2Request();
         $response = $this->server->handleTokenRequest($oauth2request);
-        if ($response->isClientError()) {
-            $parameters       = $response->getParameters();
-            $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
-            $error            = isset($parameters['error'])             ? $parameters['error']             : null;
-            $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
 
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $errorDescription,
-                    $errorUri,
-                    $error
-                )
-            );
+        if ($response->isClientError()) {
+            return $this->getErrorResponse($response);
         }
+
         return $this->setHttpResponse($response);
     }
 
@@ -78,17 +107,9 @@ class AuthController extends AbstractActionController
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
         if (!$this->server->verifyResourceRequest($this->getOAuth2Request())) {
             $response   = $this->server->getResponse();
-            $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $parameters['error_description'],
-                    $errorUri,
-                    $parameters['error']
-                )
-            );
+            return $this->getApiProblemResponse($response);
         }
+
         $httpResponse = $this->getResponse();
         $httpResponse->setStatusCode(200);
         $httpResponse->getHeaders()->addHeaders(array('Content-type' => 'application/json'));
@@ -107,17 +128,10 @@ class AuthController extends AbstractActionController
         $response = new OAuth2Response();
 
         // validate the authorize request
-        if (!$this->server->validateAuthorizeRequest($request, $response)) {
-            $parameters = $response->getParameters();
-            $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-            return new ApiProblemResponse(
-                new ApiProblem(
-                    $response->getStatusCode(),
-                    $parameters['error_description'],
-                    $errorUri,
-                    $parameters['error']
-                )
-            );
+        $isValid = $this->server->validateAuthorizeRequest($request, $response);
+
+        if (!$isValid) {
+            return $this->getErrorResponse($response);
         }
 
         $authorized = $request->request('authorized', false);
@@ -128,12 +142,14 @@ class AuthController extends AbstractActionController
             return $view;
         }
 
-        $is_authorized = ($authorized === 'yes');
+        $isAuthorized   = ($authorized === 'yes');
+        $userIdProvider = $this->userIdProvider;
+
         $this->server->handleAuthorizeRequest(
             $request,
             $response,
-            $is_authorized,
-            $this->getRequest()->getQuery('user_id', null)
+            $isAuthorized,
+            $userIdProvider($this->getRequest())
         );
 
         $redirect = $response->getHttpHeader('Location');
@@ -141,16 +157,7 @@ class AuthController extends AbstractActionController
             return $this->redirect()->toUrl($redirect);
         }
 
-        $parameters = $response->getParameters();
-        $errorUri   = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
-        return new ApiProblemResponse(
-            new ApiProblem(
-                $response->getStatusCode(),
-                $parameters['error_description'],
-                $errorUri,
-                $parameters['error']
-            )
-        );
+        return $this->getErrorResponse($response);
     }
 
     /**
@@ -164,6 +171,42 @@ class AuthController extends AbstractActionController
         ));
         $view->setTemplate('oauth/receive-code');
         return $view;
+    }
+
+    /**
+     * @param OAuth2Response $response
+     * @return ApiProblemResponse|\Zend\Stdlib\ResponseInterface
+     */
+    protected function getErrorResponse(OAuth2Response $response)
+    {
+        if ($this->isApiProblemErrorResponse()) {
+            return $this->getApiProblemResponse($response);
+        }
+
+        return $this->setHttpResponse($response);
+    }
+
+    /**
+     * Map OAuth2Response to ApiProblemResponse
+     *
+     * @param OAuth2Response $response
+     * @return ApiProblemResponse
+     */
+    protected function getApiProblemResponse(OAuth2Response $response)
+    {
+        $parameters       = $response->getParameters();
+        $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
+        $error            = isset($parameters['error'])             ? $parameters['error']             : null;
+        $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
+
+        return new ApiProblemResponse(
+            new ApiProblem(
+                $response->getStatusCode(),
+                $errorDescription,
+                $errorUri,
+                $error
+            )
+        );
     }
 
     /**

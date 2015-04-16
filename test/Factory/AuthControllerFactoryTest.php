@@ -9,6 +9,7 @@ namespace ZFTest\OAuth2\Factory;
 use Zend\Mvc\Controller\ControllerManager;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use ZF\OAuth2\Controller\AuthController;
 use ZF\OAuth2\Factory\AuthControllerFactory;
 
 class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
@@ -33,13 +34,15 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
     public function testControllerCreated()
     {
         $oauthServer = $this->getMockBuilder('OAuth2\Server')->disableOriginalConstructor()->getMock();
-
         $this->services->setService('ZF\OAuth2\Service\OAuth2Server', $oauthServer);
+
+        $userIdProvider = $this->getMock('ZF\OAuth2\Provider\UserId\UserIdProviderInterface');
+        $this->services->setService('ZF\OAuth2\Provider\UserId', $userIdProvider);
 
         $controller = $this->factory->createService($this->controllers);
 
         $this->assertInstanceOf('ZF\OAuth2\Controller\AuthController', $controller);
-        $this->assertEquals(new \ZF\OAuth2\Controller\AuthController($oauthServer), $controller);
+        $this->assertEquals(new AuthController($oauthServer, $userIdProvider), $controller);
     }
 
     protected function setUp()
@@ -47,6 +50,12 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
         $this->factory = new AuthControllerFactory();
 
         $this->services = $services = new ServiceManager();
+
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'api_problem_error_response' => true,
+            ),
+        ));
 
         $this->controllers = $controllers = new ControllerManager();
         $controllers->setServiceLocator(new ServiceManager());

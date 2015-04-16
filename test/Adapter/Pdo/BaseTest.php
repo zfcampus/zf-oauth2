@@ -1,8 +1,10 @@
 <?php
+/**
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @copyright Copyright (c) 2015 Zend Technologies USA Inc. (http://www.zend.com)
+ */
 
 namespace ZFTest\OAuth2\Adapter\Pdo;
-
-use Doctrine\ORM\Tools\SchemaTool;
 
 abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase
 {
@@ -19,8 +21,16 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
 
         copy(
             __DIR__ . '/../../TestAsset/database/pdo.db',
-            __DIR__ . '/../../TestAsset/database/pdo-test.db'
+            sys_get_temp_dir() . '/pdo-test.db'
         );
+    }
+
+    protected function tearDown()
+    {
+        $db = sys_get_temp_dir() . '/pdo-test.db';
+        if (file_exists($db)) {
+            unlink($db);
+        }
     }
 
     public function provideStorage()
