@@ -33,8 +33,9 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
 
     public function testControllerCreated()
     {
-        $oauthServer = $this->getMockBuilder('OAuth2\Server')->disableOriginalConstructor()->getMock();
-        $this->services->setService('ZF\OAuth2\Service\OAuth2Server', $oauthServer);
+        $oauthServerFactory = function () {
+        };
+        $this->services->setService('ZF\OAuth2\Service\OAuth2Server', $oauthServerFactory);
 
         $userIdProvider = $this->getMock('ZF\OAuth2\Provider\UserId\UserIdProviderInterface');
         $this->services->setService('ZF\OAuth2\Provider\UserId', $userIdProvider);
@@ -42,7 +43,7 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
         $controller = $this->factory->createService($this->controllers);
 
         $this->assertInstanceOf('ZF\OAuth2\Controller\AuthController', $controller);
-        $this->assertEquals(new AuthController($oauthServer, $userIdProvider), $controller);
+        $this->assertEquals(new AuthController($oauthServerFactory, $userIdProvider), $controller);
     }
 
     protected function setUp()

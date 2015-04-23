@@ -6,6 +6,7 @@
 
 namespace ZF\OAuth2\Factory;
 
+use OAuth2\Server as OAuth2Server;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Controller\AuthController;
@@ -19,8 +20,19 @@ class AuthControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $controllers)
     {
         $services = $controllers->getServiceLocator()->get('ServiceManager');
+
+        // For BC, if the ZF\OAuth2\Service\OAuth2Server service returns an
+        // OAuth2\Server instance, wrap it in a closure.
+        $oauth2ServerFactory = $services->get('ZF\OAuth2\Service\OAuth2Server');
+        if ($oauth2ServerFactory instanceof OAuth2Server) {
+            $oauth2Server = $oauth2ServerFactory;
+            $oauth2ServerFactory = function () use ($oauth2Server) {
+                return $oauth2Server;
+            };
+        }
+
         $authController = new AuthController(
-            $services->get('ZF\OAuth2\Service\OAuth2Server'),
+            $oauth2ServerFactory,
             $services->get('ZF\OAuth2\Provider\UserId')
         );
 
