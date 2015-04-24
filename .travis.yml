@@ -17,6 +17,7 @@ matrix:
 before_script:
   - composer self-update
   - composer install --dev --prefer-source
+  - chmod -R +rwX test/TestAsset
 
 script:
   - ./vendor/bin/phpunit

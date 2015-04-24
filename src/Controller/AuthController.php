@@ -6,9 +6,11 @@
 
 namespace ZF\OAuth2\Controller;
 
+use InvalidArgumentException;
 use OAuth2\Request as OAuth2Request;
 use OAuth2\Response as OAuth2Response;
 use OAuth2\Server as OAuth2Server;
+use RuntimeException;
 use Zend\Http\PhpEnvironment\Request as PhpEnvironmentRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -32,6 +34,11 @@ class AuthController extends AbstractActionController
     protected $server;
 
     /**
+     * @var callable Factory for generating an OAuth2Server instance.
+     */
+    protected $serverFactory;
+
+    /**
      * @var UserIdProviderInterface
      */
     protected $userIdProvider;
@@ -42,9 +49,15 @@ class AuthController extends AbstractActionController
      * @param OAuth2Server $server
      * @param UserIdProviderInterface $userIdProvider
      */
-    public function __construct(OAuth2Server $server, UserIdProviderInterface $userIdProvider)
+    public function __construct($serverFactory, UserIdProviderInterface $userIdProvider)
     {
-        $this->server = $server;
+        if (! is_callable($serverFactory)) {
+            throw new InvalidArgumentException(sprintf(
+                'OAuth2 Server factory must be a PHP callable; received %s',
+                (is_object($serverFactory) ? get_class($serverFactory) : gettype($serverFactory))
+            ));
+        }
+        $this->serverFactory  = $serverFactory;
         $this->userIdProvider = $userIdProvider;
     }
 
@@ -90,7 +103,7 @@ class AuthController extends AbstractActionController
         }
 
         $oauth2request = $this->getOAuth2Request();
-        $response = $this->server->handleTokenRequest($oauth2request);
+        $response = $this->getOAuth2Server($this->params('oauth'))->handleTokenRequest($oauth2request);
 
         if ($response->isClientError()) {
             return $this->getErrorResponse($response);
@@ -104,9 +117,11 @@ class AuthController extends AbstractActionController
      */
     public function resourceAction()
     {
+        $server = $this->getOAuth2Server($this->params('oauth'));
+
         // Handle a request for an OAuth2.0 Access Token and send the response to the client
-        if (!$this->server->verifyResourceRequest($this->getOAuth2Request())) {
-            $response   = $this->server->getResponse();
+        if (! $server->verifyResourceRequest($this->getOAuth2Request())) {
+            $response   = $server->getResponse();
             return $this->getApiProblemResponse($response);
         }
 
@@ -124,6 +139,7 @@ class AuthController extends AbstractActionController
      */
     public function authorizeAction()
     {
+        $server   = $this->getOAuth2Server($this->params('oauth'));
         $request  = $this->getOAuth2Request();
         $response = new OAuth2Response();
 
@@ -286,5 +302,33 @@ class AuthController extends AbstractActionController
 
         $httpResponse->setContent($response->getResponseBody());
         return $httpResponse;
+    }
+
+    /**
+     * Retrieve the OAuth2\Server instance.
+     *
+     * If not already created by the composed $serverFactory, that callable
+     * is invoked with the provided $type as an argument, and the value
+     * returned.
+     *
+     * @param string $type
+     * @return OAuth2Server
+     * @throws RuntimeException if the factory does not return an OAuth2Server instance.
+     */
+    private function getOAuth2Server($type)
+    {
+        if ($this->server instanceof OAuth2Server) {
+            return $this->server;
+        }
+
+        $server = call_user_func($this->serverFactory, $type);
+        if (! $server instanceof OAuth2Server) {
+            throw new RuntimeException(sprintf(
+                'OAuth2\Server factory did not return a valid instance; received %s',
+                (is_object($server) ? get_class($server) : gettype($server))
+            ));
+        }
+        $this->server = $server;
+        return $server;
     }
 }

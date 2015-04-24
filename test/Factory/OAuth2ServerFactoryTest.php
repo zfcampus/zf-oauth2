@@ -32,7 +32,8 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
     public function testExceptionThrownOnMissingStorageClass()
     {
         $this->services->setService('Config', array());
-        $this->factory->createService($this->services);
+        $factory = $this->factory->createService($this->services);
+        $factory();
     }
 
     public function testServiceCreatedWithDefaults()
@@ -68,8 +69,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
-        $this->assertInstanceOf('OAuth2\Server', $service);
-        $this->assertEquals($expectedService, $service);
+        $this->assertInstanceOf('ZF\OAuth2\Factory\OAuth2ServerInstanceFactory', $service);
+        $server = $service();
+        $this->assertInstanceOf('OAuth2\Server', $server);
+        $this->assertEquals($expectedService, $server);
     }
 
     public function testServiceCreatedWithOverriddenValues()
@@ -108,8 +111,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
-        $this->assertInstanceOf('OAuth2\Server', $service);
-        $this->assertEquals($expectedService, $service);
+        $this->assertInstanceOf('ZF\OAuth2\Factory\OAuth2ServerInstanceFactory', $service);
+        $server = $service();
+        $this->assertInstanceOf('OAuth2\Server', $server);
+        $this->assertEquals($expectedService, $server);
     }
 
     public function testServiceCreatedWithOverriddenValuesInOptionsSubArray()
@@ -151,8 +156,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new JwtBearer($adapter, ''));
 
         $service = $this->factory->createService($this->services);
-        $this->assertInstanceOf('OAuth2\Server', $service);
-        $this->assertEquals($expectedService, $service);
+        $this->assertInstanceOf('ZF\OAuth2\Factory\OAuth2ServerInstanceFactory', $service);
+        $server = $service();
+        $this->assertInstanceOf('OAuth2\Server', $server);
+        $this->assertEquals($expectedService, $server);
     }
 
     public function testServiceCreatedWithStoragesAsArray()
@@ -218,8 +225,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new JwtBearer($storage['jwt_bearer'], ''));
 
         $service = $this->factory->createService($this->services);
-        $this->assertInstanceOf('OAuth2\Server', $service);
-        $this->assertEquals($expectedService, $service);
+        $this->assertInstanceOf('ZF\OAuth2\Factory\OAuth2ServerInstanceFactory', $service);
+        $server = $service();
+        $this->assertInstanceOf('OAuth2\Server', $server);
+        $this->assertEquals($expectedService, $server);
     }
 
     public function testServiceCreatedWithSelectedGrandTypes()
@@ -249,8 +258,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $expectedService->addGrantType(new UserCredentials($adapter));
         $expectedService->addGrantType(new RefreshToken($adapter));
         $service = $this->factory->createService($this->services);
-        $this->assertInstanceOf('OAuth2\Server', $service);
-        $this->assertEquals($expectedService, $service);
+        $this->assertInstanceOf('ZF\OAuth2\Factory\OAuth2ServerInstanceFactory', $service);
+        $server = $service();
+        $this->assertInstanceOf('OAuth2\Server', $server);
+        $this->assertEquals($expectedService, $server);
     }
 
     protected function setUp()
