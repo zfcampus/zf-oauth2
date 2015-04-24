@@ -5,6 +5,7 @@
  */
 
 // @codingStandardsIgnoreFile
+
 return array(
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -24,7 +25,7 @@ return array(
     'zf-oauth2' => array(
         'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
         'db' => array(
-            'dsn' => 'sqlite:' . sys_get_temp_dir() . '/dbtest.sqlite',
+            'dsn' => 'sqlite::memory:',
         ),
         'allow_implicit' => true,
         'enforce_state'  => true,

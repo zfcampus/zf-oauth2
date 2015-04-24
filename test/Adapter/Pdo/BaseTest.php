@@ -6,6 +6,8 @@
 
 namespace ZFTest\OAuth2\Adapter\Pdo;
 
+use ReflectionProperty;
+
 abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase
 {
     protected function setUp()
@@ -18,19 +20,6 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
 
         $serviceManager = $this->getApplication()->getServiceManager();
         $serviceManager->setAllowOverride(true);
-
-        copy(
-            __DIR__ . '/../../TestAsset/database/pdo.db',
-            sys_get_temp_dir() . '/pdo-test.db'
-        );
-    }
-
-    protected function tearDown()
-    {
-        $db = sys_get_temp_dir() . '/pdo-test.db';
-        if (file_exists($db)) {
-            unlink($db);
-        }
     }
 
     public function provideStorage()
@@ -39,6 +28,13 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
 
         $serviceManager = $this->getApplication()->getServiceManager();
         $pdo = $serviceManager->get('ZF\OAuth2\Adapter\PdoAdapter');
+
+        $r = new ReflectionProperty($pdo, 'db');
+        $r->setAccessible(true);
+        $db = $r->getValue($pdo);
+
+        $sql = file_get_contents(__DIR__ . '/../../TestAsset/database/pdo.sql');
+        $db->exec($sql);
 
         return array(array($pdo));
     }
