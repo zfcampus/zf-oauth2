@@ -16,9 +16,13 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
+        $this->testDbPath= getenv('TRAVIS')
+            ? __DIR__ . '/../../TestAsset/database'
+            : sys_get_temp_dir();
+
         copy(
             __DIR__ . '/../TestAsset/database/pdo.db',
-            sys_get_temp_dir() . '/pdo-test.db'
+            $this->testDbPath . '/pdo-test.db'
         );
 
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/pdo.application.config.php');
@@ -37,9 +41,9 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function tearDown()
     {
-        $db = sys_get_temp_dir() . '/pdo-test.db';
+        $db = $this->testDbPath . '/pdo-test.db';
         if (file_exists($db)) {
-            unlink(sys_get_temp_dir() . '/pdo-test.db');
+            unlink($db);
         }
     }
 

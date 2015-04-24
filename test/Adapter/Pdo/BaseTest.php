@@ -19,15 +19,19 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
         $serviceManager = $this->getApplication()->getServiceManager();
         $serviceManager->setAllowOverride(true);
 
+        $this->testDbPath= getenv('TRAVIS')
+            ? __DIR__ . '/../../TestAsset/database'
+            : sys_get_temp_dir();
+
         copy(
             __DIR__ . '/../../TestAsset/database/pdo.db',
-            sys_get_temp_dir() . '/pdo-test.db'
+            $this->testDbPath . '/pdo-test.db'
         );
     }
 
     protected function tearDown()
     {
-        $db = sys_get_temp_dir() . '/pdo-test.db';
+        $db = $this->testDbPath . '/pdo-test.db';
         if (file_exists($db)) {
             unlink($db);
         }

@@ -18,9 +18,13 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
 
     public function setUp()
     {
+        $this->testDbPath= getenv('TRAVIS')
+            ? __DIR__ . '/../../TestAsset/database'
+            : sys_get_temp_dir();
+
         copy(
             __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/db_oauth2.sqlite',
-            sys_get_temp_dir() . '/dbtest.sqlite'
+            $this->testDbPath . '/dbtest.sqlite'
         );
 
         $this->setApplicationConfig(
@@ -41,7 +45,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
 
     public function tearDown()
     {
-        $db = sys_get_temp_dir() . '/dbtest.sqlite';
+        $db = $this->testDbPath . '/dbtest.sqlite';
         if (file_exists($db)) {
             unlink($db);
         }
