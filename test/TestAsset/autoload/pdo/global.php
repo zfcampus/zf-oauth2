@@ -4,10 +4,6 @@
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
  */
 
-$testDbPath= getenv('TRAVIS')
-    ? __DIR__ . '/../../database'
-    : sys_get_temp_dir();
-
 return array(
     'view_manager' => array(
         'display_not_found_reason' => true,
@@ -27,7 +23,7 @@ return array(
     'zf-oauth2' => array(
         'storage' => 'ZF\OAuth2\Adapter\PdoAdapter',
         'db' => array(
-            'dsn' => 'sqlite:' . $testDbPath . '/pdo-test.db',
+            'dsn' => 'sqlite::memory:',
         ),
         'allow_implicit' => true,
         'enforce_state'  => true,

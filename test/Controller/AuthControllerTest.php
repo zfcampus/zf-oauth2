@@ -6,9 +6,12 @@
 
 namespace ZFTest\OAuth2\Controller;
 
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use ReflectionProperty;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Driver\Pdo\Pdo as PdoDriver;
 use Zend\Db\Sql\Sql;
+use Zend\Stdlib\Parameters;
+use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerTest extends AbstractHttpControllerTestCase
 {
@@ -16,35 +19,33 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function setUp()
     {
-        $this->testDbPath= getenv('TRAVIS')
-            ? __DIR__ . '/../TestAsset/database'
-            : sys_get_temp_dir();
-
-        copy(
-            __DIR__ . '/../TestAsset/database/pdo.db',
-            $this->testDbPath . '/pdo-test.db'
-        );
-
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/pdo.application.config.php');
-
         parent::setUp();
+        $this->setupDb();
+    }
+
+    public function setupDb()
+    {
+        $pdo = $this->getApplication()->getServiceManager()->get('ZF\OAuth2\Adapter\PdoAdapter');
+        $r = new ReflectionProperty($pdo, 'db');
+        $r->setAccessible(true);
+        $db = $r->getValue($pdo);
+
+        $sql = file_get_contents(__DIR__ . '/../TestAsset/database/pdo.sql');
+        $db->exec($sql);
     }
 
     public function getDb()
     {
-        $config = $this->getApplication()->getServiceManager()->get('Config');
-        return new Adapter(array(
-            'driver' => 'pdo',
-            'dsn' => $config['zf-oauth2']['db']['dsn'],
-        ));
-    }
-
-    public function tearDown()
-    {
-        $db = $this->testDbPath . '/pdo-test.db';
-        if (file_exists($db)) {
-            unlink($db);
+        if ($this->db) {
+            return $this->db;
         }
+
+        $adapter = $this->getApplication()->getServiceManager()->get('ZF\OAuth2\Adapter\PdoAdapter');
+        $r = new ReflectionProperty($adapter, 'db');
+        $r->setAccessible(true);
+        $this->db = new Adapter(new PdoDriver($r->getValue($adapter)));
+        return $this->db;
     }
 
     public function testToken()
@@ -114,11 +115,11 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testAuthorizeForm()
     {
-        $_GET['response_type'] = 'code';
-        $_GET['client_id'] = 'testclient';
-        $_GET['state'] = 'xyz';
-
-        $this->dispatch('/oauth/authorize');
+        $this->dispatch('/oauth/authorize', 'GET', array(
+            'response_type' => 'code',
+            'client_id'     => 'testclient',
+            'state'         => 'xyz',
+        ));
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
         $this->assertResponseStatusCode(200);
@@ -163,13 +164,18 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testAuthorizeCode()
     {
-        $_GET['response_type'] = 'code';
-        $_GET['client_id'] = 'testclient';
-        $_GET['state'] = 'xyz';
-        $_GET['user_id'] = 123;
-        $_GET['redirect_uri'] = '/oauth/receivecode';
-        $_POST['authorized'] = 'yes';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request = $this->getRequest();
+        $request->setQuery(new Parameters(array(
+            'response_type' => 'code',
+            'client_id'     => 'testclient',
+            'state'         => 'xyz',
+            'user_id'       => 123,
+            'redirect_uri'  => '/oauth/receivecode',
+        )));
+        $request->setPost(new Parameters(array(
+            'authorized' => 'yes',
+        )));
+        $request->setMethod('POST');
 
         $this->dispatch('/oauth/authorize');
         $this->assertTrue($this->getResponse()->isRedirect());

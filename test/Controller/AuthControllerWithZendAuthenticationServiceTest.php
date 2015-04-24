@@ -9,6 +9,8 @@ namespace ZFTest\OAuth2\Controller;
 use Mockery as M;
 use Mockery\Loader;
 use PDO;
+use ReflectionProperty;
+use Zend\Stdlib\Parameters;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpControllerTestCase
@@ -18,15 +20,6 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
 
     public function setUp()
     {
-        $this->testDbPath= getenv('TRAVIS')
-            ? __DIR__ . '/../TestAsset/database'
-            : sys_get_temp_dir();
-
-        copy(
-            __DIR__ . '/../TestAsset/autoload_zend_authenticationservice/db_oauth2.sqlite',
-            $this->testDbPath . '/dbtest.sqlite'
-        );
-
         $this->setApplicationConfig(
             include __DIR__ . '/../TestAsset/zend.authenticationservice.application.config.php'
         );
@@ -35,20 +28,24 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $this->loader->register();
 
         parent::setUp();
+        $this->setupDb();
+    }
+
+    public function setupDb()
+    {
+        $pdo = $this->getApplication()->getServiceManager()->get('ZF\OAuth2\Adapter\PdoAdapter');
+        $r = new ReflectionProperty($pdo, 'db');
+        $r->setAccessible(true);
+        $db = $r->getValue($pdo);
+
+        $sql = file_get_contents(__DIR__ . '/../TestAsset/database/db_oauth2.sql');
+        $db->exec($sql);
+        $this->db = $db;
     }
 
     public function getDb()
     {
-        $config = $this->getApplication()->getServiceManager()->get('Config');
-        return new PDO($config['zf-oauth2']['db']['dsn']);
-    }
-
-    public function tearDown()
-    {
-        $db = $this->testDbPath . '/dbtest.sqlite';
-        if (file_exists($db)) {
-            unlink($db);
-        }
+        return $this->db;
     }
 
     public function getAuthenticationService()
@@ -67,12 +64,17 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
 
     public function testAuthorizeCode()
     {
-        $_GET['response_type'] = 'code';
-        $_GET['client_id'] = 'testclient';
-        $_GET['state'] = 'xyz';
-        $_GET['redirect_uri'] = '/oauth/receivecode';
-        $_POST['authorized'] = 'yes';
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $request = $this->getRequest();
+        $request->setQuery(new Parameters(array(
+            'response_type' => 'code',
+            'client_id'     => 'testclient',
+            'state'         => 'xyz',
+            'redirect_uri'  => '/oauth/receivecode',
+        )));
+        $request->setPost(new Parameters(array(
+            'authorized' => 'yes',
+        )));
+        $request->setMethod('POST');
 
         $this->getAuthenticationService();
 

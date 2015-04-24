@@ -12,8 +12,6 @@ class AuthorizationCodeTest extends BaseTest
     {
         if ($storage instanceof NullStorage) {
             $this->markTestSkipped('Skipped Storage: ' . $storage->getMessage());
-
-            return;
         }
 
         // nonexistant client_id
@@ -30,8 +28,6 @@ class AuthorizationCodeTest extends BaseTest
     {
         if ($storage instanceof NullStorage) {
             $this->markTestSkipped('Skipped Storage: ' . $storage->getMessage());
-
-            return;
         }
 
         // assert code we are about to add does not exist
@@ -92,8 +88,6 @@ class AuthorizationCodeTest extends BaseTest
     {
         if ($storage instanceof NullStorage) {
             $this->markTestSkipped('Skipped Storage: ' . $storage->getMessage());
-
-            return;
         }
 
         // create a valid code
