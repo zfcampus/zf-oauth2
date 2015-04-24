@@ -19,7 +19,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
     public function setUp()
     {
         $this->testDbPath= getenv('TRAVIS')
-            ? __DIR__ . '/../../TestAsset/database'
+            ? __DIR__ . '/../TestAsset/database'
             : sys_get_temp_dir();
 
         copy(
