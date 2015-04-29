@@ -27,6 +27,11 @@ class OAuth2ServerInstanceFactory
     private $services;
 
     /**
+     * @var OAuth2Server
+     */
+    private $server;
+
+    /**
      * @var array $config Configuration to use when creating the instance.
      * @var ServiceLocatorInterface $services ServiceLocator for retrieving storage adapters.
      */
@@ -43,6 +48,10 @@ class OAuth2ServerInstanceFactory
      */
     public function __invoke()
     {
+        if ($this->server) {
+            return $this->server;
+        }
+
         $config = $this->config;
 
         if (!isset($config['storage']) || empty($config['storage'])) {
@@ -131,6 +140,6 @@ class OAuth2ServerInstanceFactory
             $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
         }
 
-        return $server;
+        return $this->server = $server;
     }
 }

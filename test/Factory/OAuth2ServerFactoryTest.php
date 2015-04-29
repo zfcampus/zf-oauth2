@@ -26,6 +26,12 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
      */
     protected $services;
 
+    protected function setUp()
+    {
+        $this->factory = new OAuth2ServerFactory();
+        $this->services = $services = new ServiceManager();
+    }
+
     /**
      * @expectedException \ZF\OAuth2\Controller\Exception\RuntimeException
      */
@@ -264,9 +270,25 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
         $this->assertEquals($expectedService, $server);
     }
 
-    protected function setUp()
+    public function testSubsequentCallsReturnTheSameInstance()
     {
-        $this->factory = new OAuth2ServerFactory();
-        $this->services = $services = new ServiceManager();
+        $adapter = $this->getMockBuilder('OAuth2\Storage\Pdo')->disableOriginalConstructor()->getMock();
+        $this->services->setService('TestAdapter', $adapter);
+        $this->services->setService('Config', array(
+            'zf-oauth2' => array(
+                'storage' => 'TestAdapter',
+                'grant_types' => array(
+                    'client_credentials' => true,
+                    'authorization_code' => true,
+                    'password'           => true,
+                    'refresh_token'      => true,
+                    'jwt'                => true,
+                ),
+            ),
+        ));
+
+        $factory = $this->factory->createService($this->services);
+        $server  = $factory();
+        $this->assertSame($server, $factory());
     }
 }
