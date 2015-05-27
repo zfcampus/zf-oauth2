@@ -132,9 +132,6 @@ class OAuth2ServerInstanceFactory
             if (isset($options['always_issue_new_refresh_token'])) {
                 $refreshOptions['always_issue_new_refresh_token'] = $options['always_issue_new_refresh_token'];
             }
-            if (isset($options['refresh_token_lifetime'])) {
-                $refreshOptions['refresh_token_lifetime'] = $options['refresh_token_lifetime'];
-            }
 
             // Add the "Refresh Token" grant type
             $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
