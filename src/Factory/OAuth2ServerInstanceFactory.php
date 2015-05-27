@@ -132,9 +132,6 @@ class OAuth2ServerInstanceFactory
             if (isset($options['always_issue_new_refresh_token'])) {
                 $refreshOptions['always_issue_new_refresh_token'] = $options['always_issue_new_refresh_token'];
             }
-            if (isset($options['refresh_token_lifetime'])) {
-                $refreshOptions['refresh_token_lifetime'] = $options['refresh_token_lifetime'];
-            }
             if (isset($options['unset_refresh_token_after_use'])) {
                 $refreshOptions['unset_refresh_token_after_use'] = $options['unset_refresh_token_after_use'];
             }
