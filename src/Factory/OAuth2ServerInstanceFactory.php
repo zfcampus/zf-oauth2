@@ -45,6 +45,7 @@ class OAuth2ServerInstanceFactory
      * Create an OAuth2\Server instance.
      *
      * @return OAuth2Server
+     * @throws Exception\RuntimeException
      */
     public function __invoke()
     {

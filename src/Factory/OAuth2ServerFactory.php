@@ -7,7 +7,6 @@ namespace ZF\OAuth2\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use ZF\OAuth2\Controller\Exception;
 
 class OAuth2ServerFactory implements FactoryInterface
 {
@@ -15,7 +14,6 @@ class OAuth2ServerFactory implements FactoryInterface
     /**
      * @param ServiceLocatorInterface $services
      * @return OAuth2\Server
-     * @throws Exception\RuntimeException
      */
     public function createService(ServiceLocatorInterface $services)
     {
