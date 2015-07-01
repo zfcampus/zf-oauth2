@@ -11,6 +11,13 @@ if ($this->code) {
     );
     printf("<p>or using <a href=\"http://curl.haxx.se/docs/manpage.html\">CURL</a>:</p>");
     printf(
+        "<p>curl -u testclient:testpass http://%s/oauth -d 'grant_type=authorization_code&code=%s&redirect_uri=%s'</p>",
+        $_SERVER['HTTP_HOST'],
+        $this->code,
+        '/oauth/receivecode'
+    );
+    printf("<p>or</p>");
+    printf(
         '<p>curl -H "Content-Type: application/json" -X POST -d '{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}' https://%s/oauth</p>',
         '/oauth/receivecode',
         $this->code,
