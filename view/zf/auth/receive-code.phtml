@@ -4,7 +4,7 @@ if ($this->code) {
     printf("<p>Use this code to request an access token.</p>");
     printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
     printf(
-        "<p>http --auth testclient:testpass -f POST http://%s/oauth grant_type=authorization_code code=%s redirect_uri=%s</p>",
+        "<p>http POST https://%s/oauth grant_type=authorization_code code=%s redirect_uri=%s client_id=testclient client_secret=testpass</p>",
         $_SERVER['HTTP_HOST'],
         $this->code,
         '/oauth/receivecode'
@@ -15,6 +15,13 @@ if ($this->code) {
         $_SERVER['HTTP_HOST'],
         $this->code,
         '/oauth/receivecode'
+    );
+    printf("<p>or</p>");
+    printf(
+        '<p>curl -H "Content-Type: application/json" -X POST -d '{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}' https://%s/oauth</p>',
+        '/oauth/receivecode',
+        $this->code,
+        $_SERVER['HTTP_HOST']
     );
  } else {
     printf("<h2>The access token is <a onclick=\"showAccessToken();\" id=\"access_token\">(Click here to read the token from URL fragment)</a></h2>");
