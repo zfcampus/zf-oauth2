@@ -108,6 +108,11 @@ class PdoAdapter extends OAuth2Pdo
         $stmt->execute(compact('client_id'));
         $result = $stmt->fetch();
 
+        // Do not bother verifying if the secret is missing or empty.
+        if (! isset($result['client_secret']) || empty($result['client_secret'])) {
+            return false;
+        }
+
         // bcrypt verify
         return $this->verifyHash($client_secret, $result['client_secret']);
     }
