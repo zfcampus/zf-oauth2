@@ -183,6 +183,10 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
 
     public function testServiceCreatedWithStoragesAsArray()
     {
+        if (defined('HHVM_VERSION') && version_compare(constant('HHVM_VERSION'), '3.8', 'lt')) {
+            $this->markTestSkipped('Skipping test until we have HHVM 3.8 support');
+        }
+
         $storage = array(
             'access_token'       => $this->getMockForAbstractClass('OAuth2\Storage\AccessTokenInterface'),
             'authorization_code' => $this->getMockForAbstractClass('OAuth2\Storage\AuthorizationCodeInterface'),
