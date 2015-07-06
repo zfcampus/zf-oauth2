@@ -61,5 +61,18 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
         $this->controllers = $controllers = new ControllerManager();
         $controllers->setServiceLocator(new ServiceManager());
         $controllers->getServiceLocator()->setService('ServiceManager', $services);
+
+        $this->setApplicationConfig(array(
+            'modules' => array(
+                'ZF\OAuth2',
+            ),
+            'module_listener_options' => array(
+                'module_paths' => array(__DIR__ . '/../../'),
+                'config_glob_paths' => array(),
+            ),
+            'service_listener_options' => array(),
+            'service_manager' => array(),
+        ));
+        parent::setUp();
     }
 }

@@ -6,6 +6,7 @@
 
 namespace ZFTest\OAuth2\Factory;
 
+use PDO;
 use ReflectionObject;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -82,7 +83,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
                     'password' => 'bar',
                     'dsn'      => 'sqlite::memory:',
                     'options'  => array(
-                        'foo' => 'bar'
+                        PDO::ATTR_EMULATE_PREPARES => true,
                     )
                 ),
             ),
@@ -95,5 +96,18 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
     {
         $this->factory  = new PdoAdapterFactory();
         $this->services = $services = new ServiceManager();
+
+        $this->setApplicationConfig(array(
+            'modules' => array(
+                'ZF\OAuth2',
+            ),
+            'module_listener_options' => array(
+                'module_paths' => array(__DIR__ . '/../../'),
+                'config_glob_paths' => array(),
+            ),
+            'service_listener_options' => array(),
+            'service_manager' => array(),
+        ));
+        parent::setUp();
     }
 }
