@@ -95,5 +95,18 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
     {
         $this->factory  = new PdoAdapterFactory();
         $this->services = $services = new ServiceManager();
+
+        $this->setApplicationConfig(array(
+            'modules' => array(
+                'ZF\OAuth2',
+            ),
+            'module_listener_options' => array(
+                'module_paths' => array(__DIR__ . '/../../'),
+                'config_glob_paths' => array(),
+            ),
+            'service_listener_options' => array(),
+            'service_manager' => array(),
+        ));
+        parent::setUp();
     }
 }
