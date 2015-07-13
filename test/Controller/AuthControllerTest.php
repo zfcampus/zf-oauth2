@@ -115,6 +115,9 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
     public function testAuthorizeForm()
     {
+        $request = $this->getRequest();
+        $request->getHeaders()->addHeaderLine('Accept', 'text/html');
+
         $this->dispatch('/oauth/authorize', 'GET', array(
             'response_type' => 'code',
             'client_id'     => 'testclient',
