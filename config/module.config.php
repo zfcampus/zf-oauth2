@@ -1,4 +1,4 @@
-<?php
+<?php // @codingStandardsIgnoreFile
 return array(
     'controllers' => array(
         'factories' => array(
@@ -104,14 +104,16 @@ return array(
         'api_problem_error_response' => true,
     ),
     'zf-content-negotiation' => array(
-        'ZF\OAuth2\Controller\Auth' => array(
-            'ZF\ContentNegotiation\JsonModel' => array(
-                'application/json',
-                'application/*+json',
-            ),
-            'Zend\View\Model\ViewModel' => array(
-                'text/html',
-                'application/xhtml+xml',
+        'controllers' => array(
+            'ZF\OAuth2\Controller\Auth' => array(
+                'ZF\ContentNegotiation\JsonModel' => array(
+                    'application/json',
+                    'application/*+json',
+                ),
+                'Zend\View\Model\ViewModel' => array(
+                    'text/html',
+                    'application/xhtml+xml',
+                ),
             ),
         ),
     ),
