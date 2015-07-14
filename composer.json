@@ -50,7 +50,7 @@
             "Module.php"
         ]
     },
-    "autoload": {
+    "autoload-dev": {
         "psr-4": {
             "ZFTest\\OAuth2\\": "test/"
         }
