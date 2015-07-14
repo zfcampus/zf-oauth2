@@ -28,8 +28,8 @@
         "zfcampus/zf-content-negotiation": "~1.0"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "~4.0",
-        "squizlabs/php_codesniffer": "^2.3.0",
+        "phpunit/phpunit": "~4.7",
+        "squizlabs/php_codesniffer": "^2.3",
         "zendframework/zend-config": ">=2.3,<2.5",
         "zendframework/zend-form": ">=2.3,<2.5",
         "zendframework/zend-loader": ">=2.3,<2.5",
@@ -44,11 +44,15 @@
     },
     "autoload": {
         "psr-4": {
-            "ZF\\OAuth2\\": "src/",
-            "ZFTest\\OAuth2\\": "test/"
+            "ZF\\OAuth2\\": "src/"
         },
         "classmap": [
             "Module.php"
         ]
+    },
+    "autoload": {
+        "psr-4": {
+            "ZFTest\\OAuth2\\": "test/"
+        }
     }
 }
