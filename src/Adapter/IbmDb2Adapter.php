@@ -32,7 +32,7 @@ class IbmDb2Adapter extends OAuth2Db2
      * @param string $connection
      * @param array $config
      */
-    public function __construct($connection, $config = array())
+    public function __construct($connection, $config = [])
     {
         parent::__construct($connection, $config);
 

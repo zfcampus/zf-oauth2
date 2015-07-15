@@ -54,7 +54,7 @@ class MongoAdapterFactory implements FactoryInterface
             );
         }
 
-        $options = isset($config['zf-oauth2']['mongo']['options']) ? $config['zf-oauth2']['mongo']['options'] : array();
+        $options = isset($config['zf-oauth2']['mongo']['options']) ? $config['zf-oauth2']['mongo']['options'] : [];
         $options['connect'] = false;
         $server  = isset($config['zf-oauth2']['mongo']['dsn']) ? $config['zf-oauth2']['mongo']['dsn'] : null;
         $mongo   = new MongoClient($server, $options);
@@ -68,7 +68,7 @@ class MongoAdapterFactory implements FactoryInterface
      */
     protected function getOauth2ServerConfig($config)
     {
-        $oauth2ServerConfig = array();
+        $oauth2ServerConfig = [];
         if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }

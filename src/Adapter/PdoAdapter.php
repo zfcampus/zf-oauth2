@@ -84,7 +84,7 @@ class PdoAdapter extends OAuth2Pdo
      * @param string $connection
      * @param array $config
      */
-    public function __construct($connection, $config = array())
+    public function __construct($connection, $config = [])
     {
         parent::__construct($connection, $config);
         if (isset($config['bcrypt_cost'])) {

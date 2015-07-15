@@ -29,7 +29,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
      */
     public function testExceptionThrownWhenMissingDbCredentials()
     {
-        $this->services->setService('Config', array());
+        $this->services->setService('Config', []);
         $adapter = $this->factory->createService($this->services);
 
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
@@ -37,33 +37,33 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreated()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'db' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'db' => [
                     'username' => 'foo',
                     'password' => 'bar',
                     'dsn'      => 'sqlite::memory:',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
     }
 
     public function testAllowsPassingOauth2ServerConfigAndPassesOnToUnderlyingAdapter()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'db' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'db' => [
                     'username' => 'foo',
                     'password' => 'bar',
                     'dsn'      => 'sqlite::memory:',
-                ),
-                'storage_settings' => array(
+                ],
+                'storage_settings' => [
                     'user_table' => 'my_users',
-                ),
-            ),
-        ));
+                ],
+            ],
+        ]);
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
 
@@ -76,18 +76,18 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testAllowsPassingDbOptions()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'db' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'db' => [
                     'username' => 'foo',
                     'password' => 'bar',
                     'dsn'      => 'sqlite::memory:',
-                    'options'  => array(
+                    'options'  => [
                         PDO::ATTR_EMULATE_PREPARES => true,
-                    )
-                ),
-            ),
-        ));
+                    ]
+                ],
+            ],
+        ]);
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
     }
@@ -97,17 +97,17 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
         $this->factory  = new PdoAdapterFactory();
         $this->services = $services = new ServiceManager();
 
-        $this->setApplicationConfig(array(
-            'modules' => array(
+        $this->setApplicationConfig([
+            'modules' => [
                 'ZF\OAuth2',
-            ),
-            'module_listener_options' => array(
-                'module_paths' => array(__DIR__ . '/../../'),
-                'config_glob_paths' => array(),
-            ),
-            'service_listener_options' => array(),
-            'service_manager' => array(),
-        ));
+            ],
+            'module_listener_options' => [
+                'module_paths' => [__DIR__ . '/../../'],
+                'config_glob_paths' => [],
+            ],
+            'service_listener_options' => [],
+            'service_manager' => [],
+        ]);
         parent::setUp();
     }
 }
