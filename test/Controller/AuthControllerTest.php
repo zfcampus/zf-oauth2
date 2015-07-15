@@ -118,11 +118,11 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $request = $this->getRequest();
         $request->getHeaders()->addHeaderLine('Accept', 'text/html');
 
-        $this->dispatch('/oauth/authorize', 'GET', array(
+        $this->dispatch('/oauth/authorize', 'GET', [
             'response_type' => 'code',
             'client_id'     => 'testclient',
             'state'         => 'xyz',
-        ));
+        ]);
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('authorize');
         $this->assertResponseStatusCode(200);
@@ -168,16 +168,16 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     public function testAuthorizeCode()
     {
         $request = $this->getRequest();
-        $request->setQuery(new Parameters(array(
+        $request->setQuery(new Parameters([
             'response_type' => 'code',
             'client_id'     => 'testclient',
             'state'         => 'xyz',
             'user_id'       => 123,
             'redirect_uri'  => '/oauth/receivecode',
-        )));
-        $request->setPost(new Parameters(array(
+        ]));
+        $request->setPost(new Parameters([
             'authorized' => 'yes',
-        )));
+        ]));
         $request->setMethod('POST');
 
         $this->dispatch('/oauth/authorize');
@@ -195,7 +195,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $sql = new Sql($adapter);
         $select = $sql->select();
         $select->from('oauth_authorization_codes');
-        $select->where(array('authorization_code' => $code));
+        $select->where(['authorization_code' => $code]);
 
         $selectString = $sql->getSqlStringForSqlObject($select);
         $results = $adapter->query($selectString, $adapter::QUERY_MODE_EXECUTE)->toArray();

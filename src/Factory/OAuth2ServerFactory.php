@@ -18,7 +18,7 @@ class OAuth2ServerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $services)
     {
         $config = $services->get('Config');
-        $config = isset($config['zf-oauth2']) ? $config['zf-oauth2'] : array();
+        $config = isset($config['zf-oauth2']) ? $config['zf-oauth2'] : [];
         return new OAuth2ServerInstanceFactory($config, $services);
     }
 }

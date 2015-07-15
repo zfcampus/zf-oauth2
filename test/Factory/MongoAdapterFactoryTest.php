@@ -32,17 +32,17 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
         $this->factory  = new MongoAdapterFactory();
         $this->services = $services = new ServiceManager();
 
-        $this->setApplicationConfig(array(
-            'modules' => array(
+        $this->setApplicationConfig([
+            'modules' => [
                 'ZF\OAuth2',
-            ),
-            'module_listener_options' => array(
-                'module_paths' => array(__DIR__ . '/../../'),
-                'config_glob_paths' => array(),
-            ),
-            'service_listener_options' => array(),
-            'service_manager' => array(),
-        ));
+            ],
+            'module_listener_options' => [
+                'module_paths' => [__DIR__ . '/../../'],
+                'config_glob_paths' => [],
+            ],
+            'service_listener_options' => [],
+            'service_manager' => [],
+        ]);
         parent::setUp();
     }
 
@@ -51,7 +51,7 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
      */
     public function testExceptionThrownWhenMissingMongoCredentials()
     {
-        $this->services->setService('Config', array());
+        $this->services->setService('Config', []);
         $adapter = $this->factory->createService($this->services);
 
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
@@ -59,14 +59,14 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreated()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'mongo' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'mongo' => [
                     'database' => 'test',
                     'dsn'      => 'mongodb://127.0.0.1:27017'
-                )
-            )
-        ));
+                ]
+            ]
+        ]);
 
         $adapter = $this->factory->createService($this->services);
         $this->assertInstanceOf('ZF\OAuth2\Adapter\MongoAdapter', $adapter);
@@ -74,14 +74,14 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreatedWithMongoDbInServiceLocator()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'mongo' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'mongo' => [
                     'locator_name' => 'testdb',
-                ),
-            ),
-        ));
-        $mock = $this->getMock('\MongoDB', array(), array(), '', false);
+                ],
+            ],
+        ]);
+        $mock = $this->getMock('\MongoDB', [], [], '', false);
         $this->services->setService('testdb', $mock);
 
         $adapter = $this->factory->createService($this->services);
@@ -90,17 +90,17 @@ class MongoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testCanPassAdapterConfigurationWhenCreatingInstance()
     {
-        $this->services->setService('Config', array(
-            'zf-oauth2' => array(
-                'mongo' => array(
+        $this->services->setService('Config', [
+            'zf-oauth2' => [
+                'mongo' => [
                     'locator_name' => 'testdb',
-                ),
-                'storage_settings' => array(
+                ],
+                'storage_settings' => [
                     'user_table' => 'my_users',
-                ),
-            ),
-        ));
-        $mock = $this->getMock('\MongoDB', array(), array(), '', false);
+                ],
+            ],
+        ]);
+        $mock = $this->getMock('\MongoDB', [], [], '', false);
         $this->services->setService('testdb', $mock);
 
         $adapter = $this->factory->createService($this->services);

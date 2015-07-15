@@ -36,6 +36,6 @@ abstract class BaseTest extends \Zend\Test\PHPUnit\Controller\AbstractHttpContro
         $sql = file_get_contents(__DIR__ . '/../../TestAsset/database/pdo.sql');
         $db->exec($sql);
 
-        return array(array($pdo));
+        return [[$pdo]];
     }
 }

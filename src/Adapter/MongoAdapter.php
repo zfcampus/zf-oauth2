@@ -86,7 +86,7 @@ class MongoAdapter extends OAuth2Mongo
      * @param array $config
      * @throws Exception\RuntimeException
      */
-    public function __construct($connection, $config = array())
+    public function __construct($connection, $config = [])
     {
         // @codeCoverageIgnoreStart
         if (!extension_loaded('mongo')
@@ -111,7 +111,7 @@ class MongoAdapter extends OAuth2Mongo
      */
     public function checkClientCredentials($client_id, $client_secret = null)
     {
-        if ($result = $this->collection('client_table')->findOne(array('client_id' => $client_id))) {
+        if ($result = $this->collection('client_table')->findOne(['client_id' => $client_id])) {
             return $this->verifyHash($client_secret, $result['client_secret']);
         }
 
@@ -150,25 +150,25 @@ class MongoAdapter extends OAuth2Mongo
 
         if ($this->getClientDetails($client_id)) {
             $this->collection('client_table')->update(
-                array('client_id' => $client_id),
-                array('$set' => array(
+                ['client_id' => $client_id],
+                ['$set' => [
                     'client_secret' => $client_secret,
                     'redirect_uri'  => $redirect_uri,
                     'grant_types'   => $grant_types,
                     'scope'         => $scope,
                     'user_id'       => $user_id,
-                ))
+                ]]
             );
         } else {
             $this->collection('client_table')->insert(
-                array(
+                [
                     'client_id'     => $client_id,
                     'client_secret' => $client_secret,
                     'redirect_uri'  => $redirect_uri,
                     'grant_types'   => $grant_types,
                     'scope'         => $scope,
                     'user_id'       => $user_id,
-                )
+                ]
             );
         }
 
@@ -190,20 +190,20 @@ class MongoAdapter extends OAuth2Mongo
 
         if ($this->getUser($username)) {
             $this->collection('user_table')->update(
-                array('username' => $username),
-                array('$set' => array(
+                ['username' => $username],
+                ['$set' => [
                     'password'   => $password,
                     'first_name' => $firstName,
                     'last_name'  => $lastName
-                ))
+                ]]
             );
         } else {
-            $this->collection('user_table')->insert(array(
+            $this->collection('user_table')->insert([
                 'username'   => $username,
                 'password'   => $password,
                 'first_name' => $firstName,
                 'last_name'  => $lastName
-            ));
+            ]);
         }
 
         return true;

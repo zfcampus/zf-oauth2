@@ -61,7 +61,7 @@ class OAuth2ServerInstanceFactory
             );
         }
 
-        $storagesServices = array();
+        $storagesServices = [];
         if (is_string($config['storage'])) {
             $storagesServices[] = $config['storage'];
         } elseif (is_array($config['storage'])) {
@@ -72,7 +72,7 @@ class OAuth2ServerInstanceFactory
             );
         }
 
-        $storage = array();
+        $storage = [];
 
         foreach ($storagesServices as $storageKey => $storagesService) {
             $storage[$storageKey] = $this->services->get($storagesService);
@@ -92,19 +92,19 @@ class OAuth2ServerInstanceFactory
             : '';
         $options        = isset($config['options'])
             ? $config['options']
-            : array();
-        $options        = array_merge(array(
+            : [];
+        $options        = array_merge([
             'enforce_state'   => $enforceState,
             'allow_implicit'  => $allowImplicit,
             'access_lifetime' => $accessLifetime
-        ), $options);
+        ], $options);
 
         // Pass a storage object or array of storage objects to the OAuth2 server class
         $server = new OAuth2Server($storage, $options);
         $availableGrantTypes = $config['grant_types'];
 
         if (isset($availableGrantTypes['client_credentials']) && $availableGrantTypes['client_credentials'] === true) {
-            $clientOptions = array();
+            $clientOptions = [];
             if (isset($options['allow_credentials_in_request_body'])) {
                 $clientOptions['allow_credentials_in_request_body'] = $options['allow_credentials_in_request_body'];
             }
@@ -129,7 +129,7 @@ class OAuth2ServerInstanceFactory
         }
 
         if (isset($availableGrantTypes['refresh_token']) && $availableGrantTypes['refresh_token'] === true) {
-            $refreshOptions = array();
+            $refreshOptions = [];
             if (isset($options['always_issue_new_refresh_token'])) {
                 $refreshOptions['always_issue_new_refresh_token'] = $options['always_issue_new_refresh_token'];
             }
