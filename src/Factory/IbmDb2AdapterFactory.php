@@ -36,20 +36,20 @@ class IbmDb2AdapterFactory implements FactoryInterface
             : null;
         $driver_options  = isset($config['zf-oauth2']['db']['driver_options'])
             ? $config['zf-oauth2']['db']['driver_options']
-            : array();
+            : [];
 
-        $oauth2ServerConfig = array();
+        $oauth2ServerConfig = [];
         if (isset($config['zf-oauth2']['storage_settings'])
             && is_array($config['zf-oauth2']['storage_settings'])
         ) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
 
-        return new IbmDb2Adapter(array(
+        return new IbmDb2Adapter([
             'database'       => $config['zf-oauth2']['db']['database'],
             'username'       => $username,
             'password'       => $password,
             'driver_options' => $driver_options,
-        ), $oauth2ServerConfig);
+        ], $oauth2ServerConfig);
     }
 }

@@ -65,15 +65,15 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
     public function testAuthorizeCode()
     {
         $request = $this->getRequest();
-        $request->setQuery(new Parameters(array(
+        $request->setQuery(new Parameters([
             'response_type' => 'code',
             'client_id'     => 'testclient',
             'state'         => 'xyz',
             'redirect_uri'  => '/oauth/receivecode',
-        )));
-        $request->setPost(new Parameters(array(
+        ]));
+        $request->setPost(new Parameters([
             'authorized' => 'yes',
-        )));
+        ]));
         $request->setMethod('POST');
 
         $this->getAuthenticationService();

@@ -127,9 +127,9 @@ class AuthController extends AbstractActionController
 
         $httpResponse = $this->getResponse();
         $httpResponse->setStatusCode(200);
-        $httpResponse->getHeaders()->addHeaders(array('Content-type' => 'application/json'));
+        $httpResponse->getHeaders()->addHeaders(['Content-type' => 'application/json']);
         $httpResponse->setContent(
-            json_encode(array('success' => true, 'message' => 'You accessed my APIs!'))
+            json_encode(['success' => true, 'message' => 'You accessed my APIs!'])
         );
         return $httpResponse;
     }
@@ -153,7 +153,7 @@ class AuthController extends AbstractActionController
         $authorized = $request->request('authorized', false);
         if (empty($authorized)) {
             $clientId = $request->query('client_id', false);
-            $view = new ViewModel(array('clientId' => $clientId));
+            $view = new ViewModel(['clientId' => $clientId]);
             $view->setTemplate('oauth/authorize');
             return $view;
         }
@@ -182,9 +182,9 @@ class AuthController extends AbstractActionController
     public function receiveCodeAction()
     {
         $code = $this->params()->fromQuery('code', false);
-        $view = new ViewModel(array(
+        $view = new ViewModel([
             'code' => $code
-        ));
+        ]);
         $view->setTemplate('oauth/receive-code');
         return $view;
     }
@@ -253,7 +253,7 @@ class AuthController extends AbstractActionController
         }
 
         // Get $_SERVER superglobal
-        $server = array();
+        $server = [];
         if ($zf2Request instanceof PhpEnvironmentRequest) {
             $server = $zf2Request->getServer()->toArray();
         } elseif (!empty($_SERVER)) {
@@ -271,14 +271,14 @@ class AuthController extends AbstractActionController
         }
 
         // Ensure the bodyParams are passed as an array
-        $bodyParams = $this->bodyParams() ?: array();
+        $bodyParams = $this->bodyParams() ?: [];
 
         return new OAuth2Request(
             $zf2Request->getQuery()->toArray(),
             $bodyParams,
-            array(), // attributes
-            array(), // cookies
-            array(), // files
+            [], // attributes
+            [], // cookies
+            [], // files
             $server,
             $zf2Request->getContent(),
             $headers
