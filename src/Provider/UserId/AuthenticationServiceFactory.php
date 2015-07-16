@@ -17,6 +17,15 @@ class AuthenticationServiceFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $services)
     {
-        return new AuthenticationService($services->get('Zend\Authentication\AuthenticationService'));
+        $config = $services->get('Config');
+
+        if ($services->has('Zend\Authentication\AuthenticationService')) {
+            return new AuthenticationService(
+                $services->get('Zend\Authentication\AuthenticationService'),
+                $config
+            );
+        }
+
+        return new AuthenticationService(null, $config);
     }
 }
