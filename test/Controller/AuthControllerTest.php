@@ -172,7 +172,6 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
             'response_type' => 'code',
             'client_id'     => 'testclient',
             'state'         => 'xyz',
-            'user_id'       => 123,
             'redirect_uri'  => '/oauth/receivecode',
         )));
         $request->setPost(new Parameters(array(
@@ -199,7 +198,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
         $selectString = $sql->getSqlStringForSqlObject($select);
         $results = $adapter->query($selectString, $adapter::QUERY_MODE_EXECUTE)->toArray();
-        $this->assertEquals('123', $results[0]['user_id']);
+        $this->assertEquals(null, $results[0]['user_id']);
 
         // test get token from authorized code
         $request = $this->getRequest();
