@@ -18,7 +18,7 @@ if ($this->code) {
     );
     printf("<p>or</p>");
     printf(
-        '<p>curl -H "Content-Type: application/json" -X POST -d '{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}' https://%s/oauth</p>',
+        '<p>curl -H "Content-Type: application/json" -X POST -d {"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"} https://%s/oauth</p>',
         '/oauth/receivecode',
         $this->code,
         $_SERVER['HTTP_HOST']
