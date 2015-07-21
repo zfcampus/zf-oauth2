@@ -5,27 +5,24 @@ if ($this->code) {
     printf("<p>Use this code to request an access token.</p>");
     printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
     printf(
-        "<p>http POST %s://%s/oauth grant_type=authorization_code code=%s redirect_uri=%s client_id=testclient client_secret=testpass</p>",
-        $http,
-        $_SERVER['HTTP_HOST'],
+        "<p>http POST %s grant_type=authorization_code code=%s redirect_uri=%s client_id=testclient client_secret=testpass</p>",
+        $this->serverUrl('/oauth'),
         $this->code,
         '/oauth/receivecode'
     );
     printf("<p>or using <a href=\"http://curl.haxx.se/docs/manpage.html\">CURL</a>:</p>");
     printf(
-        "<p>curl -u testclient:testpass %s://%s/oauth -d 'grant_type=authorization_code&code=%s&redirect_uri=%s'</p>",
-        $http,
-        $_SERVER['HTTP_HOST'],
+        "<p>curl -u testclient:testpass %s -d 'grant_type=authorization_code&code=%s&redirect_uri=%s'</p>",
+        $this->serverUrl('/oauth'),
         $this->code,
         '/oauth/receivecode'
     );
     printf("<p>or</p>");
     printf(
-        '<p>curl -H "Content-Type: application/json" -X POST -d \'{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}\' %s://%s/oauth</p>',
+        '<p>curl -H "Content-Type: application/json" -X POST -d \'{"redirect_uri":"%s","client_id":"testclient","client_secret":"testpass","code":"%s","grant_type":"authorization_code"}\' %s</p>',
         '/oauth/receivecode',
         $this->code,
-        $http,
-        $_SERVER['HTTP_HOST']
+        $this->serverUrl('/oauth')
     );
  } else {
     printf("<h2>The access token is <a onclick=\"showAccessToken();\" id=\"access_token\">(Click here to read the token from URL fragment)</a></h2>");
