@@ -51,10 +51,7 @@ return array(
     ),
     'service_manager' => array(
         'aliases' => array(
-            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\Request',
-        ),
-        'invokables' => array(
-            'ZF\OAuth2\Provider\UserId\Request' => 'ZF\OAuth2\Provider\UserId\Request',
+            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\AuthenticationService',
         ),
         'factories' => array(
             'ZF\OAuth2\Adapter\PdoAdapter'    => 'ZF\OAuth2\Factory\PdoAdapterFactory',
@@ -98,7 +95,7 @@ return array(
          *
          * If true, client errors are returned using the
          * application/problem+json content type,
-         * otherwise in the format described in the oauth2 specification 
+         * otherwise in the format described in the oauth2 specification
          * (default: true)
          */
         'api_problem_error_response' => true,

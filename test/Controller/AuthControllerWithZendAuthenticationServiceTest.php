@@ -97,7 +97,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
             ->query($query)
             ->fetch();
 
-        $this->assertEquals('123', $row['user_id']);
+        $this->assertEquals(null, $row['user_id']);
 
         // test get token from authorized code
         $request = $this->getRequest();
