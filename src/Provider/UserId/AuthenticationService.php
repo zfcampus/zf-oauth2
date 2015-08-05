@@ -51,13 +51,13 @@ class AuthenticationService implements UserIdProviderInterface
         $identity = $this->authenticationService->getIdentity();
 
         if (is_object($identity)) {
-            if (property_exists($identity, $this->userId)) {
-                return $identity->{$this->$userId};
-            }
-
             $method = "get" . ucfirst($this->userId);
             if (method_exists($identity, $method)) {
                 return $identity->$method();
+            }
+
+            if (property_exists($identity, $this->userId)) {
+                return $identity->{$this->userId};
             }
 
             return null;
