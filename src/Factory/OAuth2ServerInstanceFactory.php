@@ -111,13 +111,11 @@ class OAuth2ServerInstanceFactory
 
             // Add the "Client Credentials" grant type (it is the simplest of the grant types)
             $server->addGrantType(new ClientCredentials($server->getStorage('client_credentials'), $clientOptions));
-            unset($availableGrantTypes['client_credentials']);
         }
 
         if (isset($availableGrantTypes['authorization_code']) && $availableGrantTypes['authorization_code'] === true) {
             // Add the "Authorization Code" grant type (this is where the oauth magic happens)
             $server->addGrantType(new AuthorizationCode($server->getStorage('authorization_code')));
-            unset($availableGrantTypes['authorization_code']);
         }
 
         if (isset($availableGrantTypes['password']) && $availableGrantTypes['password'] === true) {
@@ -128,7 +126,6 @@ class OAuth2ServerInstanceFactory
         if (isset($availableGrantTypes['jwt']) && $availableGrantTypes['jwt'] === true) {
             // Add the "JWT Bearer" grant type
             $server->addGrantType(new JwtBearer($server->getStorage('jwt_bearer'), $audience));
-            unset($availableGrantTypes['jwt']);
         }
 
         if (isset($availableGrantTypes['refresh_token']) && $availableGrantTypes['refresh_token'] === true) {
@@ -142,18 +139,17 @@ class OAuth2ServerInstanceFactory
 
             // Add the "Refresh Token" grant type
             $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
-            unset($availableGrantTypes['refresh_token']);
         }
-
+        
         // Add custom grant type from the service locator
-        if (is_array($availableGrantTypes) && !empty($availableGrantTypes)) {
-            foreach ($availableGrantTypes as $grantType) {
-                if ($this->services->has($grantType)) {
-                    $server->addGrantType($this->services->get($grantType));
+        if (isset($availableGrantTypes['custom_grant_types']) && is_array($availableGrantTypes['custom_grant_types'])) {
+            foreach ($availableGrantTypes['custom_grant_types'] as $grantKey => $grantType) {
+                if ($services->has($grantType)) {
+                    $server->addGrantType($services->get($grantType, $grantKey));
                 }
             }
         }
-
+        
         return $this->server = $server;
     }
 }
