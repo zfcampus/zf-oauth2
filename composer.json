@@ -22,7 +22,7 @@
         "bshaffer/oauth2-server-php": "~1.8",
         "zendframework/zend-crypt": "~2.5",
         "zendframework/zend-http": "~2.5",
-        "zendframework/zend-mvc": "~2.6",
+        "zendframework/zend-mvc": "~2.5",
         "zendframework/zend-servicemanager": "~2.5",
         "zfcampus/zf-api-problem": "~1.0",
         "zfcampus/zf-content-negotiation": "~1.0"
