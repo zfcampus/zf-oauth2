@@ -140,7 +140,7 @@ class OAuth2ServerInstanceFactory
             // Add the "Refresh Token" grant type
             $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
         }
-        
+
         // Add custom grant type from the service locator
         if (isset($availableGrantTypes['custom_grant_types']) && is_array($availableGrantTypes['custom_grant_types'])) {
             foreach ($availableGrantTypes['custom_grant_types'] as $grantKey => $grantType) {
@@ -149,7 +149,7 @@ class OAuth2ServerInstanceFactory
                 }
             }
         }
-        
+
         return $this->server = $server;
     }
 }
