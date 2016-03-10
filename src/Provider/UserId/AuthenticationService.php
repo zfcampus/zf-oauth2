@@ -53,7 +53,7 @@ class AuthenticationService implements UserIdProviderInterface
         if (is_object($identity)) {
             $method = "get" . ucfirst($this->userId);
             $methodVariable = array($identity, $method);
-            if (method_exists($identity, $method) && is_callable($methodVariable, false, $callable_name)) {
+            if (method_exists($identity, $method) && is_callable($methodVariable)) {
                 return $identity->$method();
             }
 
