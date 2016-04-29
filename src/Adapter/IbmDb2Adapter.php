@@ -164,7 +164,6 @@ class IbmDb2Adapter extends OAuth2Db2
                 $this->config['client_table']
             ));
             $params = compact('clientSecret', 'redirectUri', 'grantTypes', 'scope', 'userId', 'clientId');
-
         } else {
             $stmt = db2_prepare($this->db, sprintf(
                 'INSERT INTO %s (client_id, client_secret, redirect_uri, grant_types, scope, user_id) '
@@ -172,7 +171,6 @@ class IbmDb2Adapter extends OAuth2Db2
                 $this->config['client_table']
             ));
             $params = compact('clientId', 'clientSecret', 'redirectUri', 'grantTypes', 'scope', 'userId');
-
         }
         if (false === $stmt) {
             throw new RuntimeException(db2_stmt_errormsg());
