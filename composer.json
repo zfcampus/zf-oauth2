@@ -9,7 +9,15 @@
         "zf2"
     ],
     "repositories": [
-        { "type": "composer", "url": "https://packages.zendframework.com/" }
+        { "type": "composer", "url": "https://packages.zendframework.com/" },
+        {
+            "type": "vcs",
+            "url": "https://github.com/AGmakonts/zf-api-problem.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/AGmakonts/zf-content-negotiation.git"
+        }
     ],
     "extra": {
         "branch-alias": {
@@ -18,28 +26,21 @@
         }
     },
     "require": {
-        "php": ">=5.5",
-        "bshaffer/oauth2-server-php": "~1.7",
-        "zendframework/zend-crypt": "~2.3",
-        "zendframework/zend-http": "~2.3",
-        "zendframework/zend-mvc": "~2.3",
-        "zendframework/zend-servicemanager": "~2.3",
-        "zfcampus/zf-api-problem": "~1.0",
-        "zfcampus/zf-content-negotiation": "~1.0"
+        "bshaffer/oauth2-server-php": "1.8.*",
+        "zendframework/zend-crypt": "2.6.*",
+        "zendframework/zend-http": "2.5.*",
+        "zendframework/zend-mvc": "3.0.*",
+        "zendframework/zend-servicemanager": "3.1.*",
+        "zfcampus/zf-api-problem": "dev-feature/zf3-support",
+        "zfcampus/zf-content-negotiation": "dev-feature/zf3"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.7",
+        "phpunit/phpunit": "5.4.*",
         "squizlabs/php_codesniffer": "^2.3.1",
-        "zendframework/zend-config": "~2.3",
-        "zendframework/zend-form": "~2.3",
-        "zendframework/zend-loader": "~2.3",
-        "zendframework/zend-log": "~2.3",
-        "zendframework/zend-modulemanager": "~2.3",
-        "zendframework/zend-serializer": "~2.3",
-        "zendframework/zend-test": "~2.3",
-        "zendframework/zend-authentication": "~2.3",
-        "zendframework/zend-i18n": "~2.3",
-        "zendframework/zend-db": "~2.3",
+        "zendframework/zend-test": "3.0.*",
+        "zendframework/zend-authentication": "2.5.*",
+        "zendframework/zend-i18n": "2.7.*",
+        "zendframework/zend-db": "2.8.*",
         "mockery/mockery": "0.9.*"
     },
     "autoload": {
