@@ -30,7 +30,8 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
     public function testExceptionThrownWhenMissingDbCredentials()
     {
         $this->services->setService('Config', []);
-        $adapter = $this->factory->createService($this->services);
+        $smFactory = $this->factory;
+        $adapter = $smFactory($this->services);
 
         $this->assertInstanceOf('ZF\OAuth2\Adapter\PdoAdapter', $adapter);
     }

@@ -6,24 +6,34 @@
 
 namespace ZF\OAuth2\Factory;
 
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
 use OAuth2\Server as OAuth2Server;
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use ZF\OAuth2\Controller\AuthController;
 
 class AuthControllerFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $controllers
-     * @return AuthController
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $controllers)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = NULL)
     {
-        $services = $controllers->getServiceLocator()->get('ServiceManager');
-
         // For BC, if the ZF\OAuth2\Service\OAuth2Server service returns an
         // OAuth2\Server instance, wrap it in a closure.
-        $oauth2ServerFactory = $services->get('ZF\OAuth2\Service\OAuth2Server');
+        $oauth2ServerFactory = $container->get('ZF\OAuth2\Service\OAuth2Server');
         if ($oauth2ServerFactory instanceof OAuth2Server) {
             $oauth2Server = $oauth2ServerFactory;
             $oauth2ServerFactory = function () use ($oauth2Server) {
@@ -33,13 +43,14 @@ class AuthControllerFactory implements FactoryInterface
 
         $authController = new AuthController(
             $oauth2ServerFactory,
-            $services->get('ZF\OAuth2\Provider\UserId')
+            $container->get('ZF\OAuth2\Provider\UserId')
         );
 
-        $config = $services->get('Config');
+        $config = $container->get('Config');
         $authController->setApiProblemErrorResponse((isset($config['zf-oauth2']['api_problem_error_response'])
             && $config['zf-oauth2']['api_problem_error_response'] === true));
 
         return $authController;
     }
+
 }

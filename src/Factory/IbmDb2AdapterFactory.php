@@ -6,21 +6,32 @@
 
 namespace ZF\OAuth2\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use ZF\OAuth2\Adapter\IbmDb2Adapter;
 use ZF\OAuth2\Controller\Exception;
 
 class IbmDb2AdapterFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $services
-     * @return IbmDb2Adapter
-     * @throws Exception\RuntimeException
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = NULL)
     {
-        $config = $services->get('Config');
+        $config = $container->get('Config');
 
         if (! isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(
@@ -52,4 +63,5 @@ class IbmDb2AdapterFactory implements FactoryInterface
             'driver_options' => $driver_options,
         ], $oauth2ServerConfig);
     }
+
 }
