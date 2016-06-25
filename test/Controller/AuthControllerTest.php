@@ -113,6 +113,45 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertEquals('Grant type "fake_grant_type" not supported', $response['error_description']);
     }
 
+    public function testTokenRevoke()
+    {
+        $request = $this->getRequest();
+        $request->getPost()->set('token', '00bdec1ee9ee80762f39e5340495a31a203cd460');
+        $request->getPost()->set('token_type_hint', 'access_token');
+        $request->getServer()->set('PHP_AUTH_USER', 'testclient');
+        $request->getServer()->set('PHP_AUTH_PW', 'testpass');
+        $request->setMethod('POST');
+
+        $this->dispatch('/oauth/revoke');
+        $this->assertControllerName('ZF\OAuth2\Controller\Auth');
+        $this->assertActionName('revoke');
+        $this->assertResponseStatusCode(200);
+
+        $response = json_decode($this->getResponse()->getContent(), true);
+        $this->assertTrue(!empty($response['revoked']));
+        $this->assertTrue($response['revoked']);
+    }
+
+    public function testTokenRevokeWithoutTokenIsError()
+    {
+        $request = $this->getRequest();
+        $request->getPost()->set('token_type_hint', 'access_token');
+        $request->getServer()->set('PHP_AUTH_USER', 'testclient');
+        $request->getServer()->set('PHP_AUTH_PW', 'testpass');
+        $request->setMethod('POST');
+
+        $this->dispatch('/oauth/revoke');
+        $this->assertResponseStatusCode(400);
+
+        $headers = $this->getResponse()->getHeaders();
+        $this->assertEquals('application/problem+json', $headers->get('content-type')->getFieldValue());
+
+        $response = json_decode($this->getResponse()->getContent(), true);
+        $this->assertEquals('invalid_request', $response['title']);
+        $this->assertEquals('Missing token parameter to revoke', $response['detail']);
+        $this->assertEquals('400', $response['status']);
+    }
+
     public function testAuthorizeForm()
     {
         $request = $this->getRequest();
