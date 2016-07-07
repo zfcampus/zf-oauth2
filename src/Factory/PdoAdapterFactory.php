@@ -1,41 +1,26 @@
 <?php
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
 
 namespace ZF\OAuth2\Factory;
 
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
-use Zend\ServiceManager\Exception\ServiceNotCreatedException;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Adapter\PdoAdapter;
 use ZF\OAuth2\Controller\Exception;
 
-class PdoAdapterFactory implements FactoryInterface
+class PdoAdapterFactory
 {
     /**
-     * Create an object
-     *
      * @param  ContainerInterface $container
-     * @param  string             $requestedName
-     * @param  null|array         $options
-     *
-     * @return object
-     * @throws ServiceNotFoundException if unable to resolve the service.
-     * @throws ServiceNotCreatedException if an exception is raised when
-     *     creating a service.
-     * @throws ContainerException if any other error occurs
+     * @return PdoAdapter
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = NULL)
+    public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('config');
 
-        $config = $container->get('Config');
-
-        if (!isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
+        if (empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(
                 'The database configuration [\'zf-oauth2\'][\'db\'] for OAuth2 is missing'
             );
@@ -46,7 +31,9 @@ class PdoAdapterFactory implements FactoryInterface
         $options  = isset($config['zf-oauth2']['db']['options']) ? $config['zf-oauth2']['db']['options'] : [];
 
         $oauth2ServerConfig = [];
-        if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
+        if (isset($config['zf-oauth2']['storage_settings'])
+            && is_array($config['zf-oauth2']['storage_settings'])
+        ) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
 
@@ -58,4 +45,14 @@ class PdoAdapterFactory implements FactoryInterface
         ], $oauth2ServerConfig);
     }
 
+    /**
+     * Provided for backwards compatibility; proxies to __invoke().
+     *
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $container
+     * @return PdoAdapter
+     */
+    public function createService($container)
+    {
+        return $this($container);
+    }
 }
