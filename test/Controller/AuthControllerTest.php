@@ -343,10 +343,10 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
     {
         $serviceManager = $this->getApplication()->getServiceManager();
 
-        $config = $serviceManager->get('Config');
+        $config = $serviceManager->get('config');
         $config['zf-oauth2']['api_problem_error_response'] = false;
 
         $serviceManager->setAllowOverride(true);
-        $serviceManager->setService('Config', $config);
+        $serviceManager->setService('config', $config);
     }
 }

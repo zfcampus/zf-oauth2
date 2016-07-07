@@ -29,7 +29,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
      */
     public function testExceptionThrownWhenMissingDbCredentials()
     {
-        $this->services->setService('Config', []);
+        $this->services->setService('config', []);
         $smFactory = $this->factory;
         $adapter = $smFactory($this->services);
 
@@ -38,7 +38,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testInstanceCreated()
     {
-        $this->services->setService('Config', [
+        $this->services->setService('config', [
             'zf-oauth2' => [
                 'db' => [
                     'username' => 'foo',
@@ -53,7 +53,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testAllowsPassingOauth2ServerConfigAndPassesOnToUnderlyingAdapter()
     {
-        $this->services->setService('Config', [
+        $this->services->setService('config', [
             'zf-oauth2' => [
                 'db' => [
                     'username' => 'foo',
@@ -77,7 +77,7 @@ class PdoAdapterFactoryTest extends AbstractHttpControllerTestCase
 
     public function testAllowsPassingDbOptions()
     {
-        $this->services->setService('Config', [
+        $this->services->setService('config', [
             'zf-oauth2' => [
                 'db' => [
                     'username' => 'foo',

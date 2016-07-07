@@ -1,10 +1,16 @@
 <?php
+$modules = [
+    'ZF\ContentNegotiation',
+    'ZF\OAuth2',
+];
+
+if (class_exists('Zend\Router\Module')) {
+    $modules[] = 'Zend\Router';
+}
+
 return [
     // This should be an array of module namespaces used in the application.
-    'modules' => [
-        'ZF\ContentNegotiation',
-        'ZF\OAuth2'
-    ],
+    'modules' => $modules,
 
     // These are various options for the listeners attached to the ModuleManager
     'module_listener_options' => [
