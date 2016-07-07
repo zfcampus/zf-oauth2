@@ -6,26 +6,40 @@
 
 namespace ZF\OAuth2\Provider\UserId;
 
-use Zend\ServiceManager\FactoryInterface;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\ContainerException;
+use Zend\ServiceManager\Exception\ServiceNotCreatedException;
+use Zend\ServiceManager\Exception\ServiceNotFoundException;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class AuthenticationServiceFactory implements FactoryInterface
 {
     /**
-     * @param ServiceLocatorInterface $services
-     * @return AuthenticationService
+     * Create an object
+     *
+     * @param  ContainerInterface $container
+     * @param  string             $requestedName
+     * @param  null|array         $options
+     *
+     * @return object
+     * @throws ServiceNotFoundException if unable to resolve the service.
+     * @throws ServiceNotCreatedException if an exception is raised when
+     *     creating a service.
+     * @throws ContainerException if any other error occurs
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = NULL)
     {
-        $config = $services->get('Config');
+        $config = $container->get('Config');
 
-        if ($services->has('Zend\Authentication\AuthenticationService')) {
+        if ($container->has('Zend\Authentication\AuthenticationService')) {
             return new AuthenticationService(
-                $services->get('Zend\Authentication\AuthenticationService'),
+                $container->get('Zend\Authentication\AuthenticationService'),
                 $config
             );
         }
 
         return new AuthenticationService(null, $config);
     }
+
 }

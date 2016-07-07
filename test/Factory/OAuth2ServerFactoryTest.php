@@ -51,7 +51,8 @@ class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
     public function testExceptionThrownOnMissingStorageClass()
     {
         $this->services->setService('Config', []);
-        $factory = $this->factory->createService($this->services);
+        $smFactory = $this->factory;
+        $factory = $smFactory($this->services, 'OAuth2Server');
         $factory();
     }
 
