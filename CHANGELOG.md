@@ -6,7 +6,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#122](https://github.com/zfcampus/zf-oauth2/pull/120) adds support for token
+  revocation via the `/oauth/revoke` path. The path expects a POST request as
+  either urlencoded or JSON values with the parameters:
+  - `token`, the access token to revoke
+  - `token_type_hint => access_token` to indicate an access token is being
+    revoked.
 
 ### Deprecated
 
