@@ -41,7 +41,11 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#147](https://github.com/zfcampus/zf-oauth2/pull/147) fixes an issue in the
+  `AuthControllerFactory` introduced originally by a change in zend-mvc (and
+  since corrected in that component). The patch to `AuthControllerFactory` makes
+  it forwards compatible with zend-servicemanager v3, and prevents the original
+  issue from recurring in the future.
 
 ## 1.3.2 - 2016-06-24
 

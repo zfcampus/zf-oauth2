@@ -60,7 +60,7 @@ class AuthControllerFactoryTest extends AbstractHttpControllerTestCase
         $sm = new ServiceManager();
         $sm->setService('ServiceManager', $services);
 
-        $this->controllers = $controllers = new ControllerManager($sm);
+        $this->controllers = $controllers = new ControllerManager($this->services);
 
         $this->setApplicationConfig([
             'modules' => [
