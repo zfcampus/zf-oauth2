@@ -335,6 +335,19 @@ var parseQueryString = function( queryString ) {
 var tokenParams = parseQueryString(window.location.hash.substr(1));
 ```
 
+REVOKE (code)
+-------------
+
+Starting with version 1.4.0, you can revoke access tokens. By default, revocation
+happens via a POST request to the path `/oauth/revoke`, which expects a payload
+with:
+
+- `token`, the OAuth2 access token to revoke.
+- `token_type_hint => 'access_token'`, indicating that an access token is being
+  revoked.
+
+The payload may be delivered as `application/x-www-form-urlencoded` or as JSON.
+
 Access a test resource
 ----------------------
 
