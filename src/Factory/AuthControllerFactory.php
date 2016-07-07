@@ -19,7 +19,7 @@ class AuthControllerFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $controllers)
     {
-        $services = $controllers->getServiceLocator()->get('ServiceManager');
+        $services = $controllers->getServiceLocator();
 
         // For BC, if the ZF\OAuth2\Service\OAuth2Server service returns an
         // OAuth2\Server instance, wrap it in a closure.
