@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file, in reverse 
   - `token`, the access token to revoke
   - `token_type_hint => access_token` to indicate an access token is being
     revoked.
+- [#146](https://github.com/zfcampus/zf-oauth2/pull/120) updates the
+  `AuthController` to catch `ZF\ApiProblem\Exception\ProblemExceptionInterface`
+  instances thrown by the OAuth2 server and return `ApiProblemResponse`s.
 
 ### Deprecated
 
