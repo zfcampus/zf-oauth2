@@ -113,6 +113,33 @@ class AuthController extends AbstractActionController
     }
 
     /**
+     * Token Revoke (/oauth/revoke)
+     */
+    public function revokeAction()
+    {
+        $request = $this->getRequest();
+        if (! $request instanceof HttpRequest) {
+            // not an HTTP request; nothing left to do
+            return;
+        }
+
+        if ($request->isOptions()) {
+            // OPTIONS request.
+            // This is most likely a CORS attempt; as such, pass the response on.
+            return $this->getResponse();
+        }
+
+        $oauth2request = $this->getOAuth2Request();
+        $response = $this->getOAuth2Server($this->params('oauth'))->handleRevokeRequest($oauth2request);
+
+        if ($response->isClientError()) {
+            return $this->getErrorResponse($response);
+        }
+
+        return $this->setHttpResponse($response);
+    }
+
+    /**
      * Test resource (/oauth/resource)
      */
     public function resourceAction()

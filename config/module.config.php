@@ -18,6 +18,15 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                    'revoke' => array(
+                        'type' => 'Zend\Mvc\Router\Http\Literal',
+                        'options' => array(
+                            'route' => '/revoke',
+                            'defaults' => array(
+                                'action' => 'revoke',
+                            ),
+                        ),
+                    ),
                     'authorize' => array(
                         'type' => 'Zend\Mvc\Router\Http\Literal',
                         'options' => array(
