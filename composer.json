@@ -46,6 +46,9 @@
             "ZFTest\\OAuth2\\": "test/"
         }
     },
+    "bin": [
+        "bin/bcrypt.php"
+    ],
     "scripts": {
         "check": [
             "@cs-check",
