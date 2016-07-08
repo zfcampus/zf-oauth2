@@ -1,10 +1,11 @@
 <?php
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
 namespace ZF\OAuth2\Factory;
 
+use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\OAuth2\Controller\Exception;
 use OAuth2\Server as OAuth2Server;
@@ -33,9 +34,9 @@ class OAuth2ServerInstanceFactory
 
     /**
      * @var array $config Configuration to use when creating the instance.
-     * @var ServiceLocatorInterface $services ServiceLocator for retrieving storage adapters.
+     * @var ContainerInterface $services ServiceLocator for retrieving storage adapters.
      */
-    public function __construct(array $config, ServiceLocatorInterface $services)
+    public function __construct(array $config, ContainerInterface $services)
     {
         $this->config   = $config;
         $this->services = $services;

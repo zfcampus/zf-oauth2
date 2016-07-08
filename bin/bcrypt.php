@@ -1,9 +1,15 @@
+#!/usr/bin/env php
 <?php
 /**
  * Bcrypt utility
  *
  * Generates the bcrypt hash value of a string
+ *
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
+
+use Zend\Crypt\Password\Bcrypt;
 
 $autoload = realpath(__DIR__ . '/../vendor/autoload.php');
 if (! $autoload) {
@@ -11,32 +17,32 @@ if (! $autoload) {
     $autoload = realpath(__DIR__ . '/../../../autoload.php');
 }
 
-$zf2Env   = "ZF2_PATH";
-
-if (file_exists($autoload)) {
-    include $autoload;
-} elseif (getenv($zf2Env)) {
-    include getenv($zf2Env) . '/Zend/Loader/AutoloaderFactory.php';
-    Zend\Loader\AutoloaderFactory::factory(array(
-        'Zend\Loader\StandardAutoloader' => array(
-            'autoregister_zf' => true
-        )
-    ));
+if (! $autoload) {
+    throw new RuntimeException(
+        'Unable to locate autoloader. Please run `composer install`.'
+    );
 }
 
-if (!class_exists('Zend\Loader\AutoloaderFactory')) {
-    throw new RuntimeException('Unable to load ZF2. Run `php composer.phar install` or define a ZF2_PATH environment variable.');
-}
+include $autoload;
 
-$bcrypt = new Zend\Crypt\Password\Bcrypt;
+$help = <<< EOH
+Usage:
+  php bcrypt.php <password> [cost]
+
+Arguments:
+  <password>      The user's password
+  [cost]          The value of the cost parameter of bcrypt.
+                  (default is %d)
+
+EOH;
+$bcrypt = new Bcrypt();
 
 if ($argc < 2) {
-    printf("Usage: php bcrypt.php <password> [cost]\n");
-    printf("where <password> is the user's password and [cost] is the value\nof the cost parameter of bcrypt (default is %d).\n", $bcrypt->getCost());
+    printf($help, $bcrypt->getCost());
     exit(1);
 }
 
 if (isset($argv[2])) {
     $bcrypt->setCost($argv[2]);
 }
-printf ("%s\n", $bcrypt->create($argv[1]));
+printf("%s\n", $bcrypt->create($argv[1]));

@@ -8,9 +8,6 @@
         "framework",
         "zf2"
     ],
-    "repositories": [
-        { "type": "composer", "url": "https://packages.zendframework.com/" }
-    ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.3-dev",
@@ -18,41 +15,47 @@
         }
     },
     "require": {
-        "php": ">=5.5",
-        "bshaffer/oauth2-server-php": "~1.8",
-        "zendframework/zend-crypt": "~2.3",
-        "zendframework/zend-http": "~2.3",
-        "zendframework/zend-mvc": "^2.7.9",
-        "zendframework/zend-servicemanager": "^2.7.6",
+        "php": "^5.6 || ^7.0",
+        "bshaffer/oauth2-server-php": "^1.8",
+        "zendframework/zend-crypt": "^2.6 || ^3.0",
+        "zendframework/zend-http": "^2.5.4",
+        "zendframework/zend-mvc": "^2.7.9 || ^3.0.2",
+        "zendframework/zend-servicemanager": "^2.7.6 || ^3.1",
         "zfcampus/zf-api-problem": "^1.2.1",
         "zfcampus/zf-content-negotiation": "^1.2.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.7",
+        "mockery/mockery": "^0.9",
+        "phpunit/phpunit": "^4.8 || ^5.4",
         "squizlabs/php_codesniffer": "^2.3.1",
-        "zendframework/zend-config": "~2.5",
-        "zendframework/zend-form": "~2.6",
-        "zendframework/zend-loader": "~2.5",
-        "zendframework/zend-log": "~2.5",
-        "zendframework/zend-modulemanager": "~2.6",
-        "zendframework/zend-serializer": "~2.5",
-        "zendframework/zend-test": "~2.5",
-        "zendframework/zend-authentication": "~2.5",
-        "zendframework/zend-i18n": "~2.5",
-        "zendframework/zend-db": "~2.6",
-        "mockery/mockery": "0.9.*"
+        "zendframework/zend-authentication": "^2.5.3",
+        "zendframework/zend-db": "^2.8.1",
+        "zendframework/zend-i18n": "^2.7.3",
+        "zendframework/zend-log": "^2.9",
+        "zendframework/zend-modulemanager": "^2.7.2",
+        "zendframework/zend-serializer": "^2.8",
+        "zendframework/zend-test": "^2.6.1 || ^3.0.1"
     },
     "autoload": {
         "psr-4": {
             "ZF\\OAuth2\\": "src/"
-        },
-        "classmap": [
-            "Module.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "ZFTest\\OAuth2\\": "test/"
         }
+    },
+    "bin": [
+        "bin/bcrypt.php"
+    ],
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit"
     }
 }

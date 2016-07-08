@@ -1,26 +1,24 @@
 <?php
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
 
 namespace ZF\OAuth2\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use ZF\OAuth2\Adapter\IbmDb2Adapter;
 use ZF\OAuth2\Controller\Exception;
 
-class IbmDb2AdapterFactory implements FactoryInterface
+class IbmDb2AdapterFactory
 {
     /**
-     * @param ServiceLocatorInterface $services
+     * @param  ContainerInterface $container
      * @return IbmDb2Adapter
-     * @throws Exception\RuntimeException
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
-        $config = $services->get('Config');
+        $config = $container->get('config');
 
         if (! isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(
@@ -51,5 +49,16 @@ class IbmDb2AdapterFactory implements FactoryInterface
             'password'       => $password,
             'driver_options' => $driver_options,
         ], $oauth2ServerConfig);
+    }
+
+    /**
+     * Provided for backwards compatibility; proxies to __invoke().
+     *
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $container
+     * @return IbmDb2Adapter
+     */
+    public function createService($container)
+    {
+        return $this($container);
     }
 }

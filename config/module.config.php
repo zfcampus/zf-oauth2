@@ -1,85 +1,92 @@
-<?php // @codingStandardsIgnoreFile
-return array(
-    'controllers' => array(
-        'factories' => array(
-            'ZF\OAuth2\Controller\Auth' => 'ZF\OAuth2\Factory\AuthControllerFactory',
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'oauth' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
+<?php
+/**
+ * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
+ * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ */
+
+namespace ZF\OAuth2;
+
+return [
+    'controllers' => [
+        'factories' => [
+            Controller\Auth::class => Factory\AuthControllerFactory::class,
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'oauth' => [
+                'type' => 'literal',
+                'options' => [
                     'route'    => '/oauth',
-                    'defaults' => array(
-                        'controller' => 'ZF\OAuth2\Controller\Auth',
+                    'defaults' => [
+                        'controller' => Controller\Auth::class,
                         'action'     => 'token',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'revoke' => array(
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                        'options' => array(
+                'child_routes' => [
+                    'revoke' => [
+                        'type' => 'literal',
+                        'options' => [
                             'route' => '/revoke',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'revoke',
-                            ),
-                        ),
-                    ),
-                    'authorize' => array(
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                        'options' => array(
+                            ],
+                        ],
+                    ],
+                    'authorize' => [
+                        'type' => 'literal',
+                        'options' => [
                             'route' => '/authorize',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'authorize',
-                            ),
-                        ),
-                    ),
-                    'resource' => array(
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                        'options' => array(
+                            ],
+                        ],
+                    ],
+                    'resource' => [
+                        'type' => 'literal',
+                        'options' => [
                             'route' => '/resource',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'resource',
-                            ),
-                        ),
-                    ),
-                    'code' => array(
-                        'type' => 'Zend\Mvc\Router\Http\Literal',
-                        'options' => array(
+                            ],
+                        ],
+                    ],
+                    'code' => [
+                        'type' => 'literal',
+                        'options' => [
                             'route' => '/receivecode',
-                            'defaults' => array(
+                            'defaults' => [
                                 'action' => 'receiveCode',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'service_manager' => array(
-        'aliases' => array(
-            'ZF\OAuth2\Provider\UserId' => 'ZF\OAuth2\Provider\UserId\AuthenticationService',
-        ),
-        'factories' => array(
-            'ZF\OAuth2\Adapter\PdoAdapter'    => 'ZF\OAuth2\Factory\PdoAdapterFactory',
-            'ZF\OAuth2\Adapter\IbmDb2Adapter' => 'ZF\OAuth2\Factory\IbmDb2AdapterFactory',
-            'ZF\OAuth2\Adapter\MongoAdapter'  => 'ZF\OAuth2\Factory\MongoAdapterFactory',
-            'ZF\OAuth2\Provider\UserId\AuthenticationService' => 'ZF\OAuth2\Provider\UserId\AuthenticationServiceFactory',
-            'ZF\OAuth2\Service\OAuth2Server'  => 'ZF\OAuth2\Factory\OAuth2ServerFactory'
-        )
-    ),
-    'view_manager' => array(
-        'template_map' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'service_manager' => [
+        'aliases' => [
+            Provider\UserId::class => Provider\UserId\AuthenticationService::class,
+        ],
+        'factories' => [
+            Adapter\PdoAdapter::class    => Factory\PdoAdapterFactory::class,
+            Adapter\IbmDb2Adapter::class => Factory\IbmDb2AdapterFactory::class,
+            Adapter\MongoAdapter::class  => Factory\MongoAdapterFactory::class,
+            Provider\UserId\AuthenticationService::class => Provider\UserId\AuthenticationServiceFactory::class,
+            Service\OAuth2Server::class  => Factory\OAuth2ServerFactory::class
+        ]
+    ],
+    'view_manager' => [
+        'template_map' => [
             'oauth/authorize'    => __DIR__ . '/../view/zf/auth/authorize.phtml',
             'oauth/receive-code' => __DIR__ . '/../view/zf/auth/receive-code.phtml',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-    ),
-    'zf-oauth2' => array(
+        ],
+    ],
+    'zf-oauth2' => [
         /*
          * Config can include:
          * - 'storage' => 'name of storage service' - typically ZF\OAuth2\Adapter\PdoAdapter
@@ -92,13 +99,13 @@ return array(
          *       // see https://github.com/bshaffer/oauth2-server-php/blob/develop/src/OAuth2/Storage/Pdo.php#L57-L66
          *   ]
          */
-        'grant_types' => array(
+        'grant_types' => [
             'client_credentials' => true,
             'authorization_code' => true,
             'password'           => true,
             'refresh_token'      => true,
             'jwt'                => true,
-        ),
+        ],
         /*
          * Error reporting style
          *
@@ -108,19 +115,19 @@ return array(
          * (default: true)
          */
         'api_problem_error_response' => true,
-    ),
-    'zf-content-negotiation' => array(
-        'controllers' => array(
-            'ZF\OAuth2\Controller\Auth' => array(
-                'ZF\ContentNegotiation\JsonModel' => array(
+    ],
+    'zf-content-negotiation' => [
+        'controllers' => [
+            Controller\Auth::class => [
+                'ZF\ContentNegotiation\JsonModel' => [
                     'application/json',
                     'application/*+json',
-                ),
-                'Zend\View\Model\ViewModel' => array(
+                ],
+                'Zend\View\Model\ViewModel' => [
                     'text/html',
                     'application/xhtml+xml',
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];

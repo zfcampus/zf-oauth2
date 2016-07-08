@@ -1,28 +1,26 @@
 <?php
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
 
 namespace ZF\OAuth2\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use ZF\OAuth2\Adapter\PdoAdapter;
 use ZF\OAuth2\Controller\Exception;
 
-class PdoAdapterFactory implements FactoryInterface
+class PdoAdapterFactory
 {
     /**
-     * @param ServiceLocatorInterface $services
-     * @throws \ZF\OAuth2\Controller\Exception\RuntimeException
-     * @return \ZF\OAuth2\Adapter\PdoAdapter
+     * @param  ContainerInterface $container
+     * @return PdoAdapter
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function __invoke(ContainerInterface $container)
     {
-        $config = $services->get('Config');
+        $config = $container->get('config');
 
-        if (!isset($config['zf-oauth2']['db']) || empty($config['zf-oauth2']['db'])) {
+        if (empty($config['zf-oauth2']['db'])) {
             throw new Exception\RuntimeException(
                 'The database configuration [\'zf-oauth2\'][\'db\'] for OAuth2 is missing'
             );
@@ -33,7 +31,9 @@ class PdoAdapterFactory implements FactoryInterface
         $options  = isset($config['zf-oauth2']['db']['options']) ? $config['zf-oauth2']['db']['options'] : [];
 
         $oauth2ServerConfig = [];
-        if (isset($config['zf-oauth2']['storage_settings']) && is_array($config['zf-oauth2']['storage_settings'])) {
+        if (isset($config['zf-oauth2']['storage_settings'])
+            && is_array($config['zf-oauth2']['storage_settings'])
+        ) {
             $oauth2ServerConfig = $config['zf-oauth2']['storage_settings'];
         }
 
@@ -43,5 +43,16 @@ class PdoAdapterFactory implements FactoryInterface
             'password' => $password,
             'options'  => $options,
         ], $oauth2ServerConfig);
+    }
+
+    /**
+     * Provided for backwards compatibility; proxies to __invoke().
+     *
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $container
+     * @return PdoAdapter
+     */
+    public function createService($container)
+    {
+        return $this($container);
     }
 }
