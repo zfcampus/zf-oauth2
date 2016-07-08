@@ -19,22 +19,25 @@ Installation
 You can install using:
 
 ```bash
-curl -s https://getcomposer.org/installer | php
-php composer.phar install
+$ composer require zfcampus/zf-oauth2
 ```
 
-You can import the `zf-oauth2` module into an existing application by adding `zfcampus/zf-oauth2` to
-your `composer.json` "require" section. You should also add the following modules to your
-application's configuration:
+You should also add the following modules to your application's configuration:
 
 ```php
-'modules' => array (
-    ...
+'modules' => [
+    /* ... */
     'ZF\ApiProblem',
     'ZF\ContentNegotiation',
     'ZF\OAuth2',
-),
+],
 ```
+
+> ### zf-component-installer
+>
+> If you use [zf-component-installer](https://github.com/zendframework/zf-component-installer),
+> that plugin will install zf-oauth2 and its other Apigility dependencies as
+> modules for you.
 
 Configuration
 -------------
