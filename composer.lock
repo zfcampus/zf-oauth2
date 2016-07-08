@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e204484eb684a960ed8db1abba09d1c2",
-    "content-hash": "8f130419e21c0c8737d96446b8787cf2",
+    "hash": "79245d982fa13c78378aa62d4d9995c0",
+    "content-hash": "b30b519e713ba722c3bf7a97a2d4cc17",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -348,7 +348,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-filter/zipball/84c50246428efb0a1e52868e162dab3e149d5b80",
                 "reference": "84c50246428efb0a1e52868e162dab3e149d5b80",
-                "shasum": "6aefb064cafab721b49ffb47e9237446b3bff594"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -384,11 +384,7 @@
                     "Zend\\Filter\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Filter\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -412,7 +408,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-http/zipball/7b920b4ec34b5ee58f76eb4e8c408b083121953c",
                 "reference": "7b920b4ec34b5ee58f76eb4e8c408b083121953c",
-                "shasum": "42b4a537200c6a39e09177d00f29ed781145d479"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -438,11 +434,7 @@
                     "Zend\\Http\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Http\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -942,7 +934,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-validator/zipball/8ec9f57a717dd37340308aa632f148a2c2be1cfc",
                 "reference": "8ec9f57a717dd37340308aa632f148a2c2be1cfc",
-                "shasum": "80a58f6b188bb1cfec4a1a1dc0861618a2f159fa"
+                "shasum": ""
             },
             "require": {
                 "container-interop/container-interop": "^1.1",
@@ -989,11 +981,7 @@
                     "Zend\\Validator\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Validator\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -1017,7 +1005,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-view/zipball/71b4ebd0c4c9a2d0e0438f9d3a435e08dd769ff8",
                 "reference": "71b4ebd0c4c9a2d0e0438f9d3a435e08dd769ff8",
-                "shasum": "1867e5ed45eb8136c227794589da6db0f20d7e0e"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -1080,11 +1068,7 @@
                     "Zend\\View\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\View\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -1108,7 +1092,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zfcampus/zf-api-problem/zipball/3d2cb9f91aace74d4ca00d865d1ed95b593c6187",
                 "reference": "3d2cb9f91aace74d4ca00d865d1ed95b593c6187",
-                "shasum": "d7ff8a52f0819327c8630ef70475f3f20e9ccaf1"
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -1138,26 +1122,7 @@
                     "ZF\\ApiProblem\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZFTest\\ApiProblem\\": "test/"
-                }
-            },
-            "scripts": {
-                "check": [
-                    "@cs-check",
-                    "@test"
-                ],
-                "cs-check": [
-                    "phpcs"
-                ],
-                "cs-fix": [
-                    "phpcbf"
-                ],
-                "test": [
-                    "phpunit"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -1170,12 +1135,6 @@
                 "zend",
                 "zf2"
             ],
-            "support": {
-                "email": "apigility-users@zend.com",
-                "irc": "irc://irc.freenode.net/apigility",
-                "source": "https://github.com/zfcampus/zf-api-problem",
-                "issues": "https://github.com/zfcampus/zf-api-problem/issues"
-            },
             "time": "2016-07-07 13:52:00"
         },
         {
@@ -2040,6 +1999,44 @@
             "time": "2016-06-12 07:37:26"
         },
         {
+            "name": "psr/log",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "reference": "fe0936ee26643249e916849d48e3a51d5f5e278b",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Psr\\Log\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "time": "2012-12-21 11:40:51"
+        },
+        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "1.0.0",
             "source": {
@@ -2732,7 +2729,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-authentication/zipball/1422dec160eb769c719cad2229847fcbf20a1405",
                 "reference": "1422dec160eb769c719cad2229847fcbf20a1405",
-                "shasum": "9d672878a12ba84ba120f55176ae697de0b44ef3"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -2770,18 +2767,14 @@
                     "Zend\\Authentication\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Authentication\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
             "description": "provides an API for authentication and includes concrete authentication adapters for common use case scenarios",
             "homepage": "https://github.com/zendframework/zend-authentication",
             "keywords": [
-                "authentication",
+                "Authentication",
                 "zf2"
             ],
             "time": "2016-02-28 15:02:34"
@@ -2798,7 +2791,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-console/zipball/cbbdfdfa0564aa20d1c6c6ef3daeafe6aec02360",
                 "reference": "cbbdfdfa0564aa20d1c6c6ef3daeafe6aec02360",
-                "shasum": "60e170bace6655fba3bb2d86280613cec3333324"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -2827,15 +2820,10 @@
                     "Zend\\Console\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Console\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": " ",
             "homepage": "https://github.com/zendframework/zend-console",
             "keywords": [
                 "console",
@@ -2855,7 +2843,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-db/zipball/c9fa8fdab194093fff58e4f1180c7e15d80a2cb5",
                 "reference": "c9fa8fdab194093fff58e4f1180c7e15d80a2cb5",
-                "shasum": "5b3d1029bf9bd29b7740f500da7a5627cb694526"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -2889,15 +2877,10 @@
                     "Zend\\Db\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Db\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": " ",
             "homepage": "https://github.com/zendframework/zend-db",
             "keywords": [
                 "db",
@@ -2917,7 +2900,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-dom/zipball/a9e145b2b52fe6de5a7a6b0ddb5c773c2c72d59e",
                 "reference": "a9e145b2b52fe6de5a7a6b0ddb5c773c2c72d59e",
-                "shasum": "b1f054d350304eb43d9df20a946c236afc293285"
+                "shasum": ""
             },
             "require": {
                 "php": ">=5.5"
@@ -2938,11 +2921,7 @@
                     "Zend\\Dom\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\Dom\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
@@ -2966,7 +2945,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/zendframework/zend-i18n/zipball/b2db0d8246a865c659f93199f90f5fc2cd2f3cd8",
                 "reference": "b2db0d8246a865c659f93199f90f5fc2cd2f3cd8",
-                "shasum": "e95144f295499fdc9be0c0aaf6efbd4976303abd"
+                "shasum": ""
             },
             "require": {
                 "php": "^5.5 || ^7.0",
@@ -3010,21 +2989,144 @@
                     "Zend\\I18n\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "ZendTest\\I18n\\": "test/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
             ],
-            "description": " ",
             "homepage": "https://github.com/zendframework/zend-i18n",
             "keywords": [
                 "i18n",
                 "zf2"
             ],
             "time": "2016-06-07 21:08:30"
+        },
+        {
+            "name": "zendframework/zend-log",
+            "version": "2.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-log.git",
+                "reference": "0325ad00505b8f39d79f26e666dc851bfd25fdaa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-log/zipball/0325ad00505b8f39d79f26e666dc851bfd25fdaa",
+                "reference": "0325ad00505b8f39d79f26e666dc851bfd25fdaa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "psr/log": "^1.0",
+                "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
+                "zendframework/zend-stdlib": "^2.7 || ^3.0"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "1.7.*",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "~4.0",
+                "zendframework/zend-console": "^2.6",
+                "zendframework/zend-db": "^2.6",
+                "zendframework/zend-escaper": "^2.5",
+                "zendframework/zend-filter": "^2.5",
+                "zendframework/zend-mail": "^2.6.1",
+                "zendframework/zend-validator": "^2.6"
+            },
+            "suggest": {
+                "ext-mongodb": "mongodb extension to use MongoDB writer",
+                "zendframework/zend-console": "Zend\\Console component to use the RequestID log processor",
+                "zendframework/zend-db": "Zend\\Db component to use the database log writer",
+                "zendframework/zend-escaper": "Zend\\Escaper component, for use in the XML log formatter",
+                "zendframework/zend-mail": "Zend\\Mail component to use the email log writer",
+                "zendframework/zend-validator": "Zend\\Validator component to block invalid log messages"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.9-dev",
+                    "dev-develop": "2.10-dev"
+                },
+                "zf": {
+                    "component": "Zend\\Log",
+                    "config-provider": "Zend\\Log\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Log\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "component for general purpose logging",
+            "homepage": "https://github.com/zendframework/zend-log",
+            "keywords": [
+                "log",
+                "logging",
+                "zf2"
+            ],
+            "time": "2016-06-22 22:25:25"
+        },
+        {
+            "name": "zendframework/zend-serializer",
+            "version": "2.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-serializer.git",
+                "reference": "ff74ea020f5f90866eb28365327e9bc765a61a6e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/ff74ea020f5f90866eb28365327e9bc765a61a6e",
+                "reference": "ff74ea020f5f90866eb28365327e9bc765a61a6e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "zendframework/zend-json": "^2.5 || ^3.0",
+                "zendframework/zend-stdlib": "^2.7 || ^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.5",
+                "squizlabs/php_codesniffer": "^2.3.1",
+                "zendframework/zend-math": "^2.6",
+                "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3"
+            },
+            "suggest": {
+                "zendframework/zend-math": "(^2.6 || ^3.0) To support Python Pickle serialization",
+                "zendframework/zend-servicemanager": "(^2.7.5 || ^3.0.3) To support plugin manager support"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.8-dev",
+                    "dev-develop": "2.9-dev"
+                },
+                "zf": {
+                    "component": "Zend\\Serializer",
+                    "config-provider": "Zend\\Serializer\\ConfigProvider"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Serializer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides an adapter based interface to simply generate storable representation of PHP types by different facilities, and recover",
+            "homepage": "https://github.com/zendframework/zend-serializer",
+            "keywords": [
+                "serializer",
+                "zf2"
+            ],
+            "time": "2016-06-21 17:01:55"
         },
         {
             "name": "zendframework/zend-test",
