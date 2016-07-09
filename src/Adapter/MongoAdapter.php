@@ -89,7 +89,7 @@ class MongoAdapter extends OAuth2Mongo
     public function __construct($connection, $config = [])
     {
         // @codeCoverageIgnoreStart
-        $useMongoDb = defined('HHVM_VERSION') || version_compare(PHP_VERSION, '7.0', '>=');
+        $useMongoDb = version_compare(PHP_VERSION, '7.0', '>=');
         if (! extension_loaded($useMongoDb ? 'mongodb' : 'mongo')
             || ! class_exists(MongoClient::class)
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
