@@ -22,7 +22,15 @@ You can install using:
 $ composer require zfcampus/zf-oauth2
 ```
 
-You should also add the following modules to your application's configuration:
+If you are using ext/mongodb, you will also need to install a compatibility
+package:
+
+```bash
+$ composer require alcaeus/mongo-php-adapter
+```
+
+Finally, you will need to add the following modules to your application's
+configuration:
 
 ```php
 'modules' => [
