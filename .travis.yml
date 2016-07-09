@@ -29,13 +29,16 @@ matrix:
     - php: 7
       env:
         - DEPS=lowest
+        - EXT_MONGODB=true
     - php: 7
       env:
         - DEPS=locked
+        - EXT_MONGODB=true
         - CS_CHECK=true
     - php: 7
       env:
         - DEPS=latest
+        - EXT_MONGODB=true
     - php: hhvm 
       env:
         - DEPS=lowest
@@ -44,6 +47,7 @@ matrix:
         - DEPS=locked
     - php: hhvm 
       env:
+        - EXT_MONGODB=true
         - DEPS=latest
   allow_failures:
     - php: hhvm
@@ -54,17 +58,19 @@ notifications:
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - if [[ $TRAVIS_PHP_VERSION == '7' ]]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
-  - if [[ $TRAVIS_PHP_VERSION == 'hhvm' ]]; then echo "extension = mongodb.so" >> /etc/hhvm/php.ini ; fi
-  - if [[ $TRAVIS_PHP_VERSION != '7' && $TRAVIS_PHP_VERSION != 'hhvm' ]]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
+  - if [[ $EXT_MONGODB == 'true' && $TRAVIS_PHP_VERSION == '7' ]]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
+  - if [[ $EXT_MONGODB == 'true' && $TRAVIS_PHP_VERSION == 'hhvm' ]]; then echo "extension = mongodb.so" >> /etc/hhvm/php.ini ; fi
+  - if [[ $EXT_MONGODB != 'true' && $TRAVIS_PHP_VERSION != 'hhvm' ]]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
+  - if [[ $EXT_MONGODB != 'true' && $TRAVIS_PHP_VERSION == 'hhvm' ]]; then echo "extension = mongo.so" >> /etc/hhvm/php.ini ; fi
   - travis_retry composer self-update
   - chmod -R +rwX test/TestAsset
 
 install:
-  - if [[ $TRAVIS_PHP_VERSION != '7' && $TRAVIS_PHP_VERSION != 'hhvm' ]]; then composer require --dev $COMPOSER_ARGS alcaeus/mongo-php-adapter ; fi
+  - if [[ $EXT_MONGODB == 'true' ]]; then composer require --dev $COMPOSER_ARGS alcaeus/mongo-php-adapter ; fi
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - travis_retry composer install $COMPOSER_ARGS
+  - php -m
   - composer show
 
 script:
