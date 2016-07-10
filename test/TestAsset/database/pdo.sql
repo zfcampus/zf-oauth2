@@ -8,6 +8,7 @@ CREATE TABLE oauth_access_tokens (
     scope VARCHAR(2000),
     CONSTRAINT access_token_pk PRIMARY KEY (access_token)
 );
+INSERT INTO "oauth_access_tokens" VALUES ('00bdec1ee9ee80762f39e5340495a31a203cd460', 'testclient', 'oauth_test_user', '2020-01-01 00:00:00', NULL);
 CREATE TABLE oauth_authorization_codes (
     authorization_code VARCHAR(40) NOT NULL,
     client_id VARCHAR(80) NOT NULL,

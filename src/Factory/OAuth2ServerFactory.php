@@ -1,24 +1,33 @@
 <?php
 /**
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD-3-Clause
- * @copyright Copyright (c) 2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2014-2016 Zend Technologies USA Inc. (http://www.zend.com)
  */
 namespace ZF\OAuth2\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
-class OAuth2ServerFactory implements FactoryInterface
+class OAuth2ServerFactory
 {
+    /**
+     * @param  ContainerInterface $container
+     * @return OAuth2ServerInstanceFactory
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        $config = $container->get('config');
+        $config = isset($config['zf-oauth2']) ? $config['zf-oauth2'] : [];
+        return new OAuth2ServerInstanceFactory($config, $container);
+    }
 
     /**
-     * @param ServiceLocatorInterface $services
-     * @return OAuth2\Server
+     * Provided for backwards compatibility; proxies to __invoke().
+     *
+     * @param \Zend\ServiceManager\ServiceLocatorInterface $container
+     * @return OAuth2ServerInstanceFactory
      */
-    public function createService(ServiceLocatorInterface $services)
+    public function createService($container)
     {
-        $config = $services->get('Config');
-        $config = isset($config['zf-oauth2']) ? $config['zf-oauth2'] : [];
-        return new OAuth2ServerInstanceFactory($config, $services);
+        return $this($container);
     }
 }

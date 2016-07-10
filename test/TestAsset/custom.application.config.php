@@ -27,7 +27,7 @@ return [
         // modules are loaded. These effectively override configuration
         // provided by modules themselves. Paths may use GLOB_BRACE notation.
         'config_glob_paths' => [
-            __DIR__ . '/autoload_mongo/{,*.}{global,local}.php',
+            __DIR__ . '/autoload_custom/{,*.}{global,local}.php',
         ],
     ],
 ];

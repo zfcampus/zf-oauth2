@@ -14,11 +14,10 @@ use RuntimeException;
 use Zend\Http\PhpEnvironment\Request as PhpEnvironmentRequest;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use ZF\ApiProblem\ApiProblem;
 use ZF\ApiProblem\ApiProblemResponse;
+use ZF\ApiProblem\Exception\ProblemExceptionInterface;
 use ZF\ContentNegotiation\ViewModel;
-use ZF\OAuth2\Provider\UserId\Request as UserIdProviderRequest;
 use ZF\OAuth2\Provider\UserId\UserIdProviderInterface;
 
 class AuthController extends AbstractActionController
@@ -46,7 +45,7 @@ class AuthController extends AbstractActionController
     /**
      * Constructor
      *
-     * @param OAuth2Server $server
+     * @param callable $serverFactory
      * @param UserIdProviderInterface $userIdProvider
      */
     public function __construct($serverFactory, UserIdProviderInterface $userIdProvider)
@@ -103,7 +102,41 @@ class AuthController extends AbstractActionController
         }
 
         $oauth2request = $this->getOAuth2Request();
-        $response = $this->getOAuth2Server($this->params('oauth'))->handleTokenRequest($oauth2request);
+        $oauth2server = $this->getOAuth2Server($this->params('oauth'));
+        try {
+            $response = $oauth2server->handleTokenRequest($oauth2request);
+        } catch (ProblemExceptionInterface $ex) {
+            return new ApiProblemResponse(
+                new ApiProblem(401, $ex)
+            );
+        }
+
+        if ($response->isClientError()) {
+            return $this->getErrorResponse($response);
+        }
+
+        return $this->setHttpResponse($response);
+    }
+
+    /**
+     * Token Revoke (/oauth/revoke)
+     */
+    public function revokeAction()
+    {
+        $request = $this->getRequest();
+        if (! $request instanceof HttpRequest) {
+            // not an HTTP request; nothing left to do
+            return;
+        }
+
+        if ($request->isOptions()) {
+            // OPTIONS request.
+            // This is most likely a CORS attempt; as such, pass the response on.
+            return $this->getResponse();
+        }
+
+        $oauth2request = $this->getOAuth2Request();
+        $response = $this->getOAuth2Server($this->params('oauth'))->handleRevokeRequest($oauth2request);
 
         if ($response->isClientError()) {
             return $this->getErrorResponse($response);

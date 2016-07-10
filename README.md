@@ -19,22 +19,33 @@ Installation
 You can install using:
 
 ```bash
-curl -s https://getcomposer.org/installer | php
-php composer.phar install
+$ composer require zfcampus/zf-oauth2
 ```
 
-You can import the `zf-oauth2` module into an existing application by adding `zfcampus/zf-oauth2` to
-your `composer.json` "require" section. You should also add the following modules to your
-application's configuration:
+If you are using ext/mongodb, you will also need to install a compatibility
+package:
+
+```bash
+$ composer require alcaeus/mongo-php-adapter
+```
+
+Finally, you will need to add the following modules to your application's
+configuration:
 
 ```php
-'modules' => array (
-    ...
+'modules' => [
+    /* ... */
     'ZF\ApiProblem',
     'ZF\ContentNegotiation',
     'ZF\OAuth2',
-),
+],
 ```
+
+> ### zf-component-installer
+>
+> If you use [zf-component-installer](https://github.com/zendframework/zf-component-installer),
+> that plugin will install zf-oauth2 and its other Apigility dependencies as
+> modules for you.
 
 Configuration
 -------------
@@ -334,6 +345,19 @@ var parseQueryString = function( queryString ) {
 // get token params from URL fragment
 var tokenParams = parseQueryString(window.location.hash.substr(1));
 ```
+
+REVOKE (code)
+-------------
+
+Starting with version 1.4.0, you can revoke access tokens. By default, revocation
+happens via a POST request to the path `/oauth/revoke`, which expects a payload
+with:
+
+- `token`, the OAuth2 access token to revoke.
+- `token_type_hint => 'access_token'`, indicating that an access token is being
+  revoked.
+
+The payload may be delivered as `application/x-www-form-urlencoded` or as JSON.
 
 Access a test resource
 ----------------------
