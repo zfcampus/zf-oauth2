@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
+- [#149](https://github.com/zfcampus/zf-oauth2/pull/149) adds support for usage
+  of ext/mongodb with `ZF\OAuth2\Adapter\MongoAdapter`; users will need to also
+  install a compatibility package to do so:
+  `composer require alcaeus/mongo-php-adapter`
 - [#141](https://github.com/zfcampus/zf-oauth2/pull/141) and
   [#148](https://github.com/zfcampus/zf-oauth2/pull/148) update the component to
   allow usage with v3 releases of Zend Framework components on which it depends,

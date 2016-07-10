@@ -89,12 +89,14 @@ class MongoAdapter extends OAuth2Mongo
     public function __construct($connection, $config = [])
     {
         // @codeCoverageIgnoreStart
-        if (!extension_loaded('mongo')
-            || ! class_exists('MongoClient')
+        if (! (extension_loaded('mongodb') || extension_loaded('mongo'))
+            || ! class_exists(MongoClient::class)
             || version_compare(MongoClient::VERSION, '1.4.1', '<')
         ) {
             throw new Exception\RuntimeException(
-                'The Mongo Driver v1.4.1 required for this adapter to work'
+                'The MongoAdapter requires either the Mongo Driver v1.4.1 or '
+                . 'ext/mongodb + the alcaeus/mongo-php-adapter package (which provides '
+                . 'backwards compatibility for ext/mongo classes)'
             );
         }
         // @codeCoverageIgnoreEnd

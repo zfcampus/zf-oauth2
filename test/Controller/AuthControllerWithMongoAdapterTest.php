@@ -6,19 +6,41 @@
 
 namespace ZFTest\OAuth2\Controller;
 
+use MongoClient;
+use MongoConnectionException;
+use MongoDB;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
 {
     /**
-     * @var \MongoDB
+     * @var MongoDB
      */
     protected $db;
 
+    /**
+     * Default data to insert in database.
+     *
+     * Defined here to prevent "cannot pass by reference" issues when using
+     * alcaeus/mongo-php-adapter (as that library accepts a reference for the
+     * first argument, and unassigned arrays fail that).
+     *
+     * @var array
+     */
+    protected $defaultData = [
+        'client_id'     => 'testclient',
+        'client_secret' => '$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2',
+        'redirect_uri'  => '/oauth/receivecode',
+        'grant_types'   => null,
+    ];
+
     public function setUp()
     {
-        if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('The Mongo extension is not available.');
+        if (! (extension_loaded('mongodb') || extension_loaded('mongo'))
+            || ! class_exists(MongoClient::class)
+            || version_compare(MongoClient::VERSION, '1.4.1', '<')
+        ) {
+            $this->markTestSkipped('ext/mongo ^1.4.1 or ext/mongodb + alcaeus/mongo-php-adapter is not available.');
         }
 
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/mongo.application.config.php');
@@ -26,24 +48,20 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         parent::setUp();
 
         try {
-            $client = new \MongoClient("mongodb://127.0.0.1:27017");
-        } catch (\MongoConnectionException $e) {
+            $client = new MongoClient("mongodb://127.0.0.1:27017");
+        } catch (MongoConnectionException $e) {
             $this->markTestSkipped($e->getMessage());
         }
+
         $this->db = $client->selectDB('zf_oauth2_test');
-        $this->db->oauth_clients->insert([
-            'client_id'     => 'testclient',
-            'client_secret' => '$2y$14$f3qml4G2hG6sxM26VMq.geDYbsS089IBtVJ7DlD05BoViS9PFykE2',
-            'redirect_uri'  => '/oauth/receivecode',
-            'grant_types'   => null
-        ]);
+        $this->db->oauth_clients->insert($this->defaultData);
 
         $this->getApplicationServiceLocator()->setService('MongoDB', $this->db);
     }
 
     public function tearDown()
     {
-        if ($this->db instanceof \MongoDB) {
+        if ($this->db instanceof MongoDB) {
             $this->db->drop();
         }
 
