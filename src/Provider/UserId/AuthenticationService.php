@@ -6,13 +6,13 @@
 
 namespace ZF\OAuth2\Provider\UserId;
 
-use Zend\Authentication\AuthenticationService as ZendAuthenticationService;
+use Zend\Authentication\AuthenticationServiceInterface;
 use Zend\Stdlib\RequestInterface;
 
 class AuthenticationService implements UserIdProviderInterface
 {
     /**
-     * @var ZendAuthenticationService
+     * @var AuthenticationServiceInterface
      */
     private $authenticationService;
 
@@ -24,10 +24,10 @@ class AuthenticationService implements UserIdProviderInterface
     /**
      *  Set authentication service
      *
-     * @param ZendAuthenticationService $service
+     * @param AuthenticationServiceInterface $service
      * @param array $config
      */
-    public function __construct(ZendAuthenticationService $service = null, $config = [])
+    public function __construct(AuthenticationServiceInterface $service = null, $config = [])
     {
         $this->authenticationService = $service;
 
@@ -37,14 +37,14 @@ class AuthenticationService implements UserIdProviderInterface
     }
 
     /**
-     * Use Zend\Authentication\AuthenticationService to fetch the identity.
+     * Use implementation of Zend\Authentication\AuthenticationServiceInterface to fetch the identity.
      *
      * @param  RequestInterface $request
      * @return mixed
      */
     public function __invoke(RequestInterface $request)
     {
-        if (empty($this->authenticationService)) {
+        if (null === $this->authenticationService) {
             return null;
         }
 
