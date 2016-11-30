@@ -142,6 +142,15 @@ class OAuth2ServerInstanceFactory
             $server->addGrantType(new RefreshToken($server->getStorage('refresh_token'), $refreshOptions));
         }
 
+        // Add custom grant type from the service locator
+        if (isset($availableGrantTypes['custom_grant_types']) && is_array($availableGrantTypes['custom_grant_types'])) {
+            foreach ($availableGrantTypes['custom_grant_types'] as $grantKey => $grantType) {
+                if ($services->has($grantType)) {
+                    $server->addGrantType($services->get($grantType, $grantKey));
+                }
+            }
+        }
+
         return $this->server = $server;
     }
 }
