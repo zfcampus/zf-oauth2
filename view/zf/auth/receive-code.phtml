@@ -1,4 +1,5 @@
 <?php
+$http = $_SERVER['HTTPS'] !== 'on' ? 'http' : 'https';
 if ($this->code) {
     printf("<h2>The authentication code is %s</h2>", $this->code);
     printf("<p>Use this code to request an access token.</p>");
