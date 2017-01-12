@@ -9,7 +9,7 @@ namespace ZF\OAuth2;
 return [
     'controllers' => [
         'factories' => [
-            Controller\Auth::class => Factory\AuthControllerFactory::class,
+            'ZF\OAuth2\Controller\Auth' => Factory\AuthControllerFactory::class,
         ],
     ],
     'router' => [
@@ -19,7 +19,7 @@ return [
                 'options' => [
                     'route'    => '/oauth',
                     'defaults' => [
-                        'controller' => Controller\Auth::class,
+                        'controller' => 'ZF\OAuth2\Controller\Auth',
                         'action'     => 'token',
                     ],
                 ],
@@ -67,14 +67,14 @@ return [
     ],
     'service_manager' => [
         'aliases' => [
-            Provider\UserId::class => Provider\UserId\AuthenticationService::class,
+            'ZF\OAuth2\Provider\UserId' => Provider\UserId\AuthenticationService::class,
         ],
         'factories' => [
             Adapter\PdoAdapter::class    => Factory\PdoAdapterFactory::class,
             Adapter\IbmDb2Adapter::class => Factory\IbmDb2AdapterFactory::class,
             Adapter\MongoAdapter::class  => Factory\MongoAdapterFactory::class,
             Provider\UserId\AuthenticationService::class => Provider\UserId\AuthenticationServiceFactory::class,
-            Service\OAuth2Server::class  => Factory\OAuth2ServerFactory::class
+            'ZF\OAuth2\Service\OAuth2Server'  => Factory\OAuth2ServerFactory::class
         ]
     ],
     'view_manager' => [
@@ -118,7 +118,7 @@ return [
     ],
     'zf-content-negotiation' => [
         'controllers' => [
-            Controller\Auth::class => [
+            'ZF\OAuth2\Controller\Auth' => [
                 'ZF\ContentNegotiation\JsonModel' => [
                     'application/json',
                     'application/*+json',
