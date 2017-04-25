@@ -106,8 +106,13 @@ class AuthController extends AbstractActionController
         try {
             $response = $oauth2server->handleTokenRequest($oauth2request);
         } catch (ProblemExceptionInterface $ex) {
+            $status = $ex->getCode();
+            if (empty($status)) {
+                $status = 401;
+            }
+
             return new ApiProblemResponse(
-                new ApiProblem(401, $ex)
+                new ApiProblem($status, $ex)
             );
         }
 
