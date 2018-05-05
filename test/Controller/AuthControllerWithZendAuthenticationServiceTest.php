@@ -18,7 +18,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
     protected $loader;
     protected $db;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->setApplicationConfig(
             include __DIR__ . '/../TestAsset/zend.authenticationservice.application.config.php'
