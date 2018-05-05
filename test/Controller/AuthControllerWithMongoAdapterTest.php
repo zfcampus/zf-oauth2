@@ -34,7 +34,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         'grant_types'   => null,
     ];
 
-    public function setUp()
+    protected function setUp()
     {
         if (! (extension_loaded('mongodb') || extension_loaded('mongo'))
             || ! class_exists(MongoClient::class)
@@ -59,7 +59,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         $this->getApplicationServiceLocator()->setService('MongoDB', $this->db);
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         if ($this->db instanceof MongoDB) {
             $this->db->drop();
