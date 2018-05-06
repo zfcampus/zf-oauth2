@@ -7,8 +7,6 @@
 namespace ZFTest\OAuth2\Controller;
 
 use Mockery as M;
-use Mockery\Loader;
-use PDO;
 use ReflectionProperty;
 use Zend\Stdlib\Parameters;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -23,9 +21,6 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $this->setApplicationConfig(
             include __DIR__ . '/../TestAsset/zend.authenticationservice.application.config.php'
         );
-
-        $this->loader = new Loader;
-        $this->loader->register();
 
         parent::setUp();
         $this->setupDb();
