@@ -64,8 +64,6 @@ matrix:
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - yes '' | pecl -q install -f $MONGO_DRIVER
-  - if [[ $MONGO_DRIVER == 'mongodb' ]]; then echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
-  - if [[ $MONGO_DRIVER == 'mongo' ]]; then echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini ; fi
 
 install:
   - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
