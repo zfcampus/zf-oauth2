@@ -6,8 +6,6 @@
 
 namespace ZFTest\OAuth2\Adapter\Pdo;
 
-use OAuth2\Storage\PublicKeyInterface;
-
 class PublicKeyTest extends BaseTest
 {
     /** @dataProvider provideStorage */
