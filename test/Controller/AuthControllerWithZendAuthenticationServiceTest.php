@@ -7,8 +7,6 @@
 namespace ZFTest\OAuth2\Controller;
 
 use Mockery as M;
-use Mockery\Loader;
-use PDO;
 use ReflectionProperty;
 use Zend\Stdlib\Parameters;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -18,14 +16,11 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
     protected $loader;
     protected $db;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->setApplicationConfig(
             include __DIR__ . '/../TestAsset/zend.authenticationservice.application.config.php'
         );
-
-        $this->loader = new Loader;
-        $this->loader->register();
 
         parent::setUp();
         $this->setupDb();
@@ -107,6 +102,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $request->getServer()->set('PHP_AUTH_USER', 'testclient');
         $request->getServer()->set('PHP_AUTH_PW', 'testpass');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');

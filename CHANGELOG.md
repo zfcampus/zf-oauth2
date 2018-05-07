@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.5.0 - TBD
+## 1.5.0 - 2018-05-07
 
 ### Added
 
-- Nothing.
+- [#167](https://github.com/zfcampus/zf-oauth2/pull/167) adds support for PHP 7.1 and 7.2.
 
 ### Changed
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#167](https://github.com/zfcampus/zf-oauth2/pull/167) removes support for HHVM.
 
 ### Fixed
 
@@ -67,6 +67,10 @@ All notable changes to this project will be documented in this file, in reverse 
 ## 1.3.3 - 2016-07-07
 
 ### Added
+
+- Nothing.
+
+### Changed
 
 - Nothing.
 

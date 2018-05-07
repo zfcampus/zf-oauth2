@@ -1,34 +1,36 @@
 {
     "name": "zfcampus/zf-oauth2",
-    "description": "ZF2 module for implementing an OAuth2 server",
+    "description": "ZF module for implementing an OAuth2 server",
     "license": "BSD-3-Clause",
     "keywords": [
+        "zendframework",
         "api",
         "oauth2",
         "framework",
-        "zf2"
+        "zf"
     ],
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.4-dev",
-            "dev-develop": "1.5-dev"
-        }
+    "support": {
+        "issues": "https://github.com/zfcampus/zf-oauth2/issues",
+        "source": "https://github.com/zfcampus/zf-oauth2",
+        "rss": "https://github.com/zfcampus/zf-oauth2/releases.atom",
+        "chat": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/apigility"
     },
     "require": {
         "php": "^5.6 || ^7.0",
-        "bshaffer/oauth2-server-php": "^1.8",
-        "zendframework/zend-crypt": "^2.6 || ^3.0",
+        "bshaffer/oauth2-server-php": "^1.10",
+        "zendframework/zend-crypt": "^3.3",
         "zendframework/zend-http": "^2.5.4",
-        "zendframework/zend-mvc": "^2.7.9 || ^3.0.2",
+        "zendframework/zend-mvc": "^2.7.15 || ^3.0.2",
         "zendframework/zend-servicemanager": "^2.7.6 || ^3.1",
         "zfcampus/zf-api-problem": "^1.2.1",
         "zfcampus/zf-content-negotiation": "^1.2.1"
     },
     "require-dev": {
-        "mockery/mockery": "^0.9",
-        "phpunit/phpunit": "^4.8 || ^5.4",
-        "squizlabs/php_codesniffer": "^2.3.1",
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.5",
         "zendframework/zend-authentication": "^2.5.3",
+        "zendframework/zend-coding-standard": "~1.0.0",
         "zendframework/zend-db": "^2.8.1",
         "zendframework/zend-i18n": "^2.7.3",
         "zendframework/zend-log": "^2.9",
@@ -49,6 +51,15 @@
             "ZFTest\\OAuth2\\": "test/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.5.x-dev",
+            "dev-develop": "1.6.x-dev"
+        }
+    },
     "bin": [
         "bin/bcrypt.php"
     ],
@@ -59,6 +70,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
-        "test": "phpunit"
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
 }
