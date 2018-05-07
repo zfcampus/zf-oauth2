@@ -6,18 +6,28 @@
 
 namespace ZFTest\OAuth2\Controller;
 
+use OAuth2\Request as OAuth2Request;
+use OAuth2\Server as OAuth2Server;
+use Prophecy\Argument;
 use ReflectionProperty;
+use RuntimeException;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Driver\Pdo\Pdo as PdoDriver;
 use Zend\Db\Sql\Sql;
+use Zend\Http\Request;
+use Zend\Mvc\Controller\Plugin\Params;
 use Zend\Stdlib\Parameters;
+use ZF\ApiProblem\ApiProblemResponse;
+use ZF\ApiProblem\Exception\ProblemExceptionInterface;
+use ZF\OAuth2\Controller\AuthController;
+use ZF\OAuth2\Provider\UserId\UserIdProviderInterface;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerTest extends AbstractHttpControllerTestCase
 {
     protected $db;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/pdo.application.config.php');
         parent::setUp();
@@ -48,6 +58,29 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         return $this->db;
     }
 
+    public function setRequest(AuthController $controller, Request $request)
+    {
+        $r = new ReflectionProperty($controller, 'request');
+        $r->setAccessible(true);
+        $r->setValue($controller, $request);
+    }
+
+    public function setBodyParamsPlugin(AuthController $controller)
+    {
+        $plugins = $controller->getPluginManager();
+        $plugins->setService('bodyParams', new TestAsset\BodyParams());
+    }
+
+    public function setParamsPlugin(AuthController $controller, $key, $value)
+    {
+        $params = $this->prophesize(Params::class);
+        $params->__invoke($key)->willReturn($value);
+        $params->setController($controller)->shouldBeCalled();
+
+        $plugins = $controller->getPluginManager();
+        $plugins->setService('params', $params->reveal());
+    }
+
     public function testToken()
     {
         $request = $this->getRequest();
@@ -62,10 +95,10 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
-        $this->assertTrue(!empty($response['expires_in']));
+        $this->assertTrue(! empty($response['access_token']));
+        $this->assertTrue(! empty($response['expires_in']));
         $this->assertTrue(array_key_exists('scope', $response));
-        $this->assertTrue(!empty($response['token_type']));
+        $this->assertTrue(! empty($response['token_type']));
     }
 
     public function testTokenErrorIsApiProblem()
@@ -128,7 +161,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['revoked']));
+        $this->assertTrue(! empty($response['revoked']));
         $this->assertTrue($response['revoked']);
     }
 
@@ -247,13 +280,14 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $request->getServer()->set('PHP_AUTH_USER', 'testclient');
         $request->getServer()->set('PHP_AUTH_PW', 'testpass');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertTrue(! empty($response['access_token']));
     }
 
     public function testImplicitClientAuth()
@@ -261,7 +295,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $config = $this->getApplication()->getConfig();
         $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;
 
-        if (!$allowImplicit) {
+        if (! $allowImplicit) {
             $this->markTestSkipped('The allow implicit client mode is disabled');
         }
 
@@ -284,7 +318,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         if (preg_match('#access_token=([0-9a-f]+)#', $location, $matches)) {
             $token = $matches[1];
         }
-        $this->assertTrue(!empty($token));
+        $this->assertTrue(! empty($token));
     }
 
     public function testResource()
@@ -301,7 +335,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertTrue(! empty($response['access_token']));
 
         $token = $response['access_token'];
 
@@ -313,6 +347,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         unset($server['PHP_AUTH_USER']);
         unset($server['PHP_AUTH_PW']);
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('resource');
@@ -329,6 +364,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         unset($post['access_token']);
         $request->setMethod('GET');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('resource');
@@ -348,5 +384,73 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
 
         $serviceManager->setAllowOverride(true);
         $serviceManager->setService('config', $config);
+    }
+
+    public function testTokenActionUsesCodeFromTokenExceptionIfPresentToCreateApiProblem()
+    {
+        $exception = new TestAsset\CustomProblemDetailsException('problem', 409);
+        $exception->type = 'custom';
+        $exception->title = 'title';
+        $exception->details = ['some' => 'details'];
+
+        $oauth2Server = $this->prophesize(OAuth2Server::class);
+        $oauth2Server
+            ->handleTokenRequest(Argument::type(OAuth2Request::class))
+            ->willThrow($exception);
+        $factory = function () use ($oauth2Server) {
+            return $oauth2Server->reveal();
+        };
+
+        $provider = $this->prophesize(UserIdProviderInterface::class)->reveal();
+
+        $controller = new AuthController($factory, $provider);
+        $this->setBodyParamsPlugin($controller);
+        $this->setParamsPlugin($controller, 'oauth', []);
+
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $this->setRequest($controller, $request);
+
+        $result = $controller->tokenAction();
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        $problem = $result->getApiProblem();
+        $this->assertEquals(409, $problem->status);
+        $this->assertEquals('custom', $problem->type);
+        $this->assertEquals('title', $problem->title);
+        $this->assertEquals('details', $problem->some);
+    }
+
+    public function testTokenActionUses401CodeIfTokenExceptionCodeIsInvalidWhenCreatingApiProblem()
+    {
+        $exception = new TestAsset\CustomProblemDetailsException('problem', 601);
+        $exception->type = 'custom';
+        $exception->title = 'title';
+        $exception->details = ['some' => 'details'];
+
+        $oauth2Server = $this->prophesize(OAuth2Server::class);
+        $oauth2Server
+            ->handleTokenRequest(Argument::type(OAuth2Request::class))
+            ->willThrow($exception);
+        $factory = function () use ($oauth2Server) {
+            return $oauth2Server->reveal();
+        };
+
+        $provider = $this->prophesize(UserIdProviderInterface::class)->reveal();
+
+        $controller = new AuthController($factory, $provider);
+        $this->setBodyParamsPlugin($controller);
+        $this->setParamsPlugin($controller, 'oauth', []);
+
+        $request = $this->getRequest();
+        $request->setMethod('POST');
+        $this->setRequest($controller, $request);
+
+        $result = $controller->tokenAction();
+        $this->assertInstanceOf(ApiProblemResponse::class, $result);
+        $problem = $result->getApiProblem();
+        $this->assertEquals(401, $problem->status);
+        $this->assertEquals('custom', $problem->type);
+        $this->assertEquals('title', $problem->title);
+        $this->assertEquals('details', $problem->some);
     }
 }

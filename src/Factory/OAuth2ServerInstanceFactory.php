@@ -6,14 +6,14 @@
 namespace ZF\OAuth2\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
-use ZF\OAuth2\Controller\Exception;
-use OAuth2\Server as OAuth2Server;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\ClientCredentials;
+use OAuth2\GrantType\JwtBearer;
 use OAuth2\GrantType\RefreshToken;
 use OAuth2\GrantType\UserCredentials;
-use OAuth2\GrantType\JwtBearer;
+use OAuth2\Server as OAuth2Server;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use ZF\OAuth2\Controller\Exception;
 
 class OAuth2ServerInstanceFactory
 {
@@ -56,7 +56,7 @@ class OAuth2ServerInstanceFactory
 
         $config = $this->config;
 
-        if (!isset($config['storage']) || empty($config['storage'])) {
+        if (! isset($config['storage']) || empty($config['storage'])) {
             throw new Exception\RuntimeException(
                 'The storage configuration for OAuth2 is missing'
             );
