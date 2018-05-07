@@ -63,6 +63,7 @@ matrix:
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - pecl channel-update pecl.php.net
   - yes '' | pecl -q install -f $MONGO_DRIVER
 
 install:
@@ -71,7 +72,6 @@ install:
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
-  - if [[ $MONGO_DRIVER == 'mongodb' ]]; then composer require --dev $COMPOSER_ARGS alcaeus/mongo-php-adapter ; fi
   - stty cols 120 && composer show
 
 script:
