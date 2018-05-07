@@ -2,8 +2,8 @@
 
 namespace ZFTest\OAuth2\Adapter\Pdo;
 
-use OAuth2\Storage\AuthorizationCodeInterface;
 use OAuth2\Storage\AccessTokenInterface;
+use OAuth2\Storage\AuthorizationCodeInterface;
 
 class AuthorizationCodeTest extends BaseTest
 {

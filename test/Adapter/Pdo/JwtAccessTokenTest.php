@@ -6,7 +6,6 @@
 
 namespace ZFTest\OAuth2\Adapter\Pdo;
 
-use OAuth2\Encryption\Jwt;
 use DateTime;
 
 class JwtAccessTokenTest extends BaseTest
