@@ -82,11 +82,11 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertTrue(! empty($response['access_token']));
 
-        $this->assertTrue(!empty($response['expires_in']));
+        $this->assertTrue(! empty($response['expires_in']));
         $this->assertTrue(array_key_exists('scope', $response));
-        $this->assertTrue(!empty($response['token_type']));
+        $this->assertTrue(! empty($response['token_type']));
     }
 
     public function testAuthorizeErrorParam()
@@ -139,7 +139,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertTrue(! empty($response['access_token']));
     }
 
     public function testImplicitClientAuth()
@@ -147,7 +147,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         $config = $this->getApplication()->getConfig();
         $allowImplicit = isset($config['zf-oauth2']['allow_implicit']) ? $config['zf-oauth2']['allow_implicit'] : false;
 
-        if (!$allowImplicit) {
+        if (! $allowImplicit) {
             $this->markTestSkipped('The allow implicit client mode is disabled');
         }
 
@@ -170,7 +170,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         if (preg_match('#access_token=([0-9a-f]+)#', $location, $matches)) {
             $token = $matches[1];
         }
-        $this->assertTrue(!empty($token));
+        $this->assertTrue(! empty($token));
     }
 
     public function testResource()
@@ -187,7 +187,7 @@ class AuthControllerWithMongoAdapterTest extends AbstractHttpControllerTestCase
         $this->assertResponseStatusCode(200);
 
         $response = json_decode($this->getResponse()->getContent(), true);
-        $this->assertTrue(!empty($response['access_token']));
+        $this->assertTrue(! empty($response['access_token']));
 
         $token = $response['access_token'];
 
