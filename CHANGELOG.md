@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
+- [#167](https://github.com/zfcampus/zf-oauth2/pull/167) adds support for PHP 7.1 and 7.2.
+
+### Changed
+
 - Nothing.
 
 ### Deprecated
@@ -14,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#167](https://github.com/zfcampus/zf-oauth2/pull/167) removes support for HHVM.
 
 ### Fixed
 
