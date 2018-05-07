@@ -247,6 +247,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         $request->getServer()->set('PHP_AUTH_USER', 'testclient');
         $request->getServer()->set('PHP_AUTH_PW', 'testpass');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
@@ -313,6 +314,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         unset($server['PHP_AUTH_USER']);
         unset($server['PHP_AUTH_PW']);
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('resource');
@@ -329,6 +331,7 @@ class AuthControllerTest extends AbstractHttpControllerTestCase
         unset($post['access_token']);
         $request->setMethod('GET');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth/resource');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('resource');

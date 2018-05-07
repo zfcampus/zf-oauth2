@@ -102,6 +102,7 @@ class AuthControllerWithZendAuthenticationServiceTest extends AbstractHttpContro
         $request->getServer()->set('PHP_AUTH_USER', 'testclient');
         $request->getServer()->set('PHP_AUTH_PW', 'testpass');
 
+        $this->getApplication()->bootstrap();
         $this->dispatch('/oauth');
         $this->assertControllerName('ZF\OAuth2\Controller\Auth');
         $this->assertActionName('token');
