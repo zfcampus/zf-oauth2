@@ -10,7 +10,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- Nothing.
+- [#151](https://github.com/zfcampus/zf-oauth2/pull/151) updates `ZF\OAuth2\Provider\UserId\AuthenticationService` to allow injecting any
+  `Zend\Authentication\AuthenticationServiceInterface` implementation, not just `Zend\Authentication\AuthenticationService`.
 
 ### Deprecated
 
