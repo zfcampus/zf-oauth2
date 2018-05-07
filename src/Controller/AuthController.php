@@ -179,7 +179,7 @@ class AuthController extends AbstractActionController
         // validate the authorize request
         $isValid = $this->server->validateAuthorizeRequest($request, $response);
 
-        if (!$isValid) {
+        if (! $isValid) {
             return $this->getErrorResponse($response);
         }
 
@@ -244,8 +244,8 @@ class AuthController extends AbstractActionController
     protected function getApiProblemResponse(OAuth2Response $response)
     {
         $parameters       = $response->getParameters();
-        $errorUri         = isset($parameters['error_uri'])         ? $parameters['error_uri']         : null;
-        $error            = isset($parameters['error'])             ? $parameters['error']             : null;
+        $errorUri         = isset($parameters['error_uri']) ? $parameters['error_uri'] : null;
+        $error            = isset($parameters['error']) ? $parameters['error'] : null;
         $errorDescription = isset($parameters['error_description']) ? $parameters['error_description'] : null;
 
         return new ApiProblemResponse(
@@ -289,7 +289,7 @@ class AuthController extends AbstractActionController
         $server = [];
         if ($zf2Request instanceof PhpEnvironmentRequest) {
             $server = $zf2Request->getServer()->toArray();
-        } elseif (!empty($_SERVER)) {
+        } elseif (! empty($_SERVER)) {
             $server = $_SERVER;
         }
         $server['REQUEST_METHOD'] = $zf2Request->getMethod();

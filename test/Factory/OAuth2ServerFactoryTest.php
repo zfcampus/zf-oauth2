@@ -5,14 +5,14 @@
  */
 namespace ZFTest\OAuth2\Factory;
 
+use OAuth2\GrantType\AuthorizationCode;
+use OAuth2\GrantType\ClientCredentials;
+use OAuth2\GrantType\JwtBearer;
+use OAuth2\GrantType\RefreshToken;
+use OAuth2\GrantType\UserCredentials;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use ZF\OAuth2\Factory\OAuth2ServerFactory;
-use OAuth2\GrantType\AuthorizationCode;
-use OAuth2\GrantType\ClientCredentials;
-use OAuth2\GrantType\RefreshToken;
-use OAuth2\GrantType\UserCredentials;
-use OAuth2\GrantType\JwtBearer;
 
 class OAuth2ServerFactoryTest extends AbstractHttpControllerTestCase
 {

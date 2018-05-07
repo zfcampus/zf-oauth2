@@ -10,7 +10,7 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 
 class AuthControllerWithCustomAdapterTest extends AbstractHttpControllerTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         $this->setApplicationConfig(include __DIR__ . '/../TestAsset/custom.application.config.php');
 
