@@ -56,7 +56,7 @@ class OAuth2ServerInstanceFactory
 
         $config = $this->config;
 
-        if (!isset($config['storage']) || empty($config['storage'])) {
+        if (! isset($config['storage']) || empty($config['storage'])) {
             throw new Exception\RuntimeException(
                 'The storage configuration for OAuth2 is missing'
             );
