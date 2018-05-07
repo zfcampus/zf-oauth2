@@ -18,7 +18,7 @@
     },
     "require": {
         "php": "^5.6 || ^7.0",
-        "bshaffer/oauth2-server-php": "^1.8",
+        "bshaffer/oauth2-server-php": "^1.10",
         "zendframework/zend-crypt": "^3.3",
         "zendframework/zend-http": "^2.5.4",
         "zendframework/zend-mvc": "^2.7.15 || ^3.0.2",
