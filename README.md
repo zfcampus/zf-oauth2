@@ -2,7 +2,7 @@
 
 > ## Repository abandoned 2019-12-31
 >
-> This repository has moved to laminas-api-tools/api-tools-oauth2.
+> This repository has moved to [laminas-api-tools/api-tools-oauth2](https://github.com/laminas-api-tools/api-tools-oauth2).
 
 [![Build Status](https://secure.travis-ci.org/zfcampus/zf-oauth2.svg?branch=master)](https://secure.travis-ci.org/zfcampus/zf-oauth2)
 [![Coverage Status](https://coveralls.io/repos/github/zfcampus/zf-oauth2/badge.svg?branch=master)](https://coveralls.io/github/zfcampus/zf-oauth2?branch=master)
