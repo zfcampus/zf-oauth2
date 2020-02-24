@@ -2,7 +2,7 @@
 if ($this->code) {
     printf("<h2>The authentication code is %s</h2>", $this->code);
     printf("<p>Use this code to request an access token.</p>");
-    printf("For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
+    printf("<p>For instance, using <a href=\"https://github.com/jkbr/httpie\">HTTPie</a>:</p> ");
     printf(
         "<p>http POST %s grant_type=authorization_code code=%s redirect_uri=%s client_id=testclient client_secret=testpass</p>",
         $this->serverUrl('/oauth'),
